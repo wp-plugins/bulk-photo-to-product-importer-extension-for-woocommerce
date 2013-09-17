@@ -11,6 +11,10 @@ License: GPL v3
 == Description ==
 This Plugin is an extension to WooCommerce and enables users to bulk import photo's, which are automatically converted into Products. It includes the ability to categorize photo's by Event during the upload process, sell photo's by custom Variations the administrator creates (Ex. Photo printed on a t-shirt), and more. The paid version introduces the ability to secure individual photo's and groups of photos (Events),  includes widgets for advanced searching, advanced browsing for front end users and the ability to search by date.
 
+* Bulk Import Photos – Which are, then, automatically converted into WooCommerce Products.
+* Event Types and Events - So you can easily locate that photo shoot you did for that local high school, sporting event, etc… by creating an Event Type (Ex. Sports, Portraits, etc…) and a specific Event (Ex. Jane and John Doe Wedding, Portland High School Portraits)
+* BPTPI Variations – Many photographers don’t just sell the individual photo’s, rather, they sell what the photo is printed on (photo prints, smartphone cases, shirts, posters, etc…). Using Variations: administrators can create unlimited custom Variations and associate a price with that specific Variation. 
+
 == Installation ==
 1. Download the plugin
 2. Place it inside the plugins folder

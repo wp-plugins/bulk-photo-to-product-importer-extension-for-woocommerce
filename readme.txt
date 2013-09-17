@@ -9,7 +9,23 @@ Stable tag: 2.1.1
 License: GPL v3
 
 == Description ==
-This Plugin is an extension to WooCommerce and enables users to bulk import photo's, which are automatically converted into Products. It includes the ability to categorize photo's by Event during the upload process, sell photo's by custom Variations the administrator creates (Ex. Photo printed on a t-shirt), and more. The paid version introduces the ability to secure individual photo's and groups of photos (Events),  includes widgets for advanced searching, advanced browsing for front end users and the ability to search by date.
+Are you a photographer who wants to sell your products on your WordPress website but you find the native WooCommerce interface to limit your ability to sell your products?
+
+Well we created this WordPress Plugin for users whose business model is centric to selling photography in an eCommerce environment. While WooCommerce is an absolutely stellar Plugin; the Bulk Photo to Product Importer Extension for WooCommerce extends WooCommerce, unobtrusively, in the following ways for photographers:
+
+Back End Features:
+
+* Bulk Import Photos – Which are, then, automatically converted into WooCommerce Products. Product Titles are automatically generated based on the file name of the photo(s) being imported. You have the option to modify these titles during and after the upload process.
+* Event Types and Events - So you can easily locate that photo shoot you did for that local high school, sporting event, etc… by creating an Event Type (Ex. Sports, Portraits, etc…) and a specific Event (Ex. Jane and John Doe Wedding, Portland High School Portraits)
+* BPTPI Variations – Many photographers don’t just sell the individual photo’s, rather, they sell what the photo is printed on (photo prints, smartphone cases, shirts, posters, etc…). Using Variations: administrators can create unlimited custom Variations and associate a price with that specific Variation. 
+* Private Events and Photos - We understand that sometimes photo’s need to be kept private. That’s why you can give Users access to specific Events, preventing all other Users from being able to view the photo’s within that event or assign a generic password to that event for anyone to use to view them. (Available in paid version only)
+* Widgets – We’ve also created an advanced Search by Event or Search by Date WordPress Widget. (Available in paid version only)
+* Custom Watermark - You can upload your own custom image that is dynamically embedded onto your images as a watermark prior to purchase. (Available in paid version only)
+
+Front End Features:
+
+* Browse and Search by Event – BPTPI replaces the default WooCommerce Products (/shop) page template with an interface that allows users to browse by Events in a grid view. If the Event is Private users Events simply won’t appear in search results unless the user has been authenticated. (Available in paid version only)
+* Search by Event Date - If the Event doesn’t have a specific name, or the user can’t remember it, they may search by the Event’s date. (Available in paid version only)
 
 == Installation ==
 1. Download the plugin

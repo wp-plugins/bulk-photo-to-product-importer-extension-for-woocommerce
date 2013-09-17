@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Bulk Photo to Product Importer Extension for WooCommerce (Free)
  * Plugin URI: http://www.theportlandcompany.com/shop/custom-web-applications/bulk-photo-to-product-importer-extension-for-woocommerce/
- * Description: This Plugin is an extension to WooCommerce and enables users to bulk import photo's, which are automatically converted into Products. It includes the ability to categorize photo's by Event during the upload process, sell photo's by custom Variations the administrator creates (Ex. Photo printed on a t-shirt), and more. The paid version introduces the ability to secure individual photo's and groups of photos (Events),  includes widgets for advanced searching, advanced browsing for front end users and the ability to search by date.
+ * Description: This Plugin is an extension to WooCommerce and enables users to bulk import photo's, which are automatically converted into Products.
  * Author: The Portland Company, Designed by Spencer Hill, Coded by Redeye Adaya
  * Author URI: http://www.theportlandcompany.com
  * Version: 2.1.1

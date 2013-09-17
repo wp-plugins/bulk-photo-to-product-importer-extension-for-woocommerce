@@ -18,6 +18,9 @@ This Plugin is an extension to WooCommerce and enables users to bulk import phot
 4. Activate
 5. Profit! 
 
+== Frequently Asked Questions ==
+Please read this post: http://www.theportlandcompany.com/2013/08/photo-to-product-importer-extension-for-woocommerce-documentation/
+
 == Screenshots ==
 1. Bulk Import - This is where you can bulk import photos.
 2. Variation Groups - This is where you can create variation groups.

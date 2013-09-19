@@ -29,7 +29,7 @@ Front End Features:
 * Search by Event Date - If the Event doesn’t have a specific name, or the user can’t remember it, they may search by the Event’s date. (Available in paid version only)
 
 == Frequently Asked Questions ==
-Please read this post: http://www.theportlandcompany.com/2013/08/photo-to-product-importer-extension-for-woocommerce-documentation/
+[You can find our FAQ section on our website.](http://www.theportlandcompany.com/2013/08/photo-to-product-importer-extension-for-woocommerce-documentation/)
 
 == Screenshots ==
 1. Bulk Import - This is where you can bulk import photos.

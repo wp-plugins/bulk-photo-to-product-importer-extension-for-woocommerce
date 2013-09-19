@@ -32,9 +32,9 @@ Front End Features:
 [You can find our FAQ section on our website.](http://www.theportlandcompany.com/2013/08/photo-to-product-importer-extension-for-woocommerce-documentation/)
 
 == Screenshots ==
-1. Bulk Import - This is where you can bulk import photos.
-2. Variation Groups - This is where you can create variation groups.
+1. Bulk Import - Which are, then, automatically converted into WooCommerce Products. Product Titles are automatically generated based on the file name of the photo(s) being imported. You have the option to modify these titles during and after the upload process.
+2. Variation Groups - Many photographers don’t just sell the individual photos, rather, they sell what the photo is printed on (photo prints, smartphone cases, shirts, posters, etc…). Using Variations: administrators can create unlimited custom Variations and associate a price with that specific Variation.
 3. Variation Group Edit - This is how you edit a variation group.
-4. User Groups - This is where you can create user groups.
+4. User Groups - We understand that sometimes photos need to be kept private. That’s why you can give Users access to specific Events, preventing all other Users from being able to view the photos within that event.
 5. User Group Edit - This is how you edit a user group.
 6. Settings - This is where you can configure the BPTPI.

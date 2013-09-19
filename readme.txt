@@ -28,13 +28,6 @@ Front End Features:
 * Browse and Search by Event – If the Event is Private users Events simply won’t appear in search results unless the user has been authenticated. (Available in paid version only)
 * Search by Event Date - If the Event doesn’t have a specific name, or the user can’t remember it, they may search by the Event’s date. (Available in paid version only)
 
-== Installation ==
-1. Download the plugin
-2. Place it inside the plugins folder
-3. Extract 
-4. Activate
-5. Profit! 
-
 == Frequently Asked Questions ==
 Please read this post: http://www.theportlandcompany.com/2013/08/photo-to-product-importer-extension-for-woocommerce-documentation/
 

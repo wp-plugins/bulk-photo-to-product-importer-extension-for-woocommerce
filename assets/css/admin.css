@@ -823,6 +823,9 @@ input.loading-secondary {
   margin-right: 8px;
 }
 .ptp .share li a {
+	display: block;
+}
+.ptp .purchase-premium-notification {
   display: block;
 }
 .ptp .share li img {

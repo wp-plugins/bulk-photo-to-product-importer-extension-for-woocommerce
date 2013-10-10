@@ -58,12 +58,23 @@ class PTP_SM_Share {
 			<?php if ( !$args['mini'] ): ?>	
 			<?php echo $args['before_title'] ?> <?php echo $args['title'] ?><?php echo $args['title_punctuation'] ?> <?php echo $args['after_title'] ?>
 			<?php endif; ?>
-
+			
+			<ul class="share purchase-premium-notification clear" <?php if ( $args['mini'] ) echo 'style="display:none;"' ?>>
+				
+				<li><a href="http://www.theportlandcompany.com/shop/custom-web-applications/photo-to-product-importer-wordpress-plugin-for-woocommerce" target="_blank">Unlock new features by purchasing the Premium version &#187;</a></li>
+			
+				<?php if ( $args['mini'] ): ?>	
+					<li class="last"><a class="ptp-nag-close" href="<?php echo $_SERVER['REQUEST_URI']; ?>&amp;ptp_sm_hide=1"><?php _e( 'Dismiss', 'ptp' ); ?></a></li>
+				<?php endif; ?>
+			</ul>
+			
 			<ul class="share clear" <?php if ( $args['mini'] ) echo 'style="display:none;"' ?>>
 				
 				<?php if ( $args['mini'] ): ?>	
 				<li><img src="<?php echo $this->plugin_uri . '/images/share_icon.png'; ?>" alt="Share"/></li>
 				<?php endif; ?>
+				
+				<li>Sharing this Plugin helps fund it! </li>
 
 				<li><a href="javascript:twitterShare('<?php echo $this->product_uri; ?>', '<?php echo $this->product_description; ?>', 602, 496 )" data-lang="en"><img src="<?php echo $this->plugin_uri . '/images/twitter_icon.jpg'; ?>" alt="Share on Twitter" /></a></li>
 				<li><a href="javascript:fbShare('<?php echo $this->product_uri; ?>', '<?php echo $this->product_name; ?>', '<?php echo $this->product_description; ?>', 600, 400)" target="_blank"><img src="<?php echo $this->plugin_uri . '/images/fb_icon.jpg'; ?>" alt="Share on Facebook" /></a></li>

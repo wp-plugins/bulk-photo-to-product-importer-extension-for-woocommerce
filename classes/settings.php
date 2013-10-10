@@ -30,6 +30,7 @@ class PTPImporter_Settings {
      */
     public function init() {
         $this->defaults = apply_filters( 'ptp_settings_args', array(
+            'interval' => 5,
             'hide_variations' => 1,
         ) );
 

@@ -30,6 +30,8 @@ class PTPImporter_Product {
    public function create( $posted ) {
         global $ptp_importer;
 
+        $settings_obj = PTPImporter_Settings::getInstance();
+        $settings = $settings_obj->get();
         $post_ids = array();
 
         foreach ( $posted['attachments'] as $file_id ) {
@@ -74,6 +76,8 @@ class PTPImporter_Product {
             $this->create_variations( $posted['variation_group'], $post_id, $file_data );
 
             do_action( 'ptp_create_products_complete', $post_id, $posted['term_id'], $posted['users'] );
+
+            sleep(intval($settings['interval']));
         }
 
         return $post_ids;

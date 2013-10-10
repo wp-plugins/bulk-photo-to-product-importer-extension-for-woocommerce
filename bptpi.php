@@ -1,14 +1,14 @@
 <?php
-/**
- * Plugin Name: Bulk Photo to Product Importer Extension for WooCommerce (Free)
- * Plugin URI: http://www.theportlandcompany.com/shop/custom-web-applications/bulk-photo-to-product-importer-extension-for-woocommerce/
- * Description: This Plugin is an extension to WooCommerce and enables users to bulk import photos, which are automatically converted into Products. 
- * Author: The Portland Company, Designed by Spencer Hill, Coded by Redeye Adaya
- * Author URI: http://www.theportlandcompany.com
- * Version: 2.1.1
- * Copyright: 2013 The Portland Company 
- * License: GPL v3
- */
+/*
+Plugin Name: Bulk Photo to Product Importer Extension for WooCommerce (Free)
+Plugin URI: http://www.theportlandcompany.com/shop/custom-web-applications/bulk-photo-to-product-importer-extension-for-woocommerce/
+Description: This Plugin is an extension to WooCommerce and enables users to bulk import photos, which are automatically converted into Products.
+Author: The Portland Company, Designed by Spencer Hill, Coded by Redeye Adaya
+Author URI: http://www.theportlandcompany.com
+Version: 2.1.2
+Copyright: 2013 The Portland Company 
+License: GPL v3
+*/
 
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 

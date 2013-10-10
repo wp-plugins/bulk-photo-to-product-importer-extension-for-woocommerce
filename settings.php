@@ -111,12 +111,12 @@ $settings = $settings_obj->get();
 		</div>
 		<?php endif; ?>
 		
-		<?php if ( ptp_is_active() && class_exists( 'BPTPI_Premium' ) ) : ?>
 		<div class="wp-box">
 			<?php 
 
 			$settings_action = 'ptp_settings_save';
 			$hide_variations = $settings['hide_variations'];
+			$interval = $settings['interval'];
 			$submit_button_label = 'Save';
 
 			$variation_migrate = new PTPImporter_Variation_Migrate();
@@ -130,7 +130,19 @@ $settings = $settings_obj->get();
 				<table class="ptp-input widefat">
 					<tbody>
 						
+						<?php if ( ptp_is_active() && class_exists( 'BPTPI_Premium' ) ) : ?>
 						<?php do_action( 'ptp_before_hide_variations_general_settings', $settings ); ?>
+						<?php endif; ?>
+						
+						<tr>
+							<td class="label">
+								<label><?php _e( 'Time interval for each product creation', 'ptp' ); ?></label>
+							</td>
+							<td>
+								<input type="text" id="interval" class="general-settings-input" name="interval" value="<?php echo $interval; ?>" />
+								<p class="ptp-subtext" for="interval"><?php _e( 'This will be used as the length of time the plugin will sleep after creating each product. This prevents the server from timing out. Increase it as needed.' ); ?></p>
+							</td>
+						</tr>
 
 						<tr>
 							<td class="label">
@@ -163,7 +175,6 @@ $settings = $settings_obj->get();
 				</table>
 			</form>
 		</div>
-		<?php endif; ?>
 		
 		<?php if ( ptp_is_active() && class_exists( 'BPTPI_Premium' ) ) : ?>
 		<div class="wp-box">

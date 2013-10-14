@@ -2,7 +2,7 @@ Bulk Photo to Product Importer Extension for WooCommerce (Free)
 ===============================================================
 Please consider helping fund the future development of this Plugin by purchasing the Premium version which includes password protection, custom watermark, widgets and more.
 
-#[Purchase the Premium Version &#187;](http://www.theportlandcompany.com/shop/custom-web-applications/photo-to-product-importer-wordpress-plugin-for-woocommerce/)
+#[Purchase the Premium Version >>](http://www.theportlandcompany.com/shop/custom-web-applications/photo-to-product-importer-wordpress-plugin-for-woocommerce/)
 
 Are you a photographer who wants to sell your products on your WordPress website but you find the native WooCommerce interface to limit your ability to sell your products?
 

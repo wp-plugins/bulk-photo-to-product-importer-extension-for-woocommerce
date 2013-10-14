@@ -89,6 +89,8 @@ $settings = $settings_obj->get();
 							</td>
 						</tr>
 						<?php endif; ?>
+						
+						<?php if ( class_exists( 'BPTPI_Premium' ) ) : ?>
 						<tr>
 							<td class="label">
 								<label><?php _e( 'Serial Key', 'ptp' ); ?></label>
@@ -105,6 +107,8 @@ $settings = $settings_obj->get();
 								<input type="submit" id="ptp-activate" class="ptp-button-primary" name="activate" value="<?php _e( $activate_button_label, 'ptp'); ?>" />
 							</td>
 						</tr>
+						<?php endif; ?>
+						
 					</tbody>
 				</table>
 			</form>

@@ -59,14 +59,27 @@ class PTP_SM_Share {
 			<?php echo $args['before_title'] ?> <?php echo $args['title'] ?><?php echo $args['title_punctuation'] ?> <?php echo $args['after_title'] ?>
 			<?php endif; ?>
 			
-			<ul class="share purchase-premium-notification clear" <?php if ( $args['mini'] ) echo 'style="display:none;"' ?>>
-				
-				<li><a href="http://www.theportlandcompany.com/shop/custom-web-applications/photo-to-product-importer-wordpress-plugin-for-woocommerce" target="_blank">Unlock new features by purchasing the Premium version &#187;</a></li>
+			<?php if ( !class_exists( 'BPTPI_Premium' ) ) { ?>
 			
-				<?php if ( $args['mini'] ): ?>	
-					<li class="last"><a class="ptp-nag-close" href="<?php echo $_SERVER['REQUEST_URI']; ?>&amp;ptp_sm_hide=1"><?php _e( 'Dismiss', 'ptp' ); ?></a></li>
-				<?php endif; ?>
-			</ul>
+				<ul class="share purchase-premium-notification clear" style="background: #a8e49e;" <?php if ( $args['mini'] ) echo 'style="display:none;"' ?>>
+					
+					<li><a href="http://www.theportlandcompany.com/shop/custom-web-applications/photo-to-product-importer-wordpress-plugin-for-woocommerce" target="_blank" style="color: #fff; font-size: 18px; padding: 3px 0 0 0; font-style: italics;"><i>Upgrade for $7! &nbsp;&nbsp;&nbsp;Coupon code 72hoursonly</i> &nbsp;&#187;</a></li>
+				
+					<?php if ( $args['mini'] ): ?>	
+						<li class="last"><a class="ptp-nag-close" href="<?php echo $_SERVER['REQUEST_URI']; ?>&amp;ptp_sm_hide=1"><?php _e( 'Dismiss', 'ptp' ); ?></a></li>
+					<?php endif; ?>
+				</ul>
+			
+				<ul class="share purchase-premium-notification clear" <?php if ( $args['mini'] ) echo 'style="display:none;"' ?>>
+					
+					<li><a href="http://www.theportlandcompany.com/shop/custom-web-applications/photo-to-product-importer-wordpress-plugin-for-woocommerce" target="_blank">Unlock new features by purchasing the Premium version &#187;</a></li>
+				
+					<?php if ( $args['mini'] ): ?>	
+						<li class="last"><a class="ptp-nag-close" href="<?php echo $_SERVER['REQUEST_URI']; ?>&amp;ptp_sm_hide=1"><?php _e( 'Dismiss', 'ptp' ); ?></a></li>
+					<?php endif; ?>
+				</ul>
+				
+			<?php } ?>
 			
 			<ul class="share clear" <?php if ( $args['mini'] ) echo 'style="display:none;"' ?>>
 				

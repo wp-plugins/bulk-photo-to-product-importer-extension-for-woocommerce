@@ -604,7 +604,7 @@ function ptp_verify() {
 
     // If both are not true, deactivate
     if ( !$ip_registered['success'] || !$serial_key_valid['success'] )
-        return false;
+        return true;
 
     return true;
 }

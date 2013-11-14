@@ -343,7 +343,8 @@ add_filter( 'pre_get_posts', 'ptp_add_custom_elements' );
  * @return void
  */
 function ptp_filter_out_variations( $q ) {
-
+	
+	require_once(ABSPATH . 'wp-admin/includes/screen.php');
     if ( !is_admin() || get_current_screen()->id != 'edit-product' || !$q->is_main_query() ) 
         return;
 

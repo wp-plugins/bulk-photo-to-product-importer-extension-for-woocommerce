@@ -585,9 +585,6 @@ function ptp_deactivate($serial_key) {
  * @return boolean
  */
 function ptp_is_active() {
-    if ( get_option( '_ptp_status' ) != 'active' )
-        return false;
-
     return true;
 }
 

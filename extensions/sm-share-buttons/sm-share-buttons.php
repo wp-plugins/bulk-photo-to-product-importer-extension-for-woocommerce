@@ -63,7 +63,7 @@ class PTP_SM_Share {
 			
 				<ul class="share purchase-premium-notification clear" style="background: #a8e49e;" <?php if ( $args['mini'] ) echo 'style="display:none;"' ?>>
 					
-					<li><a href="http://www.theportlandcompany.com/shop/custom-web-applications/photo-to-product-importer-wordpress-plugin-for-woocommerce" target="_blank" style="color: #fff; font-size: 18px; padding: 3px 0 0 0; font-style: italics;"><i>Upgrade for $7! &nbsp;&nbsp;&nbsp;Coupon code 72hoursonly</i> &nbsp;&#187;</a></li>
+					<li><a href="http://www.theportlandcompany.com/shop/custom-web-applications/photo-to-product-importer-wordpress-plugin-for-woocommerce" target="_blank" style="color: #fff; font-size: 18px; padding: 3px 0 0 0; font-style: italics;"><i>1. Leave a Review. 2. Send an Email to Support 3. We'll send you a to upgrade for just $15!</i> &nbsp;&#187;</a></li>
 				
 					<?php if ( $args['mini'] ): ?>	
 						<li class="last"><a class="ptp-nag-close" href="<?php echo $_SERVER['REQUEST_URI']; ?>&amp;ptp_sm_hide=1"><?php _e( 'Dismiss', 'ptp' ); ?></a></li>

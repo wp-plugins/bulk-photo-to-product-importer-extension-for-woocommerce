@@ -5,7 +5,7 @@ Plugin URI: http://www.theportlandcompany.com/shop/custom-web-applications/bulk-
 Description: This Plugin is an extension to WooCommerce and enables users to bulk import photos, which are automatically converted into Products.
 Author: The Portland Company, Designed by Spencer Hill, Coded by Redeye Adaya
 Author URI: http://www.theportlandcompany.com
-Version: 2.1.17
+Version: 2.1.18
 Copyright: 2013 The Portland Company 
 License: GPL v3
 */
@@ -19,7 +19,7 @@ class PTP_Importer {
     /**
      * @var string
      */
-    public $version = '2.1.9';
+    public $version = '2.1.10';
 
     /**
      * @var string
@@ -464,7 +464,7 @@ class PTP_Importer {
             <div class="updated">
                 <?php 
                 printf( 
-                    '<p class="clear"> %1$s <a href="%2$s" target="_blank"> %3$s </a> %4$s <a class="ptp-nag-close" href="%5$s"> %6$s </a> </p>', 
+                    '<p> %1$s <a href="%2$s" target="_blank"> %3$s </a> %4$s <a class="ptp-nag-close" href="%5$s"> %6$s </a> </p>', 
                     __( 'First time? Having trouble? Review the', 'ptp' ), 
                     __( 'http://www.theportlandcompany.com/2013/08/photo-to-product-importer-extension-for-woocommerce-documentation', 'ptp'),
                     __( 'Documentation', 'ptp' ), 
@@ -475,6 +475,29 @@ class PTP_Importer {
                 ?>
             </div>
         <?php endif; ?>
+
+		<div class="updated">
+            <?php 
+            printf( 
+                '<p> %1$s <a class="ptp-nag-close" href="%2$s"> %3$s </a> </p>', 
+                __( 'Downloadable Variations Introduced!</b> Simply create a BPTPI Variation named "Downloadable" and viola! Any users who purchase that Variation will be able to download the photo upon purchasing!', 'ptp' ), 
+                esc_url( add_query_arg( 'ptp_nag_hide', 1 ) ), 
+                __( 'Dismiss', 'ptp' ) 
+            ); 
+            ?>
+		</div>
+		
+
+		<div class="updated">
+            <?php 
+            printf( 
+                '<p>Get a $15 Coupon to Upgrade! &nbsp;&nbsp;&nbsp; 1. <a href="http://wordpress.org/support/view/plugin-reviews/bulk-photo-to-product-importer-extension-for-woocommerce" target="_blank">Leave a Review &#187;</a> &nbsp;&nbsp;&nbsp; 2. <a href="https://www.facebook.com/pages/The-Portland-Company/192671084161591" target="_blank">Send an Message to Us &#187;</a> &nbsp;&nbsp;&nbsp; 3. <a href="http://www.theportlandcompany.com/shop/custom-web-applications/photo-to-product-importer-wordpress-plugin-for-woocommerce" target="_blank">We will send you a to upgrade for just $15 to purchase here &#187;</a> <a class="ptp-nag-close" href="%2$s"> %3$s </a> </p>', 
+                __( 'Downloadable Variations Introduced!</b> Simply create a BPTPI Variation named "Downloadable" and viola! Any users who purchase that Variation will be able to download the photo upon purchasing!', 'ptp' ), 
+                esc_url( add_query_arg( 'ptp_nag_hide', 1 ) ), 
+                __( 'Dismiss', 'ptp' ) 
+            ); 
+            ?>
+		</div>
 
         <?php
     }

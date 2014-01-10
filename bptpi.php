@@ -5,7 +5,7 @@ Plugin URI: http://www.theportlandcompany.com/shop/custom-web-applications/bulk-
 Description: This Plugin is an extension to WooCommerce and enables users to bulk import photos, which are automatically converted into Products.
 Author: The Portland Company, Designed by Spencer Hill, Coded by Redeye Adaya
 Author URI: http://www.theportlandcompany.com
-Version: 2.1.19
+Version: 2.1.20
 Copyright: 2013 The Portland Company 
 License: GPL v3
 */
@@ -440,11 +440,13 @@ class PTP_Importer {
      *
      * @return void
      */
-    public function admin_notices() { 
-        ?>
-        <?php if ( !class_exists('WooCommerce') && get_current_screen()->parent_base == 'ptp_bulk_import' ) : ?>
+    public function admin_notices() {
+    
+    	if ( !class_exists('WooCommerce') && get_current_screen()->parent_base == 'ptp_bulk_import' ) : ?>
+    	
             <div class="error">
-                <?php 
+            
+                <?php
                 printf( 
                     '<p> %1$s <a href="%2$s" target="_blank">%3$s</a></p>', 
                     __( 'Bulk Photo to Product Importer Extension for WooCommerce requires WooCommerce to be installed and activated.', 'ptp' ),
@@ -452,54 +454,143 @@ class PTP_Importer {
                     __( 'Install Woocommerce &nbsp;&raquo', 'ptp' )
                 ); 
                 ?>
+                
             </div>
+            
         <?php endif; ?>
         
-        <?php if ( !get_user_meta( get_current_user_id(), 'ptp_first_install', true ) && get_current_screen()->parent_base == 'ptp_bulk_import' ) : 
-            if ( $_GET['ptp_nag_hide'] == 1 ) {
-                update_user_meta( get_current_user_id(), 'ptp_first_install', 1 );
-                return;
-            } ?>
-            
-            <div class="updated">
-                <?php 
-                printf( 
-                    '<p> %1$s <a href="%2$s" target="_blank"> %3$s </a> %4$s <a class="ptp-nag-close" href="%5$s"> %6$s </a> </p>', 
-                    __( 'First time? Having trouble? Review the', 'ptp' ), 
-                    __( 'http://www.theportlandcompany.com/2013/08/photo-to-product-importer-extension-for-woocommerce-documentation', 'ptp'),
-                    __( 'Documentation', 'ptp' ), 
-                    __( '&#187;', 'ptp' ), 
-                    esc_url( add_query_arg( 'ptp_nag_hide', 1 ) ), 
-                    __( 'Dismiss', 'ptp' ) 
-                ); 
-                ?>
-            </div>
-        <?php endif; ?>
-
+        
+        			
+		<?php
+		if ( $_GET['dismiss_first_time_tutorial'] == true ) {
+		    update_user_meta( get_current_user_id(), 'dismiss_first_time_tutorial', true );
+		    return;
+		}
+		if ( $_GET['dismiss_downloadable_variations_reminder'] == true ) {
+		    update_user_meta( get_current_user_id(), 'dismiss_downloadable_variations_reminder', true );
+		    return;
+		}
+		if ( $_GET['dismiss_upgrade_reminder'] == true ) {
+		    update_user_meta( get_current_user_id(), 'dismiss_upgrade_reminder', true );
+		    return;
+		}
+		if ( $_GET['dismiss_coupon_reminder'] == true ) {
+		    update_user_meta( get_current_user_id(), 'dismiss_coupon_reminder', true );
+		    return;
+		}
+		
+		$dismiss_coupon_reminder = get_user_option( 'dismiss_coupon_reminder' );
+		$dismiss_downloadable_variations_reminder = get_user_option( 'dismiss_downloadable_variations_reminder' );
+		$dismiss_first_time_tutorial = get_user_option( 'dismiss_first_time_tutorial' );
+		$dismiss_upgrade_reminder = get_user_option( 'dismiss_upgrade_reminder' );
+		?>
+		
+		
+		
+		<?php if ( $dismiss_first_time_tutorial != 1 ) { ?>
+		
+	        <div class="updated">
+	            <?php 
+	            printf( 
+	                '<p> %1$s <a href="%2$s" target="_blank"> %3$s </a> %4$s <a class="ptp-nag-close" href="%5$s"> %6$s </a> </p>', 
+	                __( 'First time? Having trouble? Review the', 'ptp' ), 
+	                __( 'http://www.theportlandcompany.com/2013/08/photo-to-product-importer-extension-for-woocommerce-documentation', 'ptp'),
+	                __( 'Documentation', 'ptp' ), 
+	                __( '&#187;', 'ptp' ), 
+	                esc_url( add_query_arg( 'dismiss_first_time_tutorial', true ) ), 
+	                __( 'Dismiss', 'ptp' ) 
+	            ); 
+	            ?>
+	        </div>
+        
+        <?php } ?>
+		
+		
+		
 		<div class="updated">
-            <?php 
-            printf( 
-                '<p> %1$s <a class="ptp-nag-close" href="%2$s"> %3$s </a> </p>', 
-                __( 'Downloadable Variations Introduced!</b> Simply create a BPTPI Variation named "Downloadable" and viola! Any users who purchase that Variation will be able to download the photo upon purchasing!', 'ptp' ), 
-                esc_url( add_query_arg( 'ptp_nag_hide', 1 ) ), 
-                __( 'Dismiss', 'ptp' ) 
-            ); 
-            ?>
+		
+			<ul class="share clear">
+				
+				<?php if ( $args['mini'] ): ?>	
+				<li><img src="<?php echo $this->plugin_uri . '/extensions/sm-share-buttons/images/share_icon.png'; ?>" alt="Share"/></li>
+				<?php endif; ?>
+				
+				<li>Sharing this Plugin helps fund it! </li>
+
+				<li><a href="javascript:twitterShare('<?php echo $this->product_uri; ?>', '<?php echo $this->product_description; ?>', 602, 496 )" data-lang="en"><img src="<?php echo $this->plugin_uri . '/extensions/sm-share-buttons/images/twitter_icon.jpg'; ?>" alt="Share on Twitter" /></a></li>
+				<li><a href="javascript:fbShare('<?php echo $this->product_uri; ?>', '<?php echo $this->product_name; ?>', '<?php echo $this->product_description; ?>', 600, 400)" target="_blank"><img src="<?php echo $this->plugin_uri . '/extensions/sm-share-buttons/images/fb_icon.jpg'; ?>" alt="Share on Facebook" /></a></li>
+				<li><a href="javascript:gplusShare('<?php echo $this->product_uri; ?>', 483, 540)" ><img src="<?php echo $this->plugin_uri . '/extensions/sm-share-buttons/images/gplus_icon.jpg'; ?>" alt="Share on Google+"/></a></li>
+				<li><a href="http://www.tumblr.com/share/link?url=<?php echo $this->product_uri ?>&amp;name=<?php echo $this->product_name ?>&amp;description=<?php echo $this->product_description ?>" title="Share on Tumblr" ><img src="<?php echo $this->plugin_uri . '/extensions/sm-share-buttons/images/tumblr_icon.jpg'; ?>" alt="Share on Tumblr"/></a></li>
+				<li><a href="javascript:pinterestShare('<?php echo $this->product_uri; ?>', '<?php echo $this->product_image; ?>', '<?php echo $this->product_description; ?>', 774, 452)" data-pin-do="buttonPin" ><img src="<?php echo $this->plugin_uri . '/extensions/sm-share-buttons/images/pinterest_icon.jpg'; ?>" alt="Share on Pinterest"/></a></li>
+				<li><a href="javascript:stumbleuponShare('<?php echo $this->product_uri; ?>', 802, 592)"><img src="<?php echo $this->plugin_uri . '/extensions/sm-share-buttons/images/stumbleupon_icon.jpg'; ?>" alt="Share on Stumbleupon"/></a></li>
+				<li><a href="javascript:linkedinShare('<?php echo $this->product_uri; ?>', '<?php echo $this->product_name; ?>', '<?php echo $this->product_description; ?>', 850, 450)"><img src="<?php echo $this->plugin_uri . '/extensions/sm-share-buttons/images/linkedin_icon.jpg'; ?>" alt="Share on LinkdeIn"/></a></li>
+				<li><a href="javascript:redditShare('<?php echo $this->product_uri; ?>', 800, 400)"><img src="<?php echo $this->plugin_uri . '/extensions/sm-share-buttons/images/reddit_icon.jpg'; ?>" alt="Share on Reddit"/></a></li>
+				<li><a href="mailto:?subject=<?php echo $this->product_name; ?>&amp;body=This plugin is really good. Check it out:<?php echo $this->product_uri; ?>"><img src="<?php echo $this->plugin_uri . '/extensions/sm-share-buttons/images/email_icon.jpg'; ?>" alt="Email to a friend"/></a></li>
+				
+			</ul>
+			
 		</div>
 		
+		
+		
+		<?php if ( $dismiss_downloadable_variations_reminder != 1 ) { ?>
+		
+			<div class="updated">
+			
+	            <?php 
+	            printf( 
+	                '<p> %1$s <a class="ptp-nag-close" href="%2$s"> %3$s </a> </p>', 
+	                __( 'Downloadable Variations Introduced!</b> Simply create a BPTPI Variation named "Downloadable" and viola! Any users who purchase that Variation will be able to download the photo upon purchasing!', 'ptp' ), 
+	                esc_url( add_query_arg( 'dismiss_downloadable_variations_reminder', true ) ), 
+	                __( 'Dismiss', 'ptp' ) 
+	            ); 
+	            ?>
+	            
+			</div>
+			
+		<?php } ?>
+		
+		
 
-		<div class="updated">
-            <?php 
-            printf(
-                '<p>Get a Coupon to Upgrade for $29! &nbsp;&nbsp;&nbsp; 1. <a href="http://wordpress.org/support/view/plugin-reviews/bulk-photo-to-product-importer-extension-for-woocommerce" target="_blank">Leave a Review &#187;</a> &nbsp;&nbsp;&nbsp; 2. <a href="https://www.facebook.com/pages/The-Portland-Company/192671084161591" target="_blank">Send an Message to Us &#187;</a> &nbsp;&nbsp;&nbsp; 3. <a href="http://www.theportlandcompany.com/shop/custom-web-applications/photo-to-product-importer-wordpress-plugin-for-woocommerce" target="_blank">We will send you a to upgrade for just $29 to purchase here &#187;</a> <a class="ptp-nag-close" href="%2$s"> %3$s </a> </p>', 
-                __( 'Downloadable Variations Introduced!</b> Simply create a BPTPI Variation named "Downloadable" and viola! Any users who purchase that Variation will be able to download the photo upon purchasing!', 'ptp' ), 
-                esc_url( add_query_arg( 'ptp_nag_hide', 1 ) ), 
-                __( 'Dismiss', 'ptp' ) 
-            ); 
-            ?>
-		</div>
-
-        <?php
+		<?php if ( ! class_exists( 'BPTPI_Premium' ) ) { ?>
+		
+		
+		
+			<?php if ( $dismiss_upgrade_reminder != 1 ) { ?>	
+			
+				<div class="updated purchase-premium-notification">
+					
+					<p><a href="http://www.theportlandcompany.com/shop/custom-web-applications/photo-to-product-importer-wordpress-plugin-for-woocommerce" target="_blank">Unlock new features by purchasing the Premium version &#187;</a>
+				
+						<a class="ptp-nag-close" href="<?php echo $_SERVER['REQUEST_URI']; ?>&dismiss_upgrade_reminder=true"><?php _e( 'Dismiss', 'ptp' ); ?></a>
+					</p>
+					
+				</div>
+				
+			<?php } ?>
+			
+			
+			
+			<?php if ( $dismiss_coupon_reminder != 1 ) { ?>
+			
+				<div class="updated">
+				
+		            <?php 
+		            printf(
+		                '<p>Get a Coupon to Upgrade for $29! &nbsp;&nbsp;&nbsp; 1. <a href="http://wordpress.org/support/view/plugin-reviews/bulk-photo-to-product-importer-extension-for-woocommerce" target="_blank">Leave a Review &#187;</a> &nbsp;&nbsp;&nbsp; 2. <a href="https://www.facebook.com/pages/The-Portland-Company/192671084161591" target="_blank">Send an Message to Us for a Coupon &#187;</a> &nbsp;&nbsp;&nbsp; 3. <a href="http://www.theportlandcompany.com/shop/custom-web-applications/photo-to-product-importer-wordpress-plugin-for-woocommerce" target="_blank">Get Your Coupon to Purchase for $29 &#187;</a> <a class="ptp-nag-close" href="%2$s"> %3$s </a> </p>', 
+		                __( 'Downloadable Variations Introduced!</b> Simply create a BPTPI Variation named "Downloadable" and viola! Any users who purchase that Variation will be able to download the photo upon purchasing!', 'ptp' ), 
+		                esc_url( add_query_arg( 'dismiss_coupon_reminder', true ) ), 
+		                __( 'Dismiss', 'ptp' ) 
+		            ); 
+		            ?>
+		            
+				</div>
+				
+			<?php
+			}
+		
+		}
+			
     }
 
     /**

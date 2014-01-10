@@ -841,14 +841,7 @@ input.loading-secondary {
 }
 .toplevel_page_ptp_bulk_import .ptp .share,
 .bptpi_page_ptp_variations .ptp .share {
-  margin: 5px 0 15px;
-  background-color: #ffffe0;
-  border: 1px solid #e6db55;
-  padding: .56em .7em;
-  -webkit-border-radius: 3px;
-  border-radius: 3px;
-  height: 36px;
-  box-sizing: border-box;
+  margin-bottom: 10px;
 }
 .toplevel_page_ptp_bulk_import .ptp .share li,
 .bptpi_page_ptp_variations .ptp .share li {

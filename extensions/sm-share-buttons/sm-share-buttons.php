@@ -59,41 +59,6 @@ class PTP_SM_Share {
 			<?php echo $args['before_title'] ?> <?php echo $args['title'] ?><?php echo $args['title_punctuation'] ?> <?php echo $args['after_title'] ?>
 			<?php endif; ?>
 			
-			<?php if ( !class_exists( 'BPTPI_Premium' ) ) { ?>
-			
-				<div class="updated purchase-premium-notification" <?php if ( $args['mini'] ) echo 'style="display:none;"' ?>>
-					
-					<li><a href="http://www.theportlandcompany.com/shop/custom-web-applications/photo-to-product-importer-wordpress-plugin-for-woocommerce" target="_blank">Unlock new features by purchasing the Premium version &#187;</a></li>
-				
-					<?php if ( $args['mini'] ): ?>	
-						<li class="last"><a class="ptp-nag-close" href="<?php echo $_SERVER['REQUEST_URI']; ?>&amp;ptp_sm_hide=1"><?php _e( 'Dismiss', 'ptp' ); ?></a></li>
-					<?php endif; ?>
-				</div>
-				
-			<?php } ?>
-			
-			<ul class="share clear" <?php if ( $args['mini'] ) echo 'style="display:none;"' ?>>
-				
-				<?php if ( $args['mini'] ): ?>	
-				<li><img src="<?php echo $this->plugin_uri . '/images/share_icon.png'; ?>" alt="Share"/></li>
-				<?php endif; ?>
-				
-				<li>Sharing this Plugin helps fund it! </li>
-
-				<li><a href="javascript:twitterShare('<?php echo $this->product_uri; ?>', '<?php echo $this->product_description; ?>', 602, 496 )" data-lang="en"><img src="<?php echo $this->plugin_uri . '/images/twitter_icon.jpg'; ?>" alt="Share on Twitter" /></a></li>
-				<li><a href="javascript:fbShare('<?php echo $this->product_uri; ?>', '<?php echo $this->product_name; ?>', '<?php echo $this->product_description; ?>', 600, 400)" target="_blank"><img src="<?php echo $this->plugin_uri . '/images/fb_icon.jpg'; ?>" alt="Share on Facebook" /></a></li>
-				<li><a href="javascript:gplusShare('<?php echo $this->product_uri; ?>', 483, 540)" ><img src="<?php echo $this->plugin_uri . '/images/gplus_icon.jpg'; ?>" alt="Share on Google+"/></a></li>
-				<li><a href="http://www.tumblr.com/share/link?url=<?php echo $this->product_uri ?>&amp;name=<?php echo $this->product_name ?>&amp;description=<?php echo $this->product_description ?>" title="Share on Tumblr" ><img src="<?php echo $this->plugin_uri . '/images/tumblr_icon.jpg'; ?>" alt="Share on Tumblr"/></a></li>
-				<li><a href="javascript:pinterestShare('<?php echo $this->product_uri; ?>', '<?php echo $this->product_image; ?>', '<?php echo $this->product_description; ?>', 774, 452)" data-pin-do="buttonPin" ><img src="<?php echo $this->plugin_uri . '/images/pinterest_icon.jpg'; ?>" alt="Share on Pinterest"/></a></li>
-				<li><a href="javascript:stumbleuponShare('<?php echo $this->product_uri; ?>', 802, 592)"><img src="<?php echo $this->plugin_uri . '/images/stumbleupon_icon.jpg'; ?>" alt="Share on Stumbleupon"/></a></li>
-				<li><a href="javascript:linkedinShare('<?php echo $this->product_uri; ?>', '<?php echo $this->product_name; ?>', '<?php echo $this->product_description; ?>', 850, 450)"><img src="<?php echo $this->plugin_uri . '/images/linkedin_icon.jpg'; ?>" alt="Share on LinkdeIn"/></a></li>
-				<li><a href="javascript:redditShare('<?php echo $this->product_uri; ?>', 800, 400)"><img src="<?php echo $this->plugin_uri . '/images/reddit_icon.jpg'; ?>" alt="Share on Reddit"/></a></li>
-				<li><a href="mailto:?subject=<?php echo $this->product_name; ?>&amp;body=This plugin is really good. Check it out:<?php echo $this->product_uri; ?>"><img src="<?php echo $this->plugin_uri . '/images/email_icon.jpg'; ?>" alt="Email to a friend"/></a></li>
-			
-				<?php if ( $args['mini'] ): ?>	
-				<li class="last"><a class="ptp-nag-close" href="<?php echo $_SERVER['REQUEST_URI']; ?>&amp;ptp_sm_hide=1"><?php _e( 'Dismiss', 'ptp' ); ?></a></li>
-				<?php endif; ?>
-			</ul>
 		</div>
 
 		<?php

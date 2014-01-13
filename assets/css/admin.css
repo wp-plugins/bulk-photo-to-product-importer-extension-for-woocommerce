@@ -814,12 +814,10 @@ input.loading-secondary {
 .ptp .share-header {
   margin-top: 30px;
 }
-.ptp .share {
-  margin-bottom: 0;
-}
 .ptp .share li {
-  float: left;
-  margin-right: 8px;
+	display: inline;
+	float: left;
+	margin: 0 5px;
 }
 .ptp .share li a {
 	display: block;

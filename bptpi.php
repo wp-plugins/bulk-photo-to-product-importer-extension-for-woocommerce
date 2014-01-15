@@ -5,7 +5,7 @@ Plugin URI: http://www.theportlandcompany.com/shop/custom-web-applications/bulk-
 Description: This Plugin is an extension to WooCommerce and enables users to bulk import photos, which are automatically converted into Products.
 Author: The Portland Company, Designed by Spencer Hill, Coded by Redeye Adaya
 Author URI: http://www.theportlandcompany.com
-Version: 2.1.21
+Version: 2.1.22
 Copyright: 2013 The Portland Company 
 License: GPL v3
 */
@@ -442,26 +442,6 @@ class PTP_Importer {
      */
     public function admin_notices() {
     
-    	if ( !class_exists('WooCommerce') && get_current_screen()->parent_base == 'ptp_bulk_import' ) : ?>
-    	
-            <div class="error">
-            
-                <?php
-                printf( 
-                    '<p> %1$s <a href="%2$s" target="_blank">%3$s</a></p>', 
-                    __( 'Bulk Photo to Product Importer Extension for WooCommerce requires WooCommerce to be installed and activated.', 'ptp' ),
-                    get_bloginfo( 'home' ) . '/wp-admin/plugin-install.php?tab=search&s=Woocommerce&plugin-search-input=Search+Plugins',
-                    __( 'Install Woocommerce &nbsp;&raquo', 'ptp' )
-                ); 
-                ?>
-                
-            </div>
-            
-        <?php endif; ?>
-        
-        
-        			
-		<?php
 		if ( $_GET['dismiss_first_time_tutorial'] == true ) {
 		    update_user_meta( get_current_user_id(), 'dismiss_first_time_tutorial', true );
 		    return;
@@ -483,11 +463,29 @@ class PTP_Importer {
 		$dismiss_downloadable_variations_reminder = get_user_option( 'dismiss_downloadable_variations_reminder' );
 		$dismiss_first_time_tutorial = get_user_option( 'dismiss_first_time_tutorial' );
 		$dismiss_upgrade_reminder = get_user_option( 'dismiss_upgrade_reminder' );
-		?>
-		
-		
-		
-		<?php if ( $dismiss_first_time_tutorial != 1 ) { ?>
+    
+    	if ( get_current_screen()->parent_base == 'ptp_bulk_import' ) {
+    	
+    		if ( !class_exists('WooCommerce') ) {
+    	?>
+    	
+            <div class="error">
+            
+                <?php
+                printf( 
+                    '<p> %1$s <a href="%2$s" target="_blank">%3$s</a></p>', 
+                    __( 'Bulk Photo to Product Importer Extension for WooCommerce requires WooCommerce to be installed and activated.', 'ptp' ),
+                    get_bloginfo( 'home' ) . '/wp-admin/plugin-install.php?tab=search&s=Woocommerce&plugin-search-input=Search+Plugins',
+                    __( 'Install Woocommerce &nbsp;&raquo', 'ptp' )
+                ); 
+                ?>
+                
+            </div>
+            
+            		
+		<?php
+		}
+		if ( $dismiss_first_time_tutorial != 1 ) { ?>
 		
 	        <div class="updated">
 	            <?php 
@@ -587,6 +585,7 @@ class PTP_Importer {
 				</div>
 				
 			<?php
+			}
 			}
 		
 		}

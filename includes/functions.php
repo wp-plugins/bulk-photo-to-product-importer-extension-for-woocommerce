@@ -154,7 +154,7 @@ function ptp_product_metadata_defaults() {
                     '_stock_status' => 'instock',
                     '_backorders' => 'no',
                     '_manage_stock' => 'no',
-                    '_file_paths' => '',
+                    '_downloadable_files' => '',
                     '_download_limit' => '',
                     '_download_expiry' => '',
                     '_product_attributes' => array(),

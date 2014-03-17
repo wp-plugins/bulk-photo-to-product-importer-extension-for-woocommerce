@@ -131,7 +131,7 @@ class PTPImporter_Product {
                 // Set as downloadable
                 $metadata['_downloadable'] = 'yes';
                 // Set download path
-                $metadata['_file_paths'] = array( $file_path );
+                $metadata['_downloadable_files'] = array( $file_path );
                 // Set download limit
                 $metadata['_download_limit'] = '';
                 // Set download expiry
@@ -209,7 +209,7 @@ class PTPImporter_Product {
                     // Set as downloadable
                     $metadata['_downloadable'] = 'yes';
                     // Set download path
-                    $metadata['_file_paths'] = array( $file_path );
+                    $metadata['_downloadable_files'] = array( $file_path );
                     // Set download limit
                     $metadata['_download_limit'] = '';
                     // Set download expiry

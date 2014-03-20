@@ -79,9 +79,9 @@
         },
 
         uploaded: function (up, file, response) {
-            var res = $.parseJSON(response.response);
+        		try{
+                var res = $.parseJSON(response.response);
             //$('#' + file.id).remove();
-
             if(res.success) {
                 $('#' + file.id).append(res.content);
                 $('#' + file.id + ' .item-link img').load(function(){
@@ -98,6 +98,13 @@
             } else {
                 console.log(res.error);
             }
+				}catch(err){
+				console.log(res.error);
+				$('.error').slideToggle(function(){
+         	$('.error p').text( 'Unable to import photos. Please check the documentation and see if you configured you server properly.<br\> Try increasing the Time Interval in the settings section<br/>Still having problems? We can help! Our payed support forum is the best way to get the assistance you need' );
+            });
+				}
+            
         }
     };
 

@@ -84,6 +84,7 @@
                 $('#import_photos').after('<div class="ptp-loading">Saving...</div>');
                 $('#import_photos').css('width', $('#import_photos').css('width').replace(/[^-\d\.]/g, '')).val( 'Saving...' ).prop( 'disabled', 'disabled' ).addClass('loading-primary');
                 $.post(PTPImporter_Vars.ajaxurl, data, function(res) {
+                		try{
                     res = $.parseJSON(res);
 
                     if( res.success ) {
@@ -122,10 +123,10 @@
                         console.log(res.error);
 
                         if ($('.error').is(':visible')) {
-                            $('.error p').text( 'Unable to import photos. Please check the documentation and see if you configured you server properly.' );
+                           $('.error p').html( 'Unable to import photos. Please check the documentation and see if you configured you server properly.<br\> <b>Try increasing the Time Interval</b> in the settings section<br/>Still having problems? We can help! <br />Our payed support forum is the best way to get the assistance you need' );
                         } else {
                             $('.error').slideToggle(function(){
-                                $('.error p').text( 'Unable to import photos. Please check the documentation and see if you configured you server properly.' );
+                               $('.error p').html( 'Unable to import photos. Please check the documentation and see if you configured you server properly.<br\> <b>Try increasing the Time Interval</b> in the settings section<br/>Still having problems? We can help! <br />Our payed support forum is the best way to get the assistance you need' );
                             });
                         }
                     }
@@ -133,6 +134,21 @@
                     $('.chzn-error').removeClass('chzn-error');
                     $('#import_photos').removeClass('loading-primary');
                     $('.ptp-loading').remove();
+                  }catch(err){
+                   console.log(err);
+
+                        if ($('.error').is(':visible')) {
+                           $('.error p').html( 'Unable to import photos. Please check the documentation and see if you configured you server properly.<br\> <b>Try increasing the Time Interval</b> in the settings section<br/>Still having problems? We can help! <br />Our payed support forum is the best way to get the assistance you need' );
+                        } else {
+                            $('.error').slideToggle(function(){
+                               $('.error p').html( 'Unable to import photos. Please check the documentation and see if you configured you server properly.<br\> <b>Try increasing the Time Interval</b> in the settings section<br/>Still having problems? We can help! <br />Our payed support forum is the best way to get the assistance you need' );
+                            });
+                        }
+                    $('.chzn-error').removeClass('chzn-error');
+                    $('#import_photos').removeClass('loading-primary');
+                    $('.ptp-loading').remove();
+                    }
+                
                 });
 
                 return false;
@@ -148,6 +164,7 @@
                     };
 
                 $.post(PTPImporter_Vars.ajaxurl, data, function(res) {
+                	try{
                     res = $.parseJSON(res);
 
                     if (res.success) {
@@ -157,6 +174,12 @@
                     } else {
                         console.log(res.error);
                     }
+                }catch(err){
+                 console.log(res.error);
+                 $('.error').slideToggle(function(){
+                               $('.error p').html( 'Unable to import photos. Please check the documentation and see if you configured you server properly.<br\> <b>Try increasing the Time Interval</b> in the settings section<br/>Still having problems? We can help! <br />Our payed support forum is the best way to get the assistance you need' );
+                            });
+                }
                 });
             },
             quickAddCategory: function(e) {
@@ -178,6 +201,7 @@
                 that.before('<div class="ptp-loading-white">Saving...</div>');
                 that.css('width', that.css('width').replace(/[^-\d\.]/g, '')).val( 'Saving...' ).prop( 'disabled', 'disabled' ).addClass('loading-secondary');
                 $.post(PTPImporter_Vars.ajaxurl, data, function(res) {
+        					try{
                     res = $.parseJSON(res);
 
                     if (res.success) {
@@ -232,6 +256,16 @@
                             });
                         }
                     }
+                }catch(err){
+                console.log(err);
+                if ($('.error').is(':visible')) {
+                            $('.error p').text( res.error );
+                        } else {
+                            $('.error').slideToggle(function(){
+                                $('.error p').text( res.error );
+                            });
+                        }
+                }
                 });
 
                 that.removeClass('loading-secondary');
@@ -247,6 +281,7 @@
                 $( document ).off( 'click', '.photos-import-form .add-category', PTPImporter.BulkImport.toggleQuickAddCategory);
 
                 $.post(PTPImporter_Vars.ajaxurl, data, function(res) {
+                	try{
                     res = $.parseJSON(res);
 
                     if (res) {
@@ -264,6 +299,12 @@
                     } else {
                         console.log(res.error);
                     }
+                }catch(err){
+					 console.log(err); 
+					 $('.error').slideToggle(function(){
+                               $('.error p').html( 'Unable to import photos. Please check the documentation and see if you configured you server properly.<br\> <b>Try increasing the Time Interval</b> in the settings section<br/>Still having problems? We can help! <br />Our payed support forum is the best way to get the assistance you need' );
+                            });              
+                }
                 });
             },
             preselectVaritionGroupDropdown: function (e) {
@@ -277,6 +318,7 @@
                 // Disable it while the preloaded one is being fetched
                 $('#variation_group').prop('disabled', 'disabled').trigger('liszt:updated');
                 $.post(PTPImporter_Vars.ajaxurl, data, function(res) {
+                	try{
                     res = $.parseJSON(res);
 
                     if (res) {
@@ -288,6 +330,12 @@
                     } else {
                         console.log(res.error);
                     }
+                }catch(err){
+                console.log(err);
+                $('.error').slideToggle(function(){
+                               $('.error p').html( 'Unable to import photos. Please check the documentation and see if you configured you server properly.<br\> <b>Try increasing the Time Interval</b> in the settings section<br/>Still having problems? We can help! <br />Our payed support forum is the best way to get the assistance you need' );
+                            });
+                }
                 });
             }
         },
@@ -374,6 +422,7 @@
                 that.append('<div class="ptp-loading">Saving...</div>');
                 $('#add-variation-group').css('width', $('#add-variation-group').css('width').replace(/[^-\d\.]/g, '')).val( 'Saving...' ).prop( 'disabled', 'disabled' ).addClass('loading-primary');
                 $.post(PTPImporter_Vars.ajaxurl, data, function(res) {
+                	try{
                     res = $.parseJSON(res);
 
                     if( res.success ) {
@@ -395,6 +444,15 @@
                     $('.chzn-error').removeClass('chzn-error');
                     $('#add-variation-group').removeClass('loading-primary');
                     $('.ptp-loading').remove();
+                 }catch(err){
+                 console.log(err);
+                  $('.chzn-error').removeClass('chzn-error');
+                    $('#add-variation-group').removeClass('loading-primary');
+                    $('.ptp-loading').remove();
+                    $('.error').slideToggle(function(){
+                               $('.error p').html( 'Unable to import photos. Please check the documentation and see if you configured you server properly.<br\> <b>Try increasing the Time Interval</b> in the settings section<br/>Still having problems? We can help! <br />Our payed support forum is the best way to get the assistance you need' );
+                            });
+                 }
                 });
 
                 return false;
@@ -408,6 +466,7 @@
                 that.append('<div class="ptp-loading">Saving...</div>');
                 $('#update-variation-group').css('width', $('#update-variation-group').css('width').replace(/[^-\d\.]/g, '')).val( 'Saving...' ).prop( 'disabled', 'disabled' ).addClass('loading-primary');
                 $.post(PTPImporter_Vars.ajaxurl, data, function(res) {
+                	try{
                     res = $.parseJSON(res);
 
                     if( res.success ) {
@@ -460,6 +519,20 @@
                             });
                         }
                     }
+             }catch(err){
+             console.log(err);
+
+                        if ($('.error').is(':visible')) {
+                            $('.error p').text( res.error );
+                        } else {
+                            $('.error').slideToggle(function(){
+                                $('.error p').text( res.error );
+                            });
+                        }
+                    $('.error').slideToggle(function(){
+                               $('.error p').html( 'Unable to import photos. Please check the documentation and see if you configured you server properly.<br\> <b>Try increasing the Time Interval</b> in the settings section<br/>Still having problems? We can help! <br />Our payed support forum is the best way to get the assistance you need' );
+                            });
+             }
                 });
 
                 return false;
@@ -487,6 +560,7 @@
                 $( document ).off('click', '.quick-edit-variations-group', PTPImporter.Variations.editForm);
 
                 $.post(PTPImporter_Vars.ajaxurl, data, function(res) {
+                	try{
                     res = $.parseJSON(res);
 
                     if( res.success ) {
@@ -542,6 +616,12 @@
                     } else {
                         console.log(res.error);
                     }
+                }catch(err){
+                 console.log(res.error);
+                 $('.error').slideToggle(function(){
+                               $('.error p').html( 'Unable to import photos. Please check the documentation and see if you configured you server properly.<br\> <b>Try increasing the Time Interval</b> in the settings section<br/>Still having problems? We can help! <br />Our payed support forum is the best way to get the assistance you need' );
+                            });
+                }
                 });
             },
             cancelEdit: function (e) {
@@ -566,6 +646,7 @@
 
                 // Get dialog content
                 $.post(PTPImporter_Vars.ajaxurl, {action:'ptp_variations_group_delete_dialog', '_wpnonce': PTPImporter_Vars.nonce}, function(res) {
+                		try{
                     res = $.parseJSON(res);
 
                     $( res.html ).dialog({ 
@@ -598,6 +679,12 @@
                             }
                         } 
                     });
+                 }catch(err){
+                 console.log(err);
+                 $('.error').slideToggle(function(){
+                               $('.error p').html( 'Unable to import photos. Please check the documentation and see if you configured you server properly.<br\> <b>Try increasing the Time Interval</b> in the settings section<br/>Still having problems? We can help! <br />Our payed support forum is the best way to get the assistance you need' );
+                            });
+                 }
                 });
             },
             bulkRemove: function (e) {
@@ -622,6 +709,7 @@
 
                 // Get dialog content
                 $.post(PTPImporter_Vars.ajaxurl, {action:'ptp_variations_group_delete_dialog', '_wpnonce': PTPImporter_Vars.nonce}, function(res) {
+                	try {
                     res = $.parseJSON(res);
 
                     $( res.html ).dialog({ 
@@ -660,6 +748,12 @@
                             }
                         } 
                     });
+                    }catch(err){
+                    console.log(err);
+                    $('.error').slideToggle(function(){
+                               $('.error p').html( 'Unable to import photos. Please check the documentation and see if you configured you server properly.<br\> <b>Try increasing the Time Interval</b> in the settings section<br/>Still having problems? We can help! <br />Our payed support forum is the best way to get the assistance you need' );
+                            });
+                    }
                 });
             }
         },
@@ -689,6 +783,7 @@
                 $( '#ptp-activate' ).addClass( 'ptp-button-active' ).val( buttonActiveLabel ).prop( 'disabled', true ).css({ 'cursor': 'default' });
                 $( '.checked, .failed' ).remove();
                 $.post(PTPImporter_Vars.ajaxurl, data, function(res) {
+                	try{
                     res = $.parseJSON(res);
 
                     if( res.success ) {
@@ -721,6 +816,22 @@
                     $( '#ptp-activate' ).removeClass( 'ptp-button-active' ).prop( 'disabled', false ).css({ 'cursor': 'pointer' });
                     $('.chzn-error').removeClass('chzn-error');
                     $('.ptp-loading').remove();
+                    }catch(err){
+                    	console.log(err);
+                    	 $( '#serial-key' ).after( '<span class="failed">Failed</span>' );
+
+                        if ( action == 'ptp_activate' ) {
+                            $( '#ptp-activate' ).val( 'Activate' );
+                            $( 'input[name=action]' ).val( 'ptp_activate' );
+                        } else {
+                            $( '#ptp-activate' ).val( 'Deactivate' );
+                            $( 'input[name=action]' ).val( 'ptp_deactivate' );
+                        }
+                    	
+                    $( '#ptp-activate' ).removeClass( 'ptp-button-active' ).prop( 'disabled', false ).css({ 'cursor': 'pointer' });
+                    $('.chzn-error').removeClass('chzn-error');
+                    $('.ptp-loading').remove();
+                    }
                 });
 
                 return false;
@@ -762,6 +873,7 @@
 
                 that.find('input[type=submit]').after('<div class="ptp-loading">Saving...</div>');
                 $.post(PTPImporter_Vars.ajaxurl, data, function(res) {
+                	try{
                     res = $.parseJSON(res);
 
                     if( res.success ) {
@@ -785,6 +897,18 @@
 
                     $('.chzn-error').removeClass('chzn-error');
                     $('.ptp-loading').remove();
+                    }catch(err){
+                     console.log(err);
+                        if ($('.error').is(':visible')) { 
+                            $('.error p').text( 'Unable to save categories settings.' );
+                        } else {
+                            $('.error').slideToggle(function(){
+                                $('.error p').text( 'Unable to save categories settings.' );
+                            });
+                        }
+                      $('.chzn-error').removeClass('chzn-error');
+                    $('.ptp-loading').remove();
+                    }
                 });
 
                 return false;
@@ -824,6 +948,7 @@
 
                 that.after('<div class="ptp-loading">Saving...</div>');
                 $.post(PTPImporter_Vars.ajaxurl, data, function(res) {
+                	try{
                     res = $.parseJSON(res);
 
                     if( res.success ) {
@@ -846,6 +971,17 @@
                     }
 
                     $('.ptp-loading').remove();
+                    }catch(err){
+                    console.log(err);
+                        if ($('.error').is(':visible')) {
+                            $('.error p').text( 'Migration failed.' );
+                        } else {
+                            $('.error').slideToggle(function(){
+                                $('.error p').text( 'Migration failed.' );
+                            });
+                        }
+                    $('.ptp-loading').remove();                    
+                    }
                 });
             },
             save: function (e) {
@@ -860,6 +996,7 @@
 
                 that.find('input[type=submit]').after('<div class="ptp-loading">Saving...</div>');
                 $.post(PTPImporter_Vars.ajaxurl, data, function(res) {
+                	try{
                     res = $.parseJSON(res);
 
                     if( res.success ) {
@@ -884,6 +1021,18 @@
 
                     $('.chzn-error').removeClass('chzn-error');
                     $('.ptp-loading').remove();
+                    }catch(err){
+                     console.log(err);
+                        if ($('.error').is(':visible')) {
+                            $('.error p').text( 'Unable to save general settings.' );
+                        } else {
+                            $('.error').slideToggle(function(){
+                                $('.error p').text( 'Unable to save general settings.' );
+                            });
+                        }
+                     $('.chzn-error').removeClass('chzn-error');
+                    $('.ptp-loading').remove();
+                    }
                 });
 
                 return false;

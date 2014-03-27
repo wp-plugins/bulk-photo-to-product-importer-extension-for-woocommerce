@@ -5,7 +5,7 @@ Donate link: http://www.theportlandcompany.com/shop/custom-web-applications/bulk
 Tags: Batch image import woocommerce, batch photo import woocommerce, batch photo importer for woocommerce, batch photo to product importer for woocmmerce, best wordpress photo seller plugin, best wordpress photo selling plugin, better than WP iSell Photo, bulk photo importer for woocommerce, bulk photo to product importer for woocmmerce, expose, expose in windows, expose in windows 8, expose in windows 8.1, free photocrati alternative, free woocommerce photography plugin, native expose, open source photocrati alternative, photo selling wordpress plugin, photo to product importer for woocommerce, photo to product woocommerce, photocrati, photocrati alternative, photocrati clone script, photography theme, sell photos, sell photos wordpress plugin, space in windows, variation groups, windows 8 hotkey mapping, woocommerce add on, woocommerce addon, woocommerce batch photo, woocommerce batch photo add on, woocommerce batch photo addon, woocommerce batch photo to product, woocommerce bulk photo, woocommerce bulk photo add on, woocommerce bulk photo addon, woocommerce bulk photo extension, woocommerce bulk photo import, woocommerce bulk photo importer, woocommerce bulk photo plugin, woocommerce bulk photo to product, woocommerce bulk photo to product importer, woocommerce extension, woocommerce for photographers, woocommerce for photography, woocommerce photo addon, woocommerce photo extension, woocommerce photo plugin, woocommerce photo selling, woocommerce photo to product, woocommerce photo to product extension, woocommerce photo to product plugin, woocommerce photographer plugin, woocommerce photography, woocommerce photography addon, woocommerce photography extension, woocommerce photography feature, woocommerce photography plugin, woocommerce photography selling, wordpress how to create theme options, wordpress photo plugin, wordpress photo sell plugin, wordpress photo seller plugin, wordpress photo selling plugin, wordpress photo theme, wordpress photocrati alternative, wordpress photographer plugin, wordpress photographer themes, wordpress photography plugin, WP iSell Photo, WP iSell Photo alternative, sell media, sell media alternative, commerce, digital downloads, download, downloads, e-commerce, paypal, photography, sell digital, sell download, sell videos, selling, stock photos, upload, woocommerce, batch image import woocommerce, Widget, plugin, admin, sidebar, images, image
 Requires at least: 3.0.1
 Tested up to: 3.8.1
-Stable tag: 2.1.27
+Stable tag: 2.1.28
 License: GPL v3
 
 == Description ==
@@ -13,13 +13,13 @@ Please consider helping fund the future development of this Plugin by purchasing
 
 *New: Downloadable Variations Introduced! (See Features List Below)*
 
-[Get Premium for just $29!](http://www.theportlandcompany.com/shop/custom-web-applications/photo-to-product-importer-wordpress-plugin-for-woocommerce/)
+[Get Premium for just $30!](http://www.theportlandcompany.com/shop/custom-web-applications/photo-to-product-importer-wordpress-plugin-for-woocommerce/)
 
-1. [Leave a Review on WordPress.org](http://wordpress.org/support/view/plugin-reviews/bulk-photo-to-product-importer-extension-for-woocommerce)
+1. [Leave a Review on Google](https://plus.google.com/109726560580019725502/about?hl=en&gl=us)
 
 2. Send a message to [Support](http://www.theportlandcompany.com/contact-and-support/)
 
-3. We'll send you a to upgrade for just $29! &#187;
+3. We'll send you a to upgrade for just $30! &#187;
 
 
 [Purchase the Premium Version &#187;](http://www.theportlandcompany.com/shop/custom-web-applications/photo-to-product-importer-wordpress-plugin-for-woocommerce/)

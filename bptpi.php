@@ -5,7 +5,7 @@ Plugin URI: http://www.theportlandcompany.com/shop/custom-web-applications/bulk-
 Description: This Plugin is an extension to WooCommerce and enables users to bulk import photos, which are automatically converted into Products.
 Author: The Portland Company, Designed by Spencer Hill, Coded by Redeye Adaya
 Author URI: http://www.theportlandcompany.com
-Version: 2.1.27
+Version: 2.1.28
 Copyright: 2013 The Portland Company 
 License: GPL v3
 */
@@ -575,7 +575,7 @@ class PTP_Importer {
 				
 		            <?php 
 		            printf(
-		                '<p>Get a Coupon to Upgrade for $29! &nbsp;&nbsp;&nbsp; 1. <a href="http://wordpress.org/support/view/plugin-reviews/bulk-photo-to-product-importer-extension-for-woocommerce" target="_blank">Leave a Review &#187;</a> &nbsp;&nbsp;&nbsp; 2. <a href="https://www.facebook.com/pages/The-Portland-Company/192671084161591" target="_blank">Send an Message to Us for a Coupon &#187;</a> &nbsp;&nbsp;&nbsp; 3. <a href="http://www.theportlandcompany.com/shop/custom-web-applications/photo-to-product-importer-wordpress-plugin-for-woocommerce" target="_blank">Get Your Coupon to Purchase for $29 &#187;</a> <a class="ptp-nag-close" href="%2$s"> %3$s </a> </p>', 
+		                '<p>Get a Coupon to Upgrade for $30! &nbsp;&nbsp;&nbsp; 1. <a href="https://plus.google.com/109726560580019725502/about?hl=en&gl=us" target="_blank">Leave a Review on Google &#187;</a> &nbsp;&nbsp;&nbsp; 2. <a href="https://www.facebook.com/pages/The-Portland-Company/192671084161591" target="_blank">Send an Message to Us for a Coupon &#187;</a> &nbsp;&nbsp;&nbsp; 3. <a href="http://www.theportlandcompany.com/shop/custom-web-applications/photo-to-product-importer-wordpress-plugin-for-woocommerce" target="_blank">Get Your Coupon to Purchase for $30 &#187;</a> <a class="ptp-nag-close" href="%2$s"> %3$s </a> </p>', 
 		                __( 'Downloadable Variations Introduced!</b> Simply create a BPTPI Variation named "Downloadable" and viola! Any users who purchase that Variation will be able to download the photo upon purchasing!', 'ptp' ), 
 		                esc_url( add_query_arg( 'dismiss_coupon_reminder', true ) ), 
 		                __( 'Dismiss', 'ptp' ) 

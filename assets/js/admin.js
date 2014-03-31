@@ -70,55 +70,50 @@
 
                         if ( $('.photos-import-form').data('errorCount') > 0 )
                             return;
-
-                        PTPImporter.BulkImport.addNew.call(form);
+								var myNull = null;
+                        PTPImporter.BulkImport.addNew.call(form,myNull);
 
                         return false;
                     }
                 });
             },
-            addNew: function (e) {
+            addNew: function (e,b) {
+            	if(e == null){
                 var that = $(this),
-                data = that.serialize();
+                e = that.serializeArray();
+					}
+					var submitNumber = 0;
+					var nullObject = null;
+					var submitArray = [];
+					for (var i = 0; i < e.length;i++) {
+					if(typeof e[i] != 'undefined'){
+    				if (e[i].hasOwnProperty("name")) {
+        				if(e[i].name.match('(attachment)') && submitNumber < 2){
+        					//remove property and add to array to be ajaxed
+        					submitArray.push(encodeURIComponent(e[i].name) + "=" + encodeURIComponent(e[i].value));
+        					delete e[i];
+        					submitNumber++;
+        					}else{
+							//add other properties to the new array 
+							if(e[i].name.match('(attachment)') == nullObject)
+							submitArray.push(encodeURIComponent(e[i].name) + "=" + encodeURIComponent(e[i].value));
+	    					}
+    					}
+    				}
+					}
+					submitArray = submitArray.join("&");  
 
+					if(submitNumber > 0){
                 $('#import_photos').after('<div class="ptp-loading">Saving...</div>');
-                $('#import_photos').css('width', $('#import_photos').css('width').replace(/[^-\d\.]/g, '')).val( 'Saving...' ).prop( 'disabled', 'disabled' ).addClass('loading-primary');
-                $.post(PTPImporter_Vars.ajaxurl, data, function(res) {
+                $('#import_photos').css('width', $('#import_photos').css('width').replace(/[^-\d\.]/g, '')).val( 'Saving...' ).prop( 'disabled', 'disabled' );
+                $('#import_photos').toggleClass('loading-primary');
+                $.post(PTPImporter_Vars.ajaxurl, submitArray, function(res) {
                 		try{
                     res = $.parseJSON(res);
 
                     if( res.success ) {
-
-                        var counter = 1,
-                            els = $( '.upload-filelist' ).find( '*' );
-
-                        els.animate({ opacity: 0 }, 300, function(){
-                            if ( ++counter == els.length ) {
-                                $( '.upload-filelist' ).after( '<p class="import" style="display:none;"><a class="browser button button-hero" id="upload-pickfiles" href="#">Select Photos</a></p>' );
-                                $( '.import' ).fadeIn(function(){
-                                    $( '#import_photos' ).val( 'Save and Continue' ).prop( 'disabled', false );
-                                    $('.uploaded-item').remove();
-                                    $('.upload-filelist').css({ 'display': 'block'});
-                                    new PTPImporter_Uploader('upload-pickfiles', 'upload-container');
-                                });
-                                $('.uploaded-item').remove();
-                            }
-                        });
-
-                        that.trigger('reset');
-                        $('.photos-import-form input[type=text]').val('');
-                        $('.photos-import-form select').val('').trigger('liszt:updated');
-
-                        // Add hook
-                        $('.photos-import-form').trigger( 'ptp_reset_import_form' );
-
-                        if ($('.updated').is(':visible')) {
-                            $('.updated p').text( 'Your photo\'s were successfully imported and converted into WooCommerce Products. You may continue editing them from the Products menu item.' );
-                        } else {
-                            $('.updated').slideToggle(function(){
-                                $('.updated p').text( 'Your photo\'s were successfully imported and converted into WooCommerce Products. You may continue editing them from the Products menu item.' );
-                            });
-                        }
+							PTPImporter.BulkImport.addNew.call(nullObject,e);
+                      
                     } else {
                         console.log(res.error);
 
@@ -150,7 +145,38 @@
                     }
                 
                 });
+					}else{
+					  var counter = 1,
+                            els = $( '.upload-filelist' ).find( '*' );
 
+                        els.animate({ opacity: 0 }, 300, function(){
+                            if ( ++counter == els.length ) {
+                                $( '.upload-filelist' ).after( '<p class="import" style="display:none;"><a class="browser button button-hero" id="upload-pickfiles" href="#">Select Photos</a></p>' );
+                                $( '.import' ).fadeIn(function(){
+                                    $( '#import_photos' ).val( 'Save and Continue' ).prop( 'disabled', false );
+                                    $('.uploaded-item').remove();
+                                    $('.upload-filelist').css({ 'display': 'block'});
+                                    new PTPImporter_Uploader('upload-pickfiles', 'upload-container');
+                                });
+                                $('.uploaded-item').remove();
+                            }
+                        });
+
+                        $(this).trigger('reset');
+                        $('.photos-import-form input[type=text]').val('');
+                        $('.photos-import-form select').val('').trigger('liszt:updated');
+
+                        // Add hook
+                        $('.photos-import-form').trigger( 'ptp_reset_import_form' );
+
+                        if ($('.updated').is(':visible')) {
+                            $('.updated p').text( 'Your photo\'s were successfully imported and converted into WooCommerce Products. You may continue editing them from the Products menu item.' );
+                        } else {
+                            $('.updated').slideToggle(function(){
+                                $('.updated p').text( 'Your photo\'s were successfully imported and converted into WooCommerce Products. You may continue editing them from the Products menu item.' );
+                            });
+                        }					
+					}
                 return false;
             },
             remove: function (e) {
@@ -1044,5 +1070,6 @@
     $(function() {
         PTPImporter.init();
     });
+    
 
 })(jQuery);

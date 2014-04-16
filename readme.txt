@@ -17,7 +17,7 @@ License: GPL v3
 == Description ==
 Please consider helping fund the future development of this Plugin by purchasing the Premium version which includes password protection, custom watermark, widgets and more.
 
-=== Get Premium for just $30!===
+= Get Premium for just $30! =
 1. [Leave a Review on Google](https://plus.google.com/109726560580019725502/about?hl=en&gl=us)
 2. Send a message to [Support](http://www.theportlandcompany.com/contact-and-support/)
 3. We'll send you a to upgrade for just $30! &#187;

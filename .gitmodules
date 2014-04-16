@@ -1,3 +1,0 @@
-[submodule "deployment-scripts"]
-	path = deployment-scripts
-	url = git@bitbucket.org:s3w47m88/deployment-scripts.git

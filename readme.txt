@@ -16,21 +16,25 @@ License: GPL v3
 
 == Description ==
 [![Video Demonstration](http://www.theportlandcompany.com/wp-content/uploads/2014/04/youtube-bptpi.png)](https://www.youtube.com/watch?v=l3kvxtgFmx4)
-Please consider helping fund the future development of this Plugin by purchasing the Premium version which includes password protection, custom watermark, widgets and more.
 
-= Get Premium for just $30! =
-1. [Leave a Review on Google](https://plus.google.com/109726560580019725502/about?hl=en&gl=us)
-2. Send a message to [Support](http://www.theportlandcompany.com/contact-and-support/)
-3. We'll send you a to upgrade for just $30! &#187;
+=Demonstration Site=
+[DEMONSTRATION SITE »](http://bptpi.theportlandcompany.com/wp-admin)
 
-[Click Here to Purchase the Premium Version &#187;](http://www.theportlandcompany.com/shop/custom-web-applications/photo-to-product-importer-wordpress-plugin-for-woocommerce/)
-
+=Overview=
 Are you a photographer who wants to sell your products on your WordPress website but you find the native WooCommerce interface to limit your ability to sell your products?
 
 Well we created this WordPress Plugin for users whose business model is centric to selling photography in an eCommerce environment. While WooCommerce is an absolutely stellar Plugin; the Bulk Photo to Product Importer Extension for WooCommerce extends WooCommerce, unobtrusively, in the following ways for photographers:
 
-= Back End Features =
+=Premium Features=
+Please consider helping fund the future development of this Plugin by purchasing the Premium version which includes password protection, custom watermark, widgets and more.
 
+=Get Premium for just $30!=
+[Click Here to Purchase the Premium Version &#187;](http://www.theportlandcompany.com/shop/custom-web-applications/photo-to-product-importer-wordpress-plugin-for-woocommerce/)
+1. [Leave a Review on Google](https://plus.google.com/109726560580019725502/about?hl=en&gl=us)
+2. Send a message to [Support](http://www.theportlandcompany.com/contact-and-support/)
+3. We'll send you a to upgrade for just $30! &#187;
+
+= Back End Features =
 * **Bulk Import Photos** - Which are, then, automatically converted into WooCommerce Products. Product Titles are automatically generated based on the file name of the photo(s) being imported. You have the option to modify these titles during and after the upload process.
 * **Event Types and Events** - So you can easily locate that photo shoot you did for that local high school, sporting event, etc... by creating an Event Type (Ex. Sports, Portraits, etc...) and a specific Event (Ex. Jane and John Doe Wedding, Portland High School Portraits)
 * **BPTPI Variations** - Many photographers don't just sell the individual photos, rather, they sell what the photo is printed on (photo prints, smartphone cases, shirts, posters, etc...). Using Variations: administrators can create unlimited custom Variations and associate a price with that specific Variation.
@@ -40,7 +44,6 @@ Well we created this WordPress Plugin for users whose business model is centric 
 * **Custom Watermark** - You can upload your own custom image that is dynamically embedded onto your images as a watermark prior to purchase. [(Available in paid version only)](http://www.theportlandcompany.com/shop/custom-web-applications/photo-to-product-importer-wordpress-plugin-for-woocommerce/)
 
 = Front End Features =
-
 * **Browse and Search by Event** - If the Event is Private users Events simply won't appear in search results unless the user has been authenticated. [(Available in paid version only)](http://www.theportlandcompany.com/shop/custom-web-applications/photo-to-product-importer-wordpress-plugin-for-woocommerce/)
 * **Search by Event Date** - If the Event doesn't have a specific name, or the user can't remember it, they may search by the Event's date. [(Available in paid version only)](http://www.theportlandcompany.com/shop/custom-web-applications/photo-to-product-importer-wordpress-plugin-for-woocommerce/)
 

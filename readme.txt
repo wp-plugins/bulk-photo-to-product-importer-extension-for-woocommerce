@@ -49,7 +49,7 @@ Well we created this WordPress Plugin for users whose business model is centric 
 
 =Front End Features=
 * **Browse and Search by Event** - If the Event is Private users Events simply won't appear in search results unless the user has been authenticated. [(Available in paid version only)](http://www.theportlandcompany.com/shop/custom-web-applications/photo-to-product-importer-wordpress-plugin-for-woocommerce/)
-* **Search by Event Date** - If the Event doesn't have a specific name, or the user can't remember it, they may search by the Event's date. [(Available in paid version only)](http://www.theportlandcompany.com/shop/custom-web-applications/photo-to-product-importer-wordpress-plugin-for-woocommerce/)
+* **Search by Event Date** - If the Event doesn't have a specific name, or the user can't remember it, they may search by the Event's date. [(Available in paid version only)](http://www.theportlandcompany.com/shop/custom-web-applications/photo-to-product-importer-wordpress-plugin-for-woocommerce/) 
 
 == Frequently Asked Questions ==
 [You can find our FAQ section on our website.](http://www.theportlandcompany.com/2013/08/photo-to-product-importer-extension-for-woocommerce-documentation/)

@@ -17,7 +17,6 @@ License: GPL v3
 == Description ==
 [youtube https://www.youtube.com/watch?v=l3kvxtgFmx4]
 
-
 =Demonstration Site=
 [DEMONSTRATION SITE »](http://bptpi.theportlandcompany.com/wp-admin)
 

@@ -26,17 +26,18 @@ Are you a photographer who wants to sell your products on your WordPress website
 Well we created this WordPress Plugin for users whose business model is centric to selling photography in an eCommerce environment. While WooCommerce is an absolutely stellar Plugin; the Bulk Photo to Product Importer Extension for WooCommerce extends WooCommerce, unobtrusively, in the following ways for photographers:
 
 = Premium Features =
-* Password protection.
-* Custom watermark.
-* Search by Date and by Date Range Widget
-* Cart Contents Widget
-* And more...
+* **Password Protect Events** - Allows you to require a password in order for Users to view an Event. Optionally you can set a global default password for all Events.
+* **User Protect Events** - Instead of generic Password Protection of Events you can specify specific Users and even group them together into User Groups for bulk assigning to an Event.
+* **Custom Watermark** - Upload your own image to be used as the watermark.
+* **Search by Date and by Date Range Widget** - Introduces a Widget that allows users to search for Events by Date, Date Range and even Event Name.
+* **Cart Contents Widget** - Introduces a Widget that allows Users to see the contents of their cart by simply hovering over the Cart icon.
+* [And more...](http://www.theportlandcompany.com/shop/custom-web-applications/photo-to-product-importer-wordpress-plugin-for-woocommerce/)
 
 = Get Premium for just $30! =
 [Click Here to Purchase the Premium Version »](http://www.theportlandcompany.com/shop/custom-web-applications/photo-to-product-importer-wordpress-plugin-for-woocommerce/)
 1. [Leave a Review on Google](https://plus.google.com/109726560580019725502/about?hl=en&gl=us)
 2. Send a message to [Support](http://www.theportlandcompany.com/contact-and-support/)
-3. We'll send you a coupon to upgrade for just $30! »
+3. [We'll send you a coupon to upgrade for just $30! »](http://www.theportlandcompany.com/shop/custom-web-applications/photo-to-product-importer-wordpress-plugin-for-woocommerce/)
 
 = Back End Features =
 * **Bulk Import Photos** - Which are, then, automatically converted into WooCommerce Products. Product Titles are automatically generated based on the file name of the photo(s) being imported. You have the option to modify these titles during and after the upload process.

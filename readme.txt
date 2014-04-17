@@ -35,6 +35,7 @@ Well we created this WordPress Plugin for users whose business model is centric 
 
 = Get Premium for just $30! =
 [Click Here to Purchase the Premium Version »](http://www.theportlandcompany.com/shop/custom-web-applications/photo-to-product-importer-wordpress-plugin-for-woocommerce/)
+
 1. [Leave a Review on Google](https://plus.google.com/109726560580019725502/about?hl=en&gl=us)
 2. Send a message to [Support](http://www.theportlandcompany.com/contact-and-support/)
 3. [We'll send you a coupon to upgrade for just $30! »](http://www.theportlandcompany.com/shop/custom-web-applications/photo-to-product-importer-wordpress-plugin-for-woocommerce/)

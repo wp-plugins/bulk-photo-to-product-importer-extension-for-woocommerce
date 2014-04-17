@@ -15,7 +15,7 @@ Stable tag: 2.1.29
 License: GPL v3
 
 == Description ==
-[![Video Demonstration](http://www.theportlandcompany.com/wp-content/uploads/2014/04/youtube-bptpi.png)](https://www.youtube.com/watch?v=l3kvxtgFmx4)
+[youtube https://www.youtube.com/watch?v=l3kvxtgFmx4]
 
 =Demonstration Site=
 [DEMONSTRATION SITE »](http://bptpi.theportlandcompany.com/wp-admin)

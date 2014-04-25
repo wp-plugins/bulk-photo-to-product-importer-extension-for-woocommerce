@@ -575,7 +575,7 @@ class PTP_Importer {
 				
 		            <?php 
 		            printf(
-		                '<p>Get a Coupon to Upgrade for $30! &nbsp;&nbsp;&nbsp; 1. <a href="https://plus.google.com/109726560580019725502/about?hl=en&gl=us" target="_blank">Leave a Review on Google &#187;</a> &nbsp;&nbsp;&nbsp; 2. <a href="https://www.facebook.com/pages/The-Portland-Company/192671084161591" target="_blank">Send an Message to Us for a Coupon &#187;</a> &nbsp;&nbsp;&nbsp; 3. <a href="http://www.theportlandcompany.com/shop/custom-web-applications/photo-to-product-importer-wordpress-plugin-for-woocommerce" target="_blank">Get Your Coupon to Purchase for $30 &#187;</a> <a class="ptp-nag-close" href="%2$s"> %3$s </a> </p>', 
+		                '<p>Get a Coupon to Upgrade for $30! &nbsp;&nbsp;&nbsp; 1. <a href="https://plus.google.com/109726560580019725502/about?hl=en&gl=us" target="_blank">Leave a Review on Google &#187;</a> &nbsp;&nbsp;&nbsp; 2. <a href="http://www.theportlandcompany.com/contact-and-support/" target="_blank">Send Us a Message for a Coupon &#187;</a> &nbsp;&nbsp;&nbsp; 3. <a href="http://www.theportlandcompany.com/shop/custom-web-applications/photo-to-product-importer-wordpress-plugin-for-woocommerce" target="_blank">Get Your Coupon to Purchase for $30 &#187;</a> <a class="ptp-nag-close" href="%2$s"> %3$s </a> </p>', 
 		                __( 'Downloadable Variations Introduced!</b> Simply create a BPTPI Variation named "Downloadable" and viola! Any users who purchase that Variation will be able to download the photo upon purchasing!', 'ptp' ), 
 		                esc_url( add_query_arg( 'dismiss_coupon_reminder', true ) ), 
 		                __( 'Dismiss', 'ptp' ) 

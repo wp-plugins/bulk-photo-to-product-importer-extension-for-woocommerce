@@ -26,14 +26,14 @@ class PTPImporter_Settings {
     }
 
     /**
-     * Set default settings
+     * Set default settings,
      */
     public function init() {
         $this->defaults = apply_filters( 'ptp_settings_args', array(
             'interval' => 5,
-            'hide_variations' => 1,
+            'hide_variations' => 1
         ) );
-
+		
         if ( get_option( $this->ptp_importer->settings_meta_key ) )
             return;
 
@@ -49,23 +49,26 @@ class PTPImporter_Settings {
 
         $settings = get_option( $this->ptp_importer->settings_meta_key );
         $count = 0;
-
+		
         foreach ( $this->defaults as $key => $value ) {
-            if ( !isset($posted[$key]) )
+			
+			if ( !isset($posted[$key]) )
                 continue;
 
-            if ( $settings[$key] == $posted[$key] )
+            if ( isset( $settings[$key] ) && $settings[$key] == $posted[$key] )
                 continue;
 
             $settings[$key] = $posted[$key];
 
             ++$count;
+			
+			
         }
 
         if ( $count )
             update_option( $this->ptp_importer->settings_meta_key, $settings );
         
-        return true;
+		return true;
     }
 
     /**

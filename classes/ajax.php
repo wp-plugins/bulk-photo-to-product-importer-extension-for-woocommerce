@@ -28,6 +28,7 @@ class PTPImporter_Ajax {
 
         add_action( 'wp_ajax_ptp_category_quick_add', array($this, 'category_quick_add') );
         add_action( 'wp_ajax_ptp_category_quick_add_form', array($this, 'category_quick_add_form') );
+		add_action( 'wp_ajax_ptp_category_list', array($this, 'category_list') );
 
         // Mini cart
         add_action( 'wp_ajax_nopriv_ptp_get_refreshed_fragments', array( $this, 'get_refreshed_fragments' ) );
@@ -52,7 +53,8 @@ class PTPImporter_Ajax {
         check_ajax_referer( 'ptp_nonce' );
 
         global $wpdb, $ptp_importer;
-        $variation_group_id = ptp_get_term_meta( $_POST['term_id'], $ptp_importer->term_variation_group_meta_key, true );
+        // $variation_group_id = ptp_get_term_meta( $_POST['term_id'], $ptp_importer->term_variation_group_meta_key, true );
+        $variation_group_id = 0;
 
         // Nothing to exclude & pre-select
         if ( !$variation_group_id || $variation_group_id == '-1' ) {
@@ -173,6 +175,12 @@ class PTPImporter_Ajax {
         }
 
         global $ptp_importer;
+        $groups = (array) ptp_get_term_meta( $_POST['term_id'], $ptp_importer->term_variation_groups_meta_key, true );
+        if( !in_array( $_POST['variation_group'], $groups ) ) {
+            $groups[] = $_POST['variation_group'];
+        }
+        ptp_update_term_meta( $_POST['term_id'], $ptp_importer->term_variation_groups_meta_key, $groups );
+
         // Associate variation group with term
         ptp_update_term_meta( $_POST['term_id'], $ptp_importer->term_variation_group_meta_key, $_POST['variation_group'] );
 
@@ -245,12 +253,12 @@ class PTPImporter_Ajax {
 
     public function settings_save() {
         check_ajax_referer( 'ptp_settings_save', 'ptp_nonce' );
-
-        $posted = $_POST;
+		
+		$posted = $_POST;
         $settings_obj = PTPImporter_Settings::getInstance();
         $result = $settings_obj->update( $posted );
 
-        if ( !$result ) {
+		if ( !$result ) {
             echo json_encode( array(
                 'success' => false,
                 'error' => $result
@@ -307,12 +315,13 @@ class PTPImporter_Ajax {
 
         $variations_obj = PTPImporter_Variation_Group::getInstance();
 
-        $term_id = $variations_obj->add( $posted['group_name'], $posted['description'], $posted['variations'] );
+        $term_id = $variations_obj->add( $posted['group_name'], $posted['description'], $posted['variations'], $posted['parent-group'] );
 
         if ( $term_id ) {
             echo json_encode( array(
                 'success' => true,
-                'html' => ptp_variations_list_item( $variations_obj->group( $term_id ) )
+                'parent'  => intval($posted['parent-group']),
+                'html'    => ptp_variations_list_item( $variations_obj->group( $term_id ) )
             ) );
         }
 
@@ -334,20 +343,32 @@ class PTPImporter_Ajax {
         }
 
         $variations_obj = PTPImporter_Variation_Group::getInstance();
-
-        $result = $variations_obj->update( $posted['term_id'], $posted['group_name'], $posted['description'], $posted['variations'] );
+        $old_parent     = get_term_parent( $posted['term_id'] );
+        
+        $result         = $variations_obj->update( $posted['term_id'], $posted['group_name'], $posted['description'], $posted['variations'], $posted['parent-group'] );
 
         if ( !$result ) {
             echo json_encode( array(
                 'success' => false,
-                'error' => $result
+                'term_id'  => intval($posted['term_id']),
+                'parent'  => intval($posted['parent-group']),
+                'error'   => $result
             ) );
 
             exit;
         }
+        
+        $parents = get_term_parents( $posted['term_id'] );
+        $dashes  = '';
+
+        for( $i = 0; $i < count( $parents ); $i ++ ) $dashes .= '&mdash;';
 
         echo json_encode( array(
-            'success' => true
+            'success'  => true,
+            'term_id'  => intval($posted['term_id']),
+            'name'     => $dashes . ' ' . $posted['group_name'],
+            'is_moved' => $old_parent != $posted['parent-group'],
+            'parent'   => intval($posted['parent-group']),
         ) );
 
         exit;
@@ -419,19 +440,48 @@ class PTPImporter_Ajax {
 
         exit;
     }
+	
+	public function category_list() {
+        check_ajax_referer( 'ptp_nonce' );
+		
+		global $ptp_importer;
+		$settings_obj = PTPImporter_Settings::getInstance();
+		$settings = $settings_obj->get();
+		$bptpi_category_naming_scheme = $settings['bptpi_category_naming_scheme'];
+
+        echo json_encode( array(
+            'success' => true,
+            'html' => ptp_dropdown_categories( array( 'name' => 'term_id', 'show_option_none' => 'Select a ' . $bptpi_category_naming_scheme, 'walker' => new Walker_Without_Children() ) )
+        ) );
+
+        exit;
+    }
 
     public function category_quick_add() {
         check_ajax_referer( 'ptp_nonce' ); // generic nonce
 
         global $ptp_importer;
-
-        $term = wp_insert_term(
-            $_POST['name'], 
-            $ptp_importer->woocommerce_cat_tax, 
-            array(
-                'parent' => (int)$_POST['parent']
-            )
-        );
+		if(isset($_POST['parent']))	
+			$termx = get_term_by( 'id', $_POST['parent'], "product_cat" );
+	
+		if($termx->parent != 0 && isset($_POST['parent']) && $_POST['parent'] > 0)
+		{
+			echo json_encode( array(
+                'success' => false,
+                'error' => 'Unable to create from children nodes from children category.'
+            ) );
+			exit;
+		}
+		else
+		{
+			$term = wp_insert_term(
+				$_POST['name'], 
+				$ptp_importer->woocommerce_cat_tax, 
+				array(
+					'parent' => (int)$_POST['parent']
+				)
+			);
+		}
 
         if ( is_wp_error( $term ) ) {
             echo json_encode( array(

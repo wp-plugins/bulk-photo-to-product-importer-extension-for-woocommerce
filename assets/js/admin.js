@@ -1,12 +1,23 @@
-;(function ($) {
-
+;(function (w, $) {
     var PTPImporter = {
 
         init: function () {
             $('.term-id').chosen().find('option[value="-1"]').val('');
-            $('.variation-group').prop('disabled', true).chosen().find('option[value="-1"]').val('');
-            $('.datepicker').datepicker();
+            var vg = $('.variation-group');
+            vg
+                .prop( 'disabled', true )
+                .chosen( )
+                .find( 'option[value="-1"]' )
+                .val( '' );
 
+            $('.datepicker').datepicker();
+			
+			var d = new Date();
+			var today = [d.getMonth()+1,d.getDate(),d.getFullYear()];
+			today = today.join("/");
+			console.log(today.toString());
+			$('.datepicker').datepicker("setDate", today);
+			
             this.BulkImport.validate();
             this.Variations.validate();
             this.License.validate();
@@ -36,6 +47,11 @@
 
         BulkImport: {
             validate: function (e) {
+                var _this = this;
+
+                $('.photos-import-form').submit( function( e ) {
+                    e.preventDefault( );
+                } );
                 $('.photos-import-form').validate({
                     ignore: [], // <-- option so that hidden elements are validated
                     rules: {
@@ -71,21 +87,147 @@
                         if ( $('.photos-import-form').data('errorCount') > 0 )
                             return;
 								var myNull = null;
-                        PTPImporter.BulkImport.addNew.call(form,myNull);
+                        // PTPImporter.BulkImport.addNew.call(form,myNull);
+                       _this.addNew( );
 
                         return false;
                     }
                 });
             },
-            addNew: function (e,b) {
+            addNew: function() {
+                var _this         = this;
+                var form          = $( '.photos-import-form' );
+                var b             = b || null;
+                var data          = form.serializeArray( );
+                var attach        = {};
+                var submitBtn     = $( '#import_photos' );
+                var maxRecursions = 5;
+
+                attach.medias = $.grep( data, function( i ) { return i.name == "attachments[]"; });
+                attach.titles = $.grep( data, function( i ) { return /^titles\[\d+\]$/.test(i.name); });
+
+                submitBtn
+                    .css('width', $('#import_photos')
+                        .css('width').replace(/[^-\d\.]/g, ''))
+                    .val( 'Saving...' )
+                    .prop( 'disabled', 'disabled' );
+
+                for( var i = 0; i < max; i++ ) {
+                    _this.recursiveAdd( data, attach, form, _this.afterSave );
+                }
+
+                return false;
+            },
+            afterSave: function( ) {
+                var _this   = this;
+                var counter = 1;
+                var els     = $( '.upload-filelist' ).find( '*' );
+
+                els.animate({ opacity: 0 }, 300, function(){
+                    if ( ++counter == els.length ) {
+                        $( '.upload-filelist' ).after( '<p class="import" style="display:none;"><a class="browser button button-hero" id="upload-pickfiles" href="#">Select Photos</a></p>' );
+                        $( '.import' ).fadeIn(function(){
+                            submitBtn.val( 'Save and Continue' ).prop( 'disabled', false );
+                            $('.uploaded-item').remove();
+                            $('.upload-filelist').css({ 'display': 'block'});
+                            new PTPImporter_Uploader('upload-pickfiles', 'upload-container');
+                        });
+                        $('.uploaded-item').remove();
+                    }
+                });
+
+                $(this).trigger('reset');
+                $('.photos-import-form input[type=text]').val('');
+                $('.photos-import-form select').val('').trigger('liszt:updated');
+
+                // Add hook
+                $('.photos-import-form').trigger( 'ptp_reset_import_form' );
+
+                if ($('.updated').is(':visible')) {
+                    $('.updated p').text( 'Your photo\'s were successfully imported and converted into WooCommerce Products. You may continue editing them from the Products menu item.' );
+                } else {
+                    $('.updated').slideToggle(function(){
+                        $('.updated p').text( 'Your photo\'s were successfully imported and converted into WooCommerce Products. You may continue editing them from the Products menu item.' );
+                    });
+                }
+            },
+            recursiveAdd: function( data, attach, form, cb ) {
+                var _this   = this;
+                var media   = attach.medias.shift( );
+                var chunk   = $.grep( data, function( i ) { return /^(attachments\[\]|titles\[\d+\])$/.test(i.name) === false; });
+
+                if( !media ) {
+                    cb( );
+                    return true;
+                }
+
+                var mediaid = media.value;
+                var elem    = form.find( '.uploaded-item' ).has( '[name="titles[' + mediaid + ']"]' );
+                var regx    = new RegExp( '\\\[' + mediaid + '\\\]' );
+                var title   = $.grep( attach.titles, function( i ) { return regx.test(i.name); } );
+                var title   = title.length ? title.shift( ) : {};
+
+                chunk.push( media );
+                chunk.push( title );
+
+                _this.save( elem, chunk )
+                    .done( function( ) {
+                        _this.recursiveAdd( data, attach, form, cb );
+                    } )
+                    .fail( function( ) {
+                        _this.showErrorMessage( "Unable to save Media #", mediaid );
+                    } );
+            },
+            save: function(elem, data) {
+                var _this  = this;
+                this.success = false;
+                elem.html( '<div class="saving"><img src="' + PTPImporter_Vars.pluginurl + '/assets/images/wpspin.gif" width="18" height="18" /> Saving..' );
+
+                return $.post(
+                    PTPImporter_Vars.ajaxurl, 
+                    data, 
+                    function( res ) {
+                        this.success = true;
+                        res          = $.parseJSON(res);
+                        elem.html( '<div class="saving" stle="color: #7ad03a;"><i class="dashicons dashicons-yes">Success!</div>' );
+                        elem.delay( 2000 ).fadeOut( 'fast', function( ) {
+                            elem.remove( );
+                        } );
+                        _this.showSuccessMessage( "Success! Added the following products: ", res.postID );
+                    }
+                );
+            },
+            showErrorMessage: function( message, add ) {
+                var add = add || null;
+                var div = $( '.error' );
+                if ( div.is(':visible') ) {
+                   div.find( 'p' ).html( message + add );
+                } else {
+                     div.slideToggle(function(){
+                       div.find( 'p' ).append( add );
+                    });
+                }
+            },
+            showSuccessMessage: function( message, add ) {
+                var add = add || null;
+                var div = $( '.updated' );
+                if ( div.is(':visible') ) {
+                   div.find( 'p' ).html( message + add );
+                } else {
+                     div.slideToggle(function(){
+                       div.find( 'p' ).append( add );
+                    });
+                }
+            },
+            oldaddNew: function (e,b) {
             	if(e == null){
-                var that = $(this),
-                e = that.serializeArray();
-					}
-					var submitNumber = 0;
-					var nullObject = null;
-					var submitArray = [];
-					for (var i = 0; i < e.length;i++) {
+                    var that = $(this),
+                    e = that.serializeArray();
+				}
+				var submitNumber = 0;
+				var nullObject = null;
+				var submitArray = [];
+				for (var i = 0; i < e.length;i++) {
 					if(typeof e[i] != 'undefined'){
     				if (e[i].hasOwnProperty("name")) {
         				if(e[i].name.match('(attachment)') && submitNumber < 2){
@@ -100,83 +242,83 @@
 	    					}
     					}
     				}
-					}
-					submitArray = submitArray.join("&");  
+				}
+				submitArray = submitArray.join("&");  
 
-					if(submitNumber > 0){
-                $('#import_photos').after('<div class="ptp-loading">Saving...</div>');
-                $('#import_photos').css('width', $('#import_photos').css('width').replace(/[^-\d\.]/g, '')).val( 'Saving...' ).prop( 'disabled', 'disabled' );
-                $('#import_photos').toggleClass('loading-primary');
-                $.post(PTPImporter_Vars.ajaxurl, submitArray, function(res) {
-                		try{
-                    res = $.parseJSON(res);
+				if(submitNumber > 0){
+                    $('#import_photos').after('<div class="ptp-loading">Saving...</div>');
+                    $('#import_photos').css('width', $('#import_photos').css('width').replace(/[^-\d\.]/g, '')).val( 'Saving...' ).prop( 'disabled', 'disabled' );
+                    $('#import_photos').toggleClass('loading-primary');
+                    $.post(PTPImporter_Vars.ajaxurl, submitArray, function(res) {
+                    		try{
+                        res = $.parseJSON(res);
 
-                    if( res.success ) {
-							PTPImporter.BulkImport.addNew.call(nullObject,e);
-                      
-                    } else {
-                        console.log(res.error);
-
-                        if ($('.error').is(':visible')) {
-                           $('.error p').html( 'Unable to import photos. Please check the documentation and see if you configured you server properly.<br\> <b>Try increasing the Time Interval</b> in the settings section<br/>Still having problems? We can help! <br />Our payed support forum is the best way to get the assistance you need' );
+                        if( res.success ) {
+    							PTPImporter.BulkImport.addNew.call(nullObject,e);
+                          
                         } else {
-                            $('.error').slideToggle(function(){
+                            console.log(res.error);
+
+                            if ($('.error').is(':visible')) {
                                $('.error p').html( 'Unable to import photos. Please check the documentation and see if you configured you server properly.<br\> <b>Try increasing the Time Interval</b> in the settings section<br/>Still having problems? We can help! <br />Our payed support forum is the best way to get the assistance you need' );
-                            });
-                        }
-                    }
-
-                    $('.chzn-error').removeClass('chzn-error');
-                    $('#import_photos').removeClass('loading-primary');
-                    $('.ptp-loading').remove();
-                  }catch(err){
-                   console.log(err);
-
-                        if ($('.error').is(':visible')) {
-                           $('.error p').html( 'Unable to import photos. Please check the documentation and see if you configured you server properly.<br\> <b>Try increasing the Time Interval</b> in the settings section<br/>Still having problems? We can help! <br />Our payed support forum is the best way to get the assistance you need' );
-                        } else {
-                            $('.error').slideToggle(function(){
-                               $('.error p').html( 'Unable to import photos. Please check the documentation and see if you configured you server properly.<br\> <b>Try increasing the Time Interval</b> in the settings section<br/>Still having problems? We can help! <br />Our payed support forum is the best way to get the assistance you need' );
-                            });
-                        }
-                    $('.chzn-error').removeClass('chzn-error');
-                    $('#import_photos').removeClass('loading-primary');
-                    $('.ptp-loading').remove();
-                    }
-                
-                });
-					}else{
-					  var counter = 1,
-                            els = $( '.upload-filelist' ).find( '*' );
-
-                        els.animate({ opacity: 0 }, 300, function(){
-                            if ( ++counter == els.length ) {
-                                $( '.upload-filelist' ).after( '<p class="import" style="display:none;"><a class="browser button button-hero" id="upload-pickfiles" href="#">Select Photos</a></p>' );
-                                $( '.import' ).fadeIn(function(){
-                                    $( '#import_photos' ).val( 'Save and Continue' ).prop( 'disabled', false );
-                                    $('.uploaded-item').remove();
-                                    $('.upload-filelist').css({ 'display': 'block'});
-                                    new PTPImporter_Uploader('upload-pickfiles', 'upload-container');
+                            } else {
+                                $('.error').slideToggle(function(){
+                                   $('.error p').html( 'Unable to import photos. Please check the documentation and see if you configured you server properly.<br\> <b>Try increasing the Time Interval</b> in the settings section<br/>Still having problems? We can help! <br />Our payed support forum is the best way to get the assistance you need' );
                                 });
-                                $('.uploaded-item').remove();
                             }
-                        });
+                        }
 
-                        $(this).trigger('reset');
-                        $('.photos-import-form input[type=text]').val('');
-                        $('.photos-import-form select').val('').trigger('liszt:updated');
+                        $('.chzn-error').removeClass('chzn-error');
+                        $('#import_photos').removeClass('loading-primary');
+                        $('.ptp-loading').remove();
+                      }catch(err){
+                       console.log(err);
 
-                        // Add hook
-                        $('.photos-import-form').trigger( 'ptp_reset_import_form' );
+                            if ($('.error').is(':visible')) {
+                               $('.error p').html( 'Unable to import photos. Please check the documentation and see if you configured you server properly.<br\> <b>Try increasing the Time Interval</b> in the settings section<br/>Still having problems? We can help! <br />Our payed support forum is the best way to get the assistance you need' );
+                            } else {
+                                $('.error').slideToggle(function(){
+                                   $('.error p').html( 'Unable to import photos. Please check the documentation and see if you configured you server properly.<br\> <b>Try increasing the Time Interval</b> in the settings section<br/>Still having problems? We can help! <br />Our payed support forum is the best way to get the assistance you need' );
+                                });
+                            }
+                        $('.chzn-error').removeClass('chzn-error');
+                        $('#import_photos').removeClass('loading-primary');
+                        $('.ptp-loading').remove();
+                        }
+                    
+                    });
+				} else {
+				  var counter = 1,
+                        els = $( '.upload-filelist' ).find( '*' );
 
-                        if ($('.updated').is(':visible')) {
-                            $('.updated p').text( 'Your photo\'s were successfully imported and converted into WooCommerce Products. You may continue editing them from the Products menu item.' );
-                        } else {
-                            $('.updated').slideToggle(function(){
-                                $('.updated p').text( 'Your photo\'s were successfully imported and converted into WooCommerce Products. You may continue editing them from the Products menu item.' );
+                    els.animate({ opacity: 0 }, 300, function(){
+                        if ( ++counter == els.length ) {
+                            $( '.upload-filelist' ).after( '<p class="import" style="display:none;"><a class="browser button button-hero" id="upload-pickfiles" href="#">Select Photos</a></p>' );
+                            $( '.import' ).fadeIn(function(){
+                                $( '#import_photos' ).val( 'Save and Continue' ).prop( 'disabled', false );
+                                $('.uploaded-item').remove();
+                                $('.upload-filelist').css({ 'display': 'block'});
+                                new PTPImporter_Uploader('upload-pickfiles', 'upload-container');
                             });
-                        }					
-					}
+                            $('.uploaded-item').remove();
+                        }
+                    });
+
+                    $(this).trigger('reset');
+                    $('.photos-import-form input[type=text]').val('');
+                    $('.photos-import-form select').val('').trigger('liszt:updated');
+
+                    // Add hook
+                    $('.photos-import-form').trigger( 'ptp_reset_import_form' );
+
+                    if ($('.updated').is(':visible')) {
+                        $('.updated p').text( 'Your photo\'s were successfully imported and converted into WooCommerce Products. You may continue editing them from the Products menu item.' );
+                    } else {
+                        $('.updated').slideToggle(function(){
+                            $('.updated p').text( 'Your photo\'s were successfully imported and converted into WooCommerce Products. You may continue editing them from the Products menu item.' );
+                        });
+                    }					
+				}
                 return false;
             },
             remove: function (e) {
@@ -223,16 +365,16 @@
                         action: $( 'input[name=quick_add_category_action]' ).val(),
                         '_wpnonce': PTPImporter_Vars.nonce
                     };
+					auxdata = $( 'input[name=category_name]' ).val();
 
                 that.before('<div class="ptp-loading-white">Saving...</div>');
                 that.css('width', that.css('width').replace(/[^-\d\.]/g, '')).val( 'Saving...' ).prop( 'disabled', 'disabled' ).addClass('loading-secondary');
                 $.post(PTPImporter_Vars.ajaxurl, data, function(res) {
         					try{
                     res = $.parseJSON(res);
-
+					
                     if (res.success) {
                         $( '.photos-import-form .quick-add-category-con' ).slideToggle();
-
                         var con = $('.photos-import-form .category .dropdown span:first'),
                             data = {
                                 name: 'term_id',
@@ -257,13 +399,41 @@
                                 $('.photos-import-form').trigger( 'ptp_reset_import_form' );
                             } else {
                                 console.log(res.error);
+								
                             }
                         });
 
                         that.prop( 'disabled', false );
                         that.val( 'Add Category' );
-                        $( '.photos-import-form .add-category' ).removeClass( 'cancel-add-category' );
+                        $( '.photos-import-form .add-category' ).removeClass( 'cancel-add-category dashicons-no' );
+                        $( '.photos-import-form .add-category' ).addClass( 'dashicons-plus-alt' );
 
+						var data = {
+							action: 'ptp_category_list',
+							'_wpnonce': PTPImporter_Vars.nonce
+						};
+						$.post(PTPImporter_Vars.ajaxurl, data, function(res) {
+							try{
+								res = $.parseJSON(res);
+								if (res) {
+									$(".add-category").prev().html('');
+									$(".add-category").prev().html(res.html);
+									$("#term_id").chosen();	
+									//reverted back to nonselection
+									$("#term_id").prop("selectedIndex",0);
+									$("#term_id").trigger('liszt:updated');
+								}
+								else {
+									console.log(res.error);
+									
+								}
+							}
+							catch(err){
+								
+							}
+						});
+						
+						
                         if ($('.updated').is(':visible')) {
                             $('.updated p').text( 'New category created.' );
                         } else {
@@ -272,8 +442,14 @@
                             });
                         }
                     } else {
-                        console.log(res.error);
-
+						console.log(res.error);
+								$( '.photos-import-form .quick-add-category-con' ).slideToggle();
+								that.trigger('reset');
+                                $('.photos-import-form input[type=text]').val('');
+                                $('.photos-import-form select').val('').trigger('liszt:updated');
+								$('.photos-import-form').trigger( 'ptp_reset_import_form' );
+								$( '.photos-import-form .add-category' ).removeClass( 'cancel-add-category dashicons-no' );
+                                $( '.photos-import-form .add-category' ).addClass( 'dashicons-plus-alt' );
                         if ($('.error').is(':visible')) {
                             $('.error p').text( res.error );
                         } else {
@@ -281,6 +457,7 @@
                                 $('.error p').text( res.error );
                             });
                         }
+						
                     }
                 }catch(err){
                 console.log(err);
@@ -318,12 +495,14 @@
                         });
 
                         if ( that.hasClass( 'cancel-add-category' ) ) {
-                            that.removeClass( 'cancel-add-category' );
+                            that.removeClass( 'cancel-add-category dashicons-no' );
+                            that.addClass( 'dashicons-plus-alt' );
                         } else {
-                            that.addClass( 'cancel-add-category' );
+                            that.removeClass( 'dashicons-plus-alt' );
+                            that.addClass( 'cancel-add-category dashicons-no' );
                         }
                     } else {
-                        console.log(res.error);
+                       // console.log(res.error);
                     }
                 }catch(err){
 					 console.log(err); 
@@ -419,8 +598,8 @@
                                  '<input type="text" class="price" name="variations['+ variationCount +'][price]" value="" placeholder="Price" />' +
                                  '</td>' +
                                  '<td>' +
-                                 '<span type="text" class="remove-variation-row control"></span>' +
-                                 '<span type="text" class="add-variation-row control"></span>' +
+                                 '<span type="text" class="remove-variation-row control dashicons dashicons-no"></span>' +
+                                 '<span type="text" class="add-variation-row control dashicons dashicons-plus-alt"></span>' +
                                  '</td>' +
                                  '</tr>' +
                                  '</table>'
@@ -452,8 +631,16 @@
                     res = $.parseJSON(res);
 
                     if( res.success ) {
-                        list.append( res.html );
-                        list.find('tr').last().fadeIn();
+                        var tr = $( res.html );
+                        if( res.parent ) {
+                            list.find('#variation-group-row-' + res.parent).after( tr );
+                            tr.fadeIn( );
+                        } else {
+                            list.append( tr );
+                            tr.fadeIn( );
+                        }
+                        // list.append( res.html );
+                        // list.find('tr').last().fadeIn();
 
                         if ( $( '.no-variation-groups' ).length )
                             $( '.no-variation-groups' ).remove();
@@ -496,25 +683,26 @@
                     res = $.parseJSON(res);
 
                     if( res.success ) {
+                        var thisTr = $( '#variation-group-row-' + res.term_id );
+                        var thatTr = $( '#variation-group-row-' + res.parent );
+
                         // Update title
-                        if ( $('.variations-form-update #group-name').val() != tr.prev().find('.column-name strong a').text() ) {
-                            tr.prev().find('.column-name strong a').text( $('.variations-form-update #group-name').val() );
-                        }
+                        thisTr.find('.column-name a strong').html( res.name );
 
                         // Update description
-                        if ( $('.variations-form-update #group-description').val() != tr.prev().find('.column-description span').text() ) {
-                            tr.prev().find('.column-description span').text( $('.variations-form-update #group-description').val() );
+                        if ( $('.variations-form-update #group-description').val() != thisTr.find('.column-description span').text() ) {
+                            thisTr.find('.column-description span').text( $('.variations-form-update #group-description').val() );
                         }
 
                         // Update Variations Count
-                        if ( $('.variations-form-update table.row').length != tr.prev().find('.column-variations span').text() ) {
-                            tr.prev().find('.column-variations span').text( $('.variations-form-update table.row').length );
+                        if ( $('.variations-form-update table.row').length != thisTr.find('.column-variations span').text() ) {
+                            thisTr.find('.column-variations span').text( $('.variations-form-update table.row').length );
                         }
 
-                        if ( tr.prev().hasClass('alternate') )
-                            tr.prev().css('background-color', '#fcfcfc');
+                        if ( thisTr.hasClass('alternate') )
+                            thisTr.css('background-color', '#fcfcfc');
                         else 
-                            tr.prev().css('background-color', 'transparent');
+                            thisTr.css('background-color', 'transparent');
 
                         con.css({ 'height': con.outerHeight() });
                         con.animate({
@@ -534,6 +722,20 @@
                         $('.chzn-error').removeClass('chzn-error');
                         $('#update-variation-group').removeClass('loading-primary');
                         $('.ptp-loading').remove();
+
+                        if( res.is_moved ) {
+                            thisTr.slideUp( 'fast', function( ) {
+                                thisTr.detach( ).addClass( 'hidden' );
+
+                                if( res.parent ) {
+                                    thisTr.insertAfter( thatTr );
+                                } else {
+                                    thisTr.appendTo( '#the-list' );
+                                }
+                                thisTr.slideDown( 'fast' );
+                            })
+                        }
+
                     } else {
                         console.log(res.error);
 
@@ -1013,14 +1215,19 @@
             save: function (e) {
                 var that = $(this),
                     data = that.serialize() + '&watermark_url=' + $('#watermark-path').data('url');
-
-                if ( $('#hide-variations').is(':checked') ) {
+				
+				if ( $('#hide-variations').is(':checked') ) {
                     data = data.replace('hide_variations=0', 'hide_variations=1');
                 } else {
                     data = 'hide_variations=0&' + data;
                 }
-
-                that.find('input[type=submit]').after('<div class="ptp-loading">Saving...</div>');
+				if ( $('#tiled-watermark').is(':checked') ) {				
+                    data = data.replace('tiled_watermark=0', 'tiled_watermark=1');
+                } else {
+                    data = 'tiled_watermark=0&' + data;
+                }
+				
+				that.find('input[type=submit]').after('<div class="ptp-loading">Saving...</div>');
                 $.post(PTPImporter_Vars.ajaxurl, data, function(res) {
                 	try{
                     res = $.parseJSON(res);
@@ -1070,6 +1277,25 @@
     $(function() {
         PTPImporter.init();
     });
-    
+	$(function($) {
+				var items = $("table #the-list tr");
 
-})(jQuery);
+				var numItems = items.length;
+				var perPage = 10;
+				
+				items.slice(perPage).hide();
+
+				$(".pagination-page").pagination({
+					items: numItems,
+					itemsOnPage: perPage,
+					cssStyle: "compact-theme",
+					onPageClick: function(pageNumber) {
+						var showFrom = perPage * (pageNumber - 1);
+						var showTo = showFrom + perPage;
+						items.hide()
+							 .slice(showFrom, showTo).show();
+					}
+				});
+			});
+   w.PTPImporter = PTPImporter; 
+})(window, jQuery);

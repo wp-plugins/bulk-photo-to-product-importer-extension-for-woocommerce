@@ -4,7 +4,12 @@
  */
 ?>
 
-<?php global $ptp_importer; ?>
+<?php
+global $ptp_importer;
+$settings_obj = PTPImporter_Settings::getInstance();
+$settings = $settings_obj->get();
+$bptpi_category_naming_scheme = $settings['bptpi_category_naming_scheme'];
+?>
 
 <div class="icon32" id="ptp-icon32"><br></div>
 <h2><?php _e( 'Add Variation Groups', 'ptp' ); ?> </h2>
@@ -66,39 +71,16 @@
 				</tfoot>
 				<tbody id="the-list">
 					<?php 
-					$variations_obj = PTPImporter_Variation_Group::getInstance();
-    				$groups = $variations_obj->all();
-    				$count = 0;
+						$variations_obj = PTPImporter_Variation_Group::getInstance();
+						$groups         = $variations_obj->walker();
 					?>
-					
-					<?php if ( !$groups ) : ?>
-					<tr class="no-variation-groups">
-						<td colspan="4">
-							<p> <?php _e( 'You have not added any variation groups yet.', 'ptp' ) ?> </p>
-						</td>
-					</tr>
-					<?php endif; ?>
-					
-					<?php foreach( $groups as $group ) : ++$count; ?>
-					<?php $alternate = $count % 2 == 0 ? '' : 'class="alternate"'; ?>
-					<tr <?php echo $alternate; ?>>
-						<th scope="row" class="check-column">
-							<label class="screen-reader-text" for="cb-select-<?php echo $group->term_id; ?>" > <?php _e( 'Select ' . $group->name, 'ptp' ) ?> </label>
-							<input type="checkbox" name="delete_variations_groups[]" value="<?php echo $group->term_id; ?>"  for="cb-select-<?php echo $group->term_id; ?>" />
-						</th>
-						<td class="name column-name">
-							<strong><a href="#"><?php echo $group->name; ?></a></strong>
-							<div class="row-actions">
-								<span class="inline hide-if-no-js"> <a href="#" class="quick-edit-variations-group" data-id="<?php echo $group->term_id; ?>"> <?php _e( 'Edit Variation Group', 'ptp' ) ?> </a> &#124; </span>
-								<span class="delete"> <a href="#" class="delete-variations-group" data-id="<?php echo $group->term_id; ?>"> <?php _e( 'Delete', 'ptp' ) ?> </a> </span>
-							</div>
-						</td>
-						<td class="description column-description"> <span><?php echo $group->description; ?> </span></td>
-						<td class="variations column-variations"> <span><?php echo sizeof( $group->variations ) ?> </span></td>
-					</tr>
-					<?php endforeach; ?>
 				</tbody>
 			</table>
+			<script>
+			
+			</script>
+			<br>
+			<div class="pagination-page"></div>
 			<div class="tablenav bottom">
 				<div class="alignleft actions">
 					<select name="action">
@@ -117,7 +99,7 @@
 		<div class="col-wrap">
 			<div class="form-wrap">
 				
-				<p class="page-desc">BPTPI allows you to create Variations of your products and then Group them together so you may associate them with specific Events during the bulk import process. An example of a Variation Group would be Sizes, which contains three Variations: Small, Medium and Large. Each with their own price which the user must choose prior to adding the Product to their Cart.</p>
+				<p class="page-desc">BPTPI allows you to create Variations of your Products and then Group them together so you may associate them with specific <?php echo $bptpi_category_naming_scheme; ?>s during the bulk import process. An example of a Variation Group would be Sizes, which contains three Variations: Small, Medium and Large. Each with their own price which the user must choose prior to adding the Product to their Cart.</p>
 
 				<?php 
 				$add_submit = __( 'Add Variation Group', 'ptp' );
@@ -141,6 +123,19 @@
 					<div class="form-field">
 						<label for="group-name"><?php _e( 'Group Name', 'ptp' ) ?></label>
 						<span><input type="text" id="group-name" name="group_name" value="" placeholder="Variation Group Name" /></span>
+					</div>
+
+					<div class="form-field">
+						<label for="variation-group-parent"><?php _e( 'Parent Group', 'ptp' ); ?></label>
+						<?php wp_dropdown_categories( array (
+							'show_option_all'  => 'None',
+							'show_option_none' => '',
+							'orderby'          => 'name',
+							'name'             => 'parent-group',
+							'id'               => 'variation-group-parent',
+							'hierarchical'     => true,
+							'taxonomy'         => $ptp_importer->taxonomy
+						) ); ?>
 					</div>
 					
 					<div class="form-field">

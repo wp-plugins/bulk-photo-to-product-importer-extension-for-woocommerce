@@ -28,7 +28,7 @@ class PTPImporter_Product {
      * @return array $post_ids
      */
    public function create( $posted ) {
-        global $ptp_importer;
+        global $ptp_importer, $wpdb;
 
         $settings_obj = PTPImporter_Settings::getInstance();
         $settings = $settings_obj->get();
@@ -50,7 +50,7 @@ class PTPImporter_Product {
             );
 
             // Create product
-            $post_id = wp_insert_post( $post );
+            $post_id    = wp_insert_post( $post );
             $post_ids[] = $post_id;
 
             // Form product metadata
@@ -60,22 +60,40 @@ class PTPImporter_Product {
             $metadata[ $ptp_importer->event_date_meta_key ] = date( 'Y-m-d H:i:s', strtotime( $posted['date'] ) );
 
             // Add meta that determines if this product is imported by this plugin
-            $metadata['_ptp_product'] = 'yes';
-            // Record attachment id for later use
-            $metadata['_ptp_attchement_id'] = $file_id;
+            $metadata[ '_ptp_product' ]            = 'yes';
+            $metadata[ '_ptp_attchement_id' ]      = $file_id;
+            $metadata[ '_ptp_variation_group_id' ] = $posted[ 'variation_group' ];
+            $metadata[ '_thumbnail_id' ]           = $file_id;
 
             // Update metadata
+            $insertSQL = "INSERT INTO `{$wpdb->postmeta}` (`post_id`, `meta_key`, `meta_value`) VALUES ";
+            $counter   = 0;
             foreach ( $metadata as $key => $value ) {
-              update_post_meta( $post_id, $key, $value );
+              if( is_array( $value ) ) $value = serialize( $value );
+              if( $counter ) $insertSQL .= ", \n";
+              $insertSQL .= sprintf( $wpdb->prepare( "(%d, %s, %s)", $post_id, $key, $value ) );
+              $counter++;
+              // update_post_meta( $post_id, $key, $value );
             }
+            $wpdb->query( $insertSQL );
 
             // Set file as the post thumbnail for the product
-            set_post_thumbnail( $post_id, $file_id );
+            // set_post_thumbnail( $post_id, $file_id );
 
             // Create variations(child products) for this grouped product
-            $this->create_variations( $posted['variation_group'], $post_id, $file_data );
+            $variation_groups = (array) $posted['variation_group'];
+            foreach( $variation_groups as $id ) {
+              $this->create_variations( $id, $post_id, $file_data );
+            }
 
-            do_action( 'ptp_create_products_complete', $post_id, $posted['term_id'], $posted['users'] );
+      			if(isset($posted['assoc'][$file_id]))
+      			{
+      				unset($posted['users']);
+      				$posted['users'] = $posted['assoc'][$file_id];
+      				unset($posted['assoc']);
+      			}
+			
+            do_action( 'ptp_create_products_complete', $post_id, $posted['term_id'], $posted['users']);
 
             sleep(intval($settings['interval']));
         }
@@ -92,37 +110,38 @@ class PTPImporter_Product {
      * @return array $post_ids
      */
     public function create_variations( $term_id, $parent_id, $file_data ) {
+      global $wpdb;
         $post_ids = array();
 
         $variation_obj = PTPImporter_Variation_Group::getInstance();
-        $group = $variation_obj->group( $term_id );
+        $group         = $variation_obj->group( $term_id );
 
         foreach ( $group->variations as $variation ) {
             $post = array(
-              'post_title' => $variation['name'],
+              'post_title'   => $variation['name'],
               'post_content' => '',
-              'post_type' => 'product',
-              'post_status' => 'publish',
-              'post_author' => get_current_user_id(),
-              'post_parent' => $parent_id,
+              'post_type'    => 'product',
+              'post_status'  => 'publish',
+              'post_author'  => get_current_user_id(),
+              'post_parent'  => $parent_id,
             );
 
             // Create product
-            $post_id = wp_insert_post( $post );
-            $post_ids[] = $post_id;
-
+            $post_id                       = wp_insert_post( $post );
+            $post_ids[]                    = $post_id;
+            
             // Form product metadata
-            $metadata = ptp_product_metadata_defaults();
+            $metadata                      = ptp_product_metadata_defaults();
             // Set price
-            $metadata['_price'] = $variation['price'];
+            $metadata['_price']            = $variation['price'];
             // Set regular price
-            $metadata['_regular_price'] = $variation['price'];
+            $metadata['_regular_price']    = $variation['price'];
             // Set visibility to blank so it won't be displayed
-            $metadata['_visibility'] = '';
+            $metadata['_visibility']       = '';
             // Add meta that determines if this product is used as variation for a grouped data
             $metadata['_ptp_as_variation'] = 'yes';
             // Add SKU
-            $metadata['_sku'] = uniqid();
+            $metadata['_sku']              = uniqid();
 
             if ( $variation['name'] == 'Downloadable' || $variation['name'] == 'downloadable' ) {
                 $uploads_dir = wp_upload_dir();
@@ -131,7 +150,8 @@ class PTPImporter_Product {
                 // Set as downloadable
                 $metadata['_downloadable'] = 'yes';
                 // Set download path
-                $metadata['_downloadable_files'] = array( $file_path );
+                $path_parts = pathinfo($file_path);
+                $metadata['_downloadable_files'] = array( $metadata['_sku'] => array('file' => $file_path, 'name' => $path_parts['filename'] ));
                 // Set download limit
                 $metadata['_download_limit'] = '';
                 // Set download expiry
@@ -139,9 +159,16 @@ class PTPImporter_Product {
             }
 
             // Update metadata
+            $insertSQL = "INSERT INTO `{$wpdb->postmeta}` (`post_id`, `meta_key`, `meta_value`) VALUES ";
+            $counter = 0;
             foreach ( $metadata as $key => $value ) {
-              update_post_meta( $post_id, $key, $value );
+              if( is_array( $value ) ) $value = serialize( $value );
+              if( $counter ) $insertSQL .= ', ';
+              $insertSQL .= sprintf( $wpdb->prepare( "(%d, %s, %s)", $post_id, $key, $value ) );
+              $counter++;
+              // update_post_meta( $post_id, $key, $value );
             }
+            $wpdb->query( $insertSQL );
         }
 
         return $post_ids;
@@ -209,7 +236,8 @@ class PTPImporter_Product {
                     // Set as downloadable
                     $metadata['_downloadable'] = 'yes';
                     // Set download path
-                    $metadata['_downloadable_files'] = array( $file_path );
+					$path_parts = pathinfo($file_path);
+                    $metadata['_downloadable_files'] = array( $metadata['_sku'] => array('file' => $file_path, 'name' => $path_parts['filename'] ));
                     // Set download limit
                     $metadata['_download_limit'] = '';
                     // Set download expiry
@@ -381,26 +409,43 @@ class PTPImporter_Product {
      * @return array
      */
     public function get_file( $attachment_id ) {
-        $file = get_post( $attachment_id );
+        global $wpdb;
 
-        if ( $file ) {
-            $response = array(
-                'id' => $attachment_id,
-                'name' => get_the_title( $attachment_id ),
-                'url' => wp_get_attachment_url( $attachment_id ),
+        $file = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM `{$wpdb->posts}` `p` LEFT JOIN `{$wpdb->postmeta}` `pm` ON `p`.`ID` = `pm`.`post_id` WHERE `p`.`ID` = %d AND `p`.`post_type` = 'attachment' AND `pm`.`meta_key` = '_wp_attached_file'", $attachment_id ) );
+
+        $url = '';
+        if ( $file->meta_value = get_post_meta( $post->ID, '_wp_attached_file', true) ) { //Get attached file
+          if ( ($uploads = wp_upload_dir()) && false === $uploads['error'] ) { //Get upload directory
+            if ( 0 === strpos($file->meta_value, $uploads['basedir']) ) //Check that the upload base exists in the file location
+              $url = str_replace($uploads['basedir'], $uploads['baseurl'], $file->meta_value); //replace file location with url location
+            elseif ( false !== strpos($file->meta_value, 'wp-content/uploads') )
+              $url = $uploads['baseurl'] . substr( $file->meta_value, strpos($file->meta_value, 'wp-content/uploads') + 18 );
+            else
+              $url = $uploads['baseurl'] . "/$file"; //Its a newly uploaded file, therefor $file is relative to the basedir.
+          }
+        } else {
+          $url = $file->guid;
+        }
+
+        if( preg_match('/image/', $file->post_mime_type) ) {
+          $src   = wp_get_attachment_image_src( $file->ID, 'ptp-uploaded-item' );
+          $thumb = $src[ 0 ];
+          $type  = "image";
+        } else {
+          $thumb = wp_mime_type_icon( $file->post_mime_type );
+          $type  = "file";
+        }
+
+        if( $file ) {
+          $response = array(
+                'id'    => $attachment_id,
+                'name'  => $file->post_title,
+                'url'   => $url,
+                'thumb' => $thumb,
+                'type'  => $type
             );
 
-            if ( wp_attachment_is_image( $attachment_id ) ) {
-
-                $thumb = wp_get_attachment_image_src( $attachment_id, 'ptp-uploaded-item' );
-                $response['thumb'] = $thumb[0];
-                $response['type'] = 'image';
-            } else {
-                $response['thumb'] = wp_mime_type_icon( $file->post_mime_type );
-                $response['type'] = 'file';
-            }
-
-            return $response;
+          return $response;
         }
 
         return false;

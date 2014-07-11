@@ -28,11 +28,15 @@ class PTPImporter_Variation_Group {
      *
      * @return object $groups
      */
-    public function all() {
+    public function all( $parent = 0) {
         global $ptp_importer;
 
-        $terms = get_terms( $ptp_importer->taxonomy );
+        $terms = get_terms( $ptp_importer->taxonomy, array(
+            'parent' => $parent
+        ) );
         $groups = array();
+
+        if( !count( $terms ) ) return null;
 
         foreach ( $terms as $term ) {
             $sql = "SELECT {$this->_db->term_relationships}.object_id";
@@ -63,12 +67,68 @@ class PTPImporter_Variation_Group {
 
             // Create new attribute and assign Variations to it
             $term->variations = $variations;
+            $term->children   = $this->all( $term->term_id );
 
             // Add to groups container
             $groups[] = $term;
         }
 
         return $groups;
+    }
+
+    /**
+     * Traverses the group tree
+     * @param  Array $child Optional.
+     */
+    public function walker( $child = null, $parents = 0 ) {
+        if( is_null( $child ) ) {
+            $groups = $this->all();
+            $count = 0;
+            if ( !$groups ) {
+                ?>
+                    <tr class="no-variation-groups">
+                        <td colspan="4">
+                            <p> <?php _e( 'You have not added any variation groups yet.', 'ptp' ) ?> </p>
+                        </td>
+                    </tr>
+                <?php
+            }
+        } else {
+            $groups = $child;
+        }
+
+
+        foreach( $groups as $group ) : 
+            ++$count;
+            $alternate = $count % 2 == 0 ? '' : 'class="alternate"';
+        ?>
+            <tr <?php echo $alternate; ?> id="variation-group-row-<?php echo $group->term_id; ?>">
+                <th scope="row" class="check-column">
+                    <label class="screen-reader-text" for="cb-select-<?php echo $group->term_id; ?>" > <?php _e( 'Select ' . $group->name, 'ptp' ) ?> </label>
+                    <input type="checkbox" name="delete_variations_groups[]" value="<?php echo $group->term_id; ?>"  for="cb-select-<?php echo $group->term_id; ?>" />
+                </th>
+                <td class="name column-name">
+                    <a href="#"><strong>
+                        <?php for( $i = 0; $i < $parents; $i++ ) echo '&mdash;'; ?>
+                        <?php echo $group->name; ?>
+                    </strong></a>
+                    <div class="row-actions">
+                        <span class="inline hide-if-no-js"> <a href="#" class="quick-edit-variations-group" data-id="<?php echo $group->term_id; ?>"> <?php _e( 'Edit Variation Group', 'ptp' ) ?> </a> &#124; </span>
+                        <span class="delete"> <a href="#" class="delete-variations-group" data-id="<?php echo $group->term_id; ?>"> <?php _e( 'Delete', 'ptp' ) ?> </a> </span>
+                    </div>
+                </td>
+                <td class="description column-description"> <span><?php echo $group->description; ?> </span></td>
+                <td class="variations column-variations"> <span><?php echo sizeof( $group->variations ) ?> </span></td>
+            </tr>
+        <?php
+            if( $group->children && count( $group->children ) ) {
+                $parents++;
+                $this->walker( $group->children, $parents );
+                $parents--;
+            }
+        endforeach;
+
+        return true;
     }
 
     /**
@@ -120,14 +180,15 @@ class PTPImporter_Variation_Group {
      * @param array $variations
      * @return int term id
      */
-    public function add( $name, $description, $variations ) {
+    public function add( $name, $description, $variations, $parent = 0 ) {
         global $ptp_importer;
 
         $term = wp_insert_term(
             $name,
             $ptp_importer->taxonomy,
             array(
-                'description'=> $description
+                'description' => $description,
+                'parent'      => $parent
             )
         );
 
@@ -166,7 +227,7 @@ class PTPImporter_Variation_Group {
      * @param array $variations
      * @return int term id
      */
-    public function update( $term_id, $name, $description, $variations ) {
+    public function update( $term_id, $name, $description, $variations, $parent = 0 ) {
         global $ptp_importer;
 
         $product_obj = PTPImporter_Product::getInstance();
@@ -175,8 +236,9 @@ class PTPImporter_Variation_Group {
             $term_id,
             $ptp_importer->taxonomy,
             array(
-                'name' => $name,
-                'description'=> $description
+                'name'        => $name,
+                'description' => $description,
+                'parent'      => $parent
             )
         );
 

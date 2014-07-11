@@ -95,6 +95,28 @@
                         $(this).parent().siblings('.item-delete').toggle();
                     });
                 });
+				$('.users-dropdown').chosen();
+				$( '.specialtip' ).hover(
+					function() {
+						var that = $( this ),
+							contentLeft = $('#wpbody-content').offset().left < that.offset().left - 143 ? that.position().left - 90 : 0,
+							arrowLeft = that.offset().left - $('#wpbody-content').offset().left > 150 ? 101 : that.offset().left - $('#wpbody-content').offset().left;
+
+						that.closest( '.specialfield' ).find( '.specialcontent' ).show().css({
+							'top': that.position().top + 26 + 'px',
+							'left': contentLeft - 6.5 + 'px'
+						});
+
+						that.closest( '.specialfield' ).find( '.specialarrow' ).show().css({
+							'left': arrowLeft + 'px'
+						});
+					},
+					function() {
+						var that = $( '.specialcontent' );
+
+						that.closest( '.specialfield' ).find( '.specialcontent, .specialarrow' ).hide();
+					}
+				);
             } else {
                 console.log(res.error);
             }

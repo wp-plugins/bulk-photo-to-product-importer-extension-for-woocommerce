@@ -24,14 +24,36 @@ $settings = $settings_obj->get();
 	<div id="ptp-col-right">
 		<div class="wp-box">
 			<div class="inner">
-				<h3 class="h2"><?php _e( $ptp_importer->plugin_name, 'ptp' ) ?></h3>
-				<p> You might be interested in our other plugins: </p>
-				<p>
-					<ul>
-						<li><a href="http://www.theportlandcompany.com/shop/custom-web-applications/custom-pointers-plugin-for-wordpress/" title="Custom Pointers Plugin for WordPress" target="_blank">Custom Pointers Plugin for WordPress</a></li>
-					</ul>
-				</p>
-				<?php echo $ptp_importer->sm_share_buttons->display( array( 'mini' => false ) ); ?>
+				<h3><?php _e( 'Credits', 'ptp' ) ?></h3>
+				<p><a href="http://www.theportlandcompany.com/" target="_blank">Designed & Developed by The Portland Company</a></p>
+				<h4><a href="http://www.theportlandcompany.com/product/30-minutes-premium-support/" target="_blank">Get Premium Support »</a></h4>
+			</div>
+		</div>
+		<div class="wp-box">
+			<div class="inner">
+				<h3><?php _e( 'Support', 'ptp' ) ?></h3>
+				<h4><a href="http://www.theportlandcompany.com/product/30-minutes-premium-support/" target="_blank">Get Premium Support »</a></h4>
+			</div>
+		</div>
+		<div class="wp-box">
+			<div class="inner">
+				<h3><?php _e( 'Other Plugins', 'ptp' ) ?></h3>
+				<ul>
+					<li><a href="http://www.theportlandcompany.com/shop/custom-web-applications/custom-pointers-plugin-for-wordpress/" title="Custom Pointers Plugin for WordPress" target="_blank">Custom Pointers Plugin for WordPress</a></li>
+					<li><a href="http://www.theportlandcompany.com/product/custom-subscription-generator-wordpress-plugin/" title="Custom Subscription Generator Plugin for WordPress" target="_blank">Custom Subscription Generator Plugin for WordPress</a></li>
+				</ul>
+				<h4><a href="http://www.theportlandcompany.com/product/30-minutes-premium-support/" target="_blank">Get Premium Support »</a></h4>
+			</div>
+		</div>
+		<div class="wp-box">
+			<div class="inner">
+				<h3><?php _e( 'Other Services', 'ptp' ) ?></h3>
+				<ul>
+					<li><a href="http://www.theportlandcompany.com/product/pay-per-click-management/" title="Pay Per Click Campaign Management" target="_blank">Pay Per Click Campaign Management</a></li>
+					<li><a href="http://www.theportlandcompany.com/product/seo-audit/" title="SEO Audit">SEO Audit</a></li>
+					<li><a href="http://www.theportlandcompany.com/shop/custom-web-applications/custom-pointers-plugin-for-wordpress/" title="Search Engine Optimization" target="_blank">Search Engine Optimization</a></li>
+				</ul>
+				<h4><a href="http://www.theportlandcompany.com/product/30-minutes-premium-support/" target="_blank">Get Premium Support »</a></h4>
 			</div>
 		</div>
 	</div>
@@ -105,6 +127,8 @@ $settings = $settings_obj->get();
 								<label class="ptp-subtext" for="hide-variations"><?php _e( 'Check this if you want to hide Variations from the products list.' ); ?></label>
 							</td>
 						</tr>
+						
+						
 						<?php if ( $variation_migrate->groups() ) : ?>
 						<tr>
 							<td class="label">
@@ -131,12 +155,10 @@ $settings = $settings_obj->get();
 		<?php if ( ptp_is_active() && class_exists( 'BPTPI_Premium' ) ) : ?>
 		<div class="wp-box">
             <?php 
-
             $settings_action = 'ptp_settings_save';
             $submit_button_label = 'Save';
-
             ?>
-            <div class="title"><h3><?php _e( 'Categories', 'ptp' ); ?></h3></div>
+            <div class="title"><h3><?php _e( 'Category Settings', 'ptp' ); ?></h3></div>
             <form id="categories-settings-form">
 
                 <?php wp_nonce_field( 'ptp_settings_save', 'ptp_nonce' ); ?>

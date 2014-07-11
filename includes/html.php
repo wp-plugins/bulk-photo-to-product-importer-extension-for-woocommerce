@@ -14,13 +14,18 @@ function ptp_uploaded_item_html( $file ) {
         <fieldset>
             
             <input type="hidden" name="attachments[]" value="<?php echo $file['id']; ?>" /> 
-            
             <input type="text" class="item-title" name="titles[<?php echo $file['id']; ?>]" value="" placeholder="Product Title" />
-        
+			
+			
+			
         </fieldset>
 
         <a href="<?php echo $file['url']; ?>" class="item-link" target="_blank"><img src="<?php echo $file['thumb']; ?>" alt="<?php echo esc_attr( $file['name'] ); ?>" /></a>
-        
+			<br><br>
+			<?php if ( ptp_is_active() && class_exists( 'BPTPI_Premium' ) ) : ?>
+			<?php do_action( 'ptp_add_user_selection', $file['id'] ); ?>
+			<?php endif; ?>
+		
         <?php
 
     return ob_get_clean(); 
@@ -35,13 +40,17 @@ function ptp_uploaded_item_html( $file ) {
 function ptp_variations_list_item( $group ) {
     ob_start(); ?>
 
-    <tr style="display:none;">
+    <tr style="display:none;" id="variation-group-row-<?php echo $group->term_id; ?>">
         <th scope="row" class="check-column">
             <label class="screen-reader-text" for="cb-select-<?php echo $group->term_id; ?>" > <?php _e( 'Select ' . $group->name, 'ptp' ) ?> </label>
             <input type="checkbox" name="delete_variations_groups[]" value="<?php echo $group->term_id; ?>"  for="cb-select-<?php echo $group->term_id; ?>" />
         </th>
         <td class="name column-name">
-            <strong><a href="#"><?php echo $group->name; ?></a></strong>
+            <a href="#"><strong>
+                <?php for( $i = 0; $i < count(get_term_parents( $group->term_id )); $i++ ) echo '&mdash;'; ?>
+                <?php echo $group->name; ?>
+            </strong></a>
+
             <div class="row-actions">
                 <span class="inline hide-if-no-js"> <a href="#" class="quick-edit-variations-group" data-id="<?php echo $group->term_id; ?>"> <?php _e( 'Edit Variation Group', 'ptp' ) ?> </a> &#124; </span>
                 <span class="delete"> <a href="#" class="delete-variations-group" data-id="<?php echo $group->term_id; ?>"> <?php _e( 'Delete', 'ptp' ) ?> </a> </span>
@@ -62,6 +71,8 @@ function ptp_variations_list_item( $group ) {
  * @return string
  */
 function ptp_variations_edit_form( $group ) {
+    global $ptp_importer;
+
     $update_submit = __( 'Update', 'ptp' );
     $update_cancel = __( 'Cancel', 'ptp' );
     $update_action = 'ptp_variations_group_update';
@@ -80,6 +91,21 @@ function ptp_variations_edit_form( $group ) {
                     <div class="form-field">
                         <label for="group-name"><?php _e( 'Group Name', 'ptp' ) ?></label>
                         <input type="text" name="group_name" id="group-name" placeholder="Group Name" value="<?php echo $group->name; ?>" />
+                    </div>
+
+                    <div class="form-field">
+                        <label for="variation-group-parent-quick-edit"><?php _e( 'Parent Group', 'ptp' ); ?></label>
+                        <?php wp_dropdown_categories( array (
+                            'show_option_all'  => 'None',
+                            'show_option_none' => '',
+                            'orderby'          => 'name',
+                            'name'             => 'parent-group',
+                            'id'               => 'variation-group-parent-quick-edit',
+                            'hierarchical'     => true,
+                            'exclude'          => $group->term_id,
+                            'selected'         => get_term_parent( $group->term_id ),
+                            'taxonomy'         => $ptp_importer->taxonomy
+                        ) ); ?>
                     </div>
 
                     <div class="form-field">

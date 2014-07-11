@@ -25,7 +25,6 @@
                 that.closest( '.form-field' ).find( '.tooltip-content, .tooltip-arrow' ).hide();
             }
         );
-
         // Menu
         if ( $('#toplevel_page_ptp_bulk_import').hasClass('wp-has-current-submenu') )
             $('#toplevel_page_ptp_bulk_import').prop('id', 'ptp-toplevel-menu-active');

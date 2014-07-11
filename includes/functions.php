@@ -39,7 +39,11 @@ function ptp_watermarked_image_path( $file_loc, $file_name, $file_type ) {
 * @return array
 */
 function ptp_add_watermark( $source_file_path, $output_file_path, $watermark_file_path, $quality = 80 ) {
-    list( $source_width, $source_height, $source_type ) = getimagesize( $source_file_path );
+    
+	$settings_obj = PTPImporter_Settings::getInstance();
+    $settings = $settings_obj->get();
+	
+	list( $source_width, $source_height, $source_type ) = getimagesize( $source_file_path );
 
     if ( $source_type === NULL ) {
         return false;
@@ -58,22 +62,48 @@ function ptp_add_watermark( $source_file_path, $output_file_path, $watermark_fil
         default:
             return false;
     }
-
-    $overlay_gd_image = imagecreatefrompng( $watermark_file_path );
-    $overlay_width = imagesx( $overlay_gd_image );
+	//Edited: 6/13/2014 Adjusted overlay image to stretch regardless of the watermark size
+	//Edit Start
+	
+	$overlay_gd_image = imagecreatefrompng( $watermark_file_path );	
+	$width = imagesx( $overlay_gd_image );
+	$height  = imagesy( $overlay_gd_image );
+	$overlay_width = imagesx( $overlay_gd_image );
     $overlay_height = imagesy( $overlay_gd_image );
-
-    imagecopy(
-        $source_gd_image,
-        $overlay_gd_image,
-        $source_width - $overlay_width - 10,
-        $source_height - $overlay_height - 10,
-        0,
-        0,
-        $overlay_width,
-        $overlay_height
-    );
-
+	
+	// Gaps in between watermark tiles pixels unit
+	$distance = 50;
+	
+	// Check if portrait or landscape
+	if ($source_width > $source_height)
+	{
+		$percentage_aspect = ($source_height-$overlay_height)/$source_height*100; 
+		$overlay_height = $source_height;
+		$overlay_width = $source_height * ($percentage_aspect / 100) + $overlay_width;
+	}
+	else
+	{
+		$percentage_aspect = ($source_width-$overlay_width)/$source_width*100; 
+		$overlay_width = $source_width;
+		$overlay_height = $source_width * ($percentage_aspect / 100) + $overlay_height;
+	}
+	
+	// Resize
+	imagecopyresized (
+		$source_gd_image,
+		$overlay_gd_image,
+		($source_width/2) - ($overlay_width/2),
+		($source_height/2) - ($overlay_height/2),
+		0,
+		0,
+		$overlay_width,
+		$overlay_height,
+		$width, 
+		$height
+	);
+	//Edit End
+	
+	
     imagejpeg( $source_gd_image, $output_file_path, $quality );
     imagedestroy( $source_gd_image );
     imagedestroy( $overlay_gd_image );
@@ -146,34 +176,34 @@ add_filter( 'wp_generate_attachment_metadata', 'ptp_generate_watermaked_images',
  */
 function ptp_product_metadata_defaults() {
     $metadata = array(
-                    '_virtual' => 'no',
+                    '_virtual'               => 'no',
                     '_sale_price_dates_from' => '',
-                    '_sale_price_dates_to' => '',
-                    '_price' => '',
-                    '_stock' => '',
-                    '_stock_status' => 'instock',
-                    '_backorders' => 'no',
-                    '_manage_stock' => 'no',
-                    '_downloadable_files' => '',
-                    '_download_limit' => '',
-                    '_download_expiry' => '',
-                    '_product_attributes' => array(),
-                    '_downloadable' => 'no',
-                    '_sku' => '',
-                    '_height' => '',
-                    '_width' => '',
-                    '_length' => '',
-                    '_weight' => '',
-                    '_featured' => 'no',
-                    '_visibility' => 'visible',
-                    '_tax_class' => '',
-                    '_tax_status' => '',
-                    '_sale_price' => '',
-                    '_regular_price' => '',
-                    'total_sales' => 0,
+                    '_sale_price_dates_to'   => '',
+                    '_price'                 => '',
+                    '_stock'                 => '',
+                    '_stock_status'          => 'instock',
+                    '_backorders'            => 'no',
+                    '_manage_stock'          => 'no',
+                    '_downloadable_files'    => '',
+                    '_download_limit'        => '',
+                    '_download_expiry'       => '',
+                    '_product_attributes'    => array(),
+                    '_downloadable'          => 'no',
+                    '_sku'                   => '',
+                    '_height'                => '',
+                    '_width'                 => '',
+                    '_length'                => '',
+                    '_weight'                => '',
+                    '_featured'              => 'no',
+                    '_visibility'            => 'visible',
+                    '_tax_class'             => '',
+                    '_tax_status'            => '',
+                    '_sale_price'            => '',
+                    '_regular_price'         => '',
+                    'total_sales'            => 0,
                     '_product_image_gallery' => '',
-                    '_purchase_note' => '',
-                    '_sold_individually' => ''
+                    '_purchase_note'         => '',
+                    '_sold_individually'     => ''
                 );
 
     return $metadata;
@@ -187,9 +217,13 @@ function ptp_product_metadata_defaults() {
 function ptp_variations() {
     global $ptp_importer;
 
-    $term_id = $_GET['term_id'] ? $_GET['term_id'] : get_queried_object_id();
+    $variation_group_id = get_post_meta( get_the_ID( ), '_ptp_variation_group_id', true );
 
-    $variation_group_id = ptp_get_term_meta( $term_id, $ptp_importer->term_variation_group_meta_key, true );
+    // Backward compatibility
+    if( !$variation_group_id ) {
+        $term_id = $_GET['term_id'] ? $_GET['term_id'] : get_queried_object_id();
+        $variation_group_id = ptp_get_term_meta( $term_id, $ptp_importer->term_variation_group_meta_key, true );
+    }
 
     $variation_obj = PTPImporter_Variation_Group::getInstance();
     $group = $variation_obj->group( $variation_group_id );
@@ -605,4 +639,30 @@ function ptp_verify() {
         return true;
 
     return true;
+}
+
+/**
+ * Get the term parent
+ * @param  integer $term_id Term ID
+ * @return integer          Term ID
+ */
+function get_term_parent( $term_id ) {
+    global $wpdb;
+    return $wpdb->get_var( $wpdb->prepare( "SELECT `tx`.`parent` FROM `{$wpdb->term_taxonomy}` `tx` LEFT JOIN `{$wpdb->terms}` `t` ON `t`.`term_id` = `tx`.`term_id` WHERE `tx`.`term_id` = %d", $term_id ) );
+}
+
+/**
+ * Get the term parents
+ * @param  integer $term_id Term ID
+ * @return array            List of term parents
+ */
+function get_term_parents( $term_id ) {
+    $parent  = $term_id;
+    $parents = array( );
+
+    while( $parent = get_term_parent( $parent ) ) {
+        $parents[] = $parent;
+    }
+
+    return $parents;
 }

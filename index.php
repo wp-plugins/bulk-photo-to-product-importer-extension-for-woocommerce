@@ -6,6 +6,10 @@
 
 <?php 
 global $ptp_importer;
+$settings_obj = PTPImporter_Settings::getInstance();
+$settings = $settings_obj->get();
+$bptpi_category_naming_scheme = $settings['bptpi_category_naming_scheme'];
+
 $plugin_name = rawurlencode( 'Photo to Product Importer Extension for WooCommerce' );
 $plugin_url = rawurlencode( 'http://goo.gl/sCkeS' );
 $plugin_desc = rawurlencode( 'Are you a photographer who wants to sell your products on your WordPress website but you find the native WooCommerce interface to limit your ability to sell your product? Well we created this WordPress Plugin for users whose business model is centric to selling photography in an eCommerce environment...' );
@@ -40,25 +44,32 @@ $action = 'ptp_product_import';
 			<div class="wp-box">
 				
 				<div class="form-field category">
-					<label><?php _e( 'Event', 'ptp' ) ?><img src="<?php echo $ptp_importer->plugin_uri . '/assets/images/question_mark.png' ?>" class="tooltip-icon" /></label>
-					<p class="dropdown">
-						<span><?php echo ptp_dropdown_categories( array( 'name' => 'term_id', 'show_option_none' => 'Select Event', 'walker' => new Walker_Without_Children() ) ); ?></span><span class="add-category"></span>
-					</p> 
-					<div class="tooltip-content" style="display:none"><span class="tooltip-arrow"></span><p> “Event Types” and “Events” are equivalent to WooCommerce Categories and Sub Categories. Since this Plugin is designed for photographers, though, we chose to rename them so photographers know how to use them.</p></div>
-					<div class="quick-add-category-con">
-					</div>
+					<span><?php echo ptp_dropdown_categories( array( 'name' => 'term_id', 'show_option_none' => 'Select a ' . $bptpi_category_naming_scheme, 'walker' => new Walker_Without_Children() ) ); ?></span>
+					<span class="add-category  dashicons dashicons-plus-alt"></span>
+					<div class="quick-add-category-con"></div>
 				</div>
 				
 				<div class="form-field variation">
-					<label><?php _e( 'Variation Group', 'ptp' ) ?><img src="<?php echo $ptp_importer->plugin_uri . '/assets/images/question_mark.png' ?>" class="tooltip-icon" /></label>
+				
 					<p class="dropdown">
-						<span><?php echo ptp_dropdown_categories( array( 'name' => 'variation_group', 'class' => 'variation-group', 'taxonomy' => $ptp_importer->taxonomy, 'show_option_none' => 'Select Variation Group', 'walker' => new Walker_With_Variations() ) ); ?></span><a href="<?php echo admin_url() . '/admin.php?page=ptp_variations'; ?>" target="_blank"><span class="add-variation"></span></a>
-					</p> 
-					<div class="tooltip-content" style="display:none"><span class="tooltip-arrow"></span><p>The variations in each of these groups will be associated to each photo that will be upload.</p></div>
+					
+						<span>
+							<?php echo ptp_dropdown_categories( array( 'name' => 'variation_group[]', 'class' => 'variation-group', 'taxonomy' => $ptp_importer->taxonomy, 'show_option_none' => 'Select Variation Group', 'walker' => new Walker_With_Variations() ) ); ?>
+						</span>
+						
+						<a href="<?php echo admin_url() . '/admin.php?page=ptp_variations'; ?>" target="_blank" class="add-variation dashicons dashicons-plus-alt">
+						</a>
+						
+						<!-- <img src="<?php echo $ptp_importer->plugin_uri . '/assets/images/question_mark.png' ?>" class="tooltip-icon" /> -->
+						<small class="tooltip-icon"><i class="dashicons dashicons-info"></i></small>
+						
+					</p>
+					
+					<div class="tooltip-content" style="display:none"><span class="tooltip-arrow"></span><p>Variation Groups are created by you. They contain Variations of your Products. For example, you may sell a Downloadable version of your Photo, as well as a 10 x 10 Frame and a 12 x 12 Frame - each with their own price. These are called Variations.</p></div>
 				</div>
 
 				<div class="form-field">
-					<label><?php _e( 'Date of the Event', 'ptp' ) ?></label>
+					<label><?php _e( 'Date of the ' . $bptpi_category_naming_scheme, 'ptp' ) ?></label>
 					<p class="date">
 						<input type="text" name="date" class="datepicker" value="" placeholder="<?php echo date('m/j/Y'); ?>" />
 					</p>

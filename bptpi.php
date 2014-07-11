@@ -5,7 +5,7 @@ Plugin URI: http://www.theportlandcompany.com/shop/custom-web-applications/bulk-
 Description: This Plugin is an extension to WooCommerce and enables users to bulk import photos, which are automatically converted into Products.
 Author: The Portland Company, Designed by Spencer Hill, Coded by Redeye Adaya
 Author URI: http://www.theportlandcompany.com
-Version: 2.2
+Version: 2.2.5
 Copyright: 2013 The Portland Company 
 License: GPL v3
 */
@@ -19,7 +19,7 @@ class PTP_Importer {
     /**
      * @var string
      */
-    public $version = '2.2';
+    public $version = '2.2.5';
 
     /**
      * @var string
@@ -50,6 +50,11 @@ class PTP_Importer {
      * @var string
      */
     public $term_variation_group_meta_key;
+
+    /**
+     * @var array
+     */
+    public $term_variation_groups_meta_key;
 
      /**
      * @var string
@@ -106,8 +111,16 @@ class PTP_Importer {
      */
     public $sm_share_buttons;
 
+   	 /**
+     * @var string
+     */   
+    private static $upload_path = '';
+
 
     function __construct() {
+        $this->_init( );
+    	$upload_dir = wp_upload_dir();
+		self::$upload_path = trailingslashit( $upload_dir['basedir'] );
         // Auto-load classes on demand
         spl_autoload_register( array( $this, 'autoload' ) );
 
@@ -167,25 +180,6 @@ class PTP_Importer {
      * @return void
      */
     public function init() {
-        $this->plugin_path = dirname( __FILE__ );
-        $this->plugin_uri = plugins_url( '', __FILE__ );
-        $this->watermark_path = plugins_url( 'assets/images/watermark.png', __FILE__ );
-        $this->plugin_name = 'Bulk Photo to Product Importer Extension for WooCommerce';
-
-        $this->watermarked_suffix = '_watermarked';
-        $this->event_date_meta_key = '_ptp_event_date';
-        $this->settings_meta_key = '_ptp_settings';
-        $this->our_product_meta_key = '_ptp_product';
-        $this->variation_price_meta_key = '_ptp_variation_price';
-        $this->term_variation_group_meta_key = '_ptp_term_variation_group';
-        $this->attachment_meta_key = '_ptp_attachment';
-
-        $this->number_of_products = 0;
-        $this->woocommerce_cat_tax = 'product_cat';
-        $this->woocommerce_post_type = 'product';
-        $this->taxonomy = 'ptp_variation_group';
-        $this->post_type = 'ptp_variation';
-
         add_image_size( 'ptp-uploaded-item', 178, 178, true );
 
         global $wpdb;
@@ -200,6 +194,45 @@ class PTP_Importer {
         new PTPImporter_Variation_Migrate();
         new PTPImporter_Ajax();
         new PTPImporter_Settings();
+        $redirectUrl = plugins_url( 'includes/photoProtect.php', __FILE__ );
+        //$htaccess_protectFiles = " RewriteEngine on RewriteRule ^((?!_watermarked).)*$ ".$redirectUrl."?%{REQUEST_FILENAME}  [r=301,nc]";
+		//  @file_put_contents(self::$upload_path.date("Y")."/.htaccess",$htaccess_protectFiles);
+    }
+
+    /**
+     * Populate this object
+     */
+    private function _init( ) {
+        if( $this->plugin_path ) return;
+
+        $this->plugin_path = dirname( __FILE__ );
+        $this->plugin_uri = plugins_url( '', __FILE__ );
+        
+        $this->settings_meta_key = '_ptp_settings';
+        
+        $watermarkpath = get_option($this->settings_meta_key);
+        if(!$watermarkpath || !isset($watermarkpath['watermark_path']) || !trim( $watermarkpath['watermark_path'])) {
+            $this->watermark_path = plugins_url( 'assets/images/watermark.png', __FILE__ );     
+        } else
+        {
+            $this->watermark_path = $watermarkpath['watermark_path'];
+        }
+        $this->plugin_name                    = 'Bulk Photo to Product Importer Extension for WooCommerce';
+        
+        $this->watermarked_suffix             = '_watermarked';
+        $this->event_date_meta_key            = '_ptp_event_date';
+        
+        $this->our_product_meta_key           = '_ptp_product';
+        $this->variation_price_meta_key       = '_ptp_variation_price';
+        $this->term_variation_group_meta_key  = '_ptp_term_variation_group';
+        $this->term_variation_groups_meta_key = '_ptp_term_variation_groups';
+        $this->attachment_meta_key            = '_ptp_attachment';
+        
+        $this->number_of_products             = 0;
+        $this->woocommerce_cat_tax            = 'product_cat';
+        $this->woocommerce_post_type          = 'product';
+        $this->taxonomy                       = 'ptp_variation_group';
+        $this->post_type                      = 'ptp_variation';
     }
 
     /**
@@ -254,26 +287,30 @@ class PTP_Importer {
         wp_enqueue_script( 'ptp_validate', plugins_url( 'assets/js/jquery.validate.min.js', __FILE__ ) );
         wp_enqueue_script( 'ptp_admin', plugins_url( 'assets/js/admin.js', __FILE__ ) );
         wp_enqueue_script( 'ptp_misc', plugins_url( 'assets/js/misc.js', __FILE__ ) );
+		wp_enqueue_script( 'ptp_pagination', plugins_url( 'assets/js/jquery.simplePagination.js', __FILE__ ) );
         wp_enqueue_script( 'ptp_uploader', plugins_url( 'assets/js/image.upload.js', __FILE__ ), array('jquery', 'plupload-handlers') );
 
         wp_localize_script( 'ptp_admin', 'PTPImporter_Vars', array(
-            'ajaxurl' => admin_url( 'admin-ajax.php' ),
-            'nonce' => wp_create_nonce( 'ptp_nonce' ),
+            'ajaxurl'   => admin_url( 'admin-ajax.php' ),
+            'nonce'     => wp_create_nonce( 'ptp_nonce' ),
             'is_active' => 'yes',
-            'plupload' => array(
-                'browse_button' => 'upload-pickfiles',
-                'container' => 'upload-container',
-                'max_file_size' => wp_max_upload_size() . 'b',
-                'url' => admin_url( 'admin-ajax.php' ) . '?action=ptp_product_upload&ptp_nonce=' . wp_create_nonce( 'ptp_product_upload' ),
-                'flash_swf_url' => includes_url( 'js/plupload/plupload.flash.swf' ),
+            'pluginurl' => plugins_url( '', __FILE__ ),
+            'adminurl'  => admin_url( '' ),
+            'plupload'  => array(
+                'browse_button'       => 'upload-pickfiles',
+                'container'           => 'upload-container',
+                'max_file_size'       => wp_max_upload_size() . 'b',
+                'url'                 => admin_url( 'admin-ajax.php' ) . '?action=ptp_product_upload&ptp_nonce=' . wp_create_nonce( 'ptp_product_upload' ),
+                'flash_swf_url'       => includes_url( 'js/plupload/plupload.flash.swf' ),
                 'silverlight_xap_url' => includes_url( 'js/plupload/plupload.silverlight.xap' ),
-                'filters' => array(array('title' => __( 'Image Files' ), 'extensions' => 'jpg,png')),
+                'filters'             => array(array('title' => __( 'Image Files' ), 'extensions' => 'jpg,png')),
             )
         ) );
 
         wp_enqueue_style('thickbox');
         wp_enqueue_style( 'jquery-ui', plugins_url( 'assets/css/jquery-ui-1.9.1.custom.css', __FILE__ ) );
         wp_enqueue_style( 'ptp_chosen', plugins_url( 'assets/css/chosen.min.css', __FILE__ ) );
+		wp_enqueue_style( 'ptp_pagination', plugins_url( 'assets/css/simplePagination.css', __FILE__ ) );
         wp_enqueue_style( 'ptp_admin', plugins_url( 'assets/css/admin.css', __FILE__ ) );
 
         do_action( 'ptp_admin_enqueue_scripts' );
@@ -505,9 +542,9 @@ class PTP_Importer {
 		
 		
 		
-		<div class="updated">
+		<div class="updated socialize">
 		
-			<ul class="share clear">
+			<ul>
 				
 				<?php if ( $args['mini'] ): ?>	
 				<li><img src="<?php echo $this->plugin_uri . '/extensions/sm-share-buttons/images/share_icon.png'; ?>" alt="Share"/></li>
@@ -575,7 +612,7 @@ class PTP_Importer {
 				
 		            <?php 
 		            printf(
-		                '<p>Get a Coupon to Upgrade for $30! &nbsp;&nbsp;&nbsp; 1. <a href="https://plus.google.com/109726560580019725502/about?hl=en&gl=us" target="_blank">Leave a Review on Google &#187;</a> &nbsp;&nbsp;&nbsp; 2. <a href="http://www.theportlandcompany.com/contact-and-support/" target="_blank">Send Us a Message for a Coupon &#187;</a> &nbsp;&nbsp;&nbsp; 3. <a href="http://www.theportlandcompany.com/shop/custom-web-applications/photo-to-product-importer-wordpress-plugin-for-woocommerce" target="_blank">Get Your Coupon to Purchase for $30 &#187;</a> <a class="ptp-nag-close" href="%2$s"> %3$s </a> </p>', 
+		                '<p>Get a Coupon to Upgrade for $30! &nbsp;&nbsp;&nbsp; 1. <a href="https://plus.google.com/109726560580019725502/about?hl=en&gl=us" target="_blank">Leave a Review on Google &#187;</a> &nbsp;&nbsp;&nbsp; 2. <a href="http://www.theportlandcompany.com/contact-and-support/" target="_blank">Send Us a Message for a Coupon &#187;</a> &nbsp;&nbsp;&nbsp; 3. <a href="http://www.theportlandcompany.com/shop/custom-web-applications/photo-to-product-importer-wordpress-plugin-for-woocommerce" target="_blank">Use Your Coupon to Purchase for $30 &#187;</a> <a class="ptp-nag-close" href="%2$s"> %3$s </a> </p>', 
 		                __( 'Downloadable Variations Introduced!</b> Simply create a BPTPI Variation named "Downloadable" and viola! Any users who purchase that Variation will be able to download the photo upon purchasing!', 'ptp' ), 
 		                esc_url( add_query_arg( 'dismiss_coupon_reminder', true ) ), 
 		                __( 'Dismiss', 'ptp' ) 

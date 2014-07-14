@@ -112,16 +112,20 @@
                     .val( 'Saving...' )
                     .prop( 'disabled', 'disabled' );
 
-                for( var i = 0; i < max; i++ ) {
+                for( var i = 0; i < maxRecursions && i < attach.medias.length; i++ ) {
                     _this.recursiveAdd( data, attach, form, _this.afterSave );
                 }
 
                 return false;
             },
             afterSave: function( ) {
-                var _this   = this;
-                var counter = 1;
-                var els     = $( '.upload-filelist' ).find( '*' );
+                var _this     = this;
+                var counter   = 1;
+                var els       = $( '.upload-filelist' ).find( '*' );
+                var submitBtn = $( '#import_photos' );
+
+                submitBtn.css('width', 'auto')
+                    .val( 'Save and Continue');
 
                 els.animate({ opacity: 0 }, 300, function(){
                     if ( ++counter == els.length ) {

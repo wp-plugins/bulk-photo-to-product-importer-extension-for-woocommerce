@@ -75,17 +75,18 @@ function ptp_add_watermark( $source_file_path, $output_file_path, $watermark_fil
 	$distance = 50;
 	
 	// Check if portrait or landscape
+    /*
 	if ($source_width > $source_height)
 	{
-		$percentage_aspect = ($source_height-$overlay_height)/$source_height*100; 
-		$overlay_height = $source_height;
-		$overlay_width = $source_height * ($percentage_aspect / 100) + $overlay_width;
+        $percentage_aspect = ($source_height-$overlay_height)/$source_height*100; 
+        $overlay_height    = $source_height;
+        $overlay_width     = $source_height * ($percentage_aspect / 100) + $overlay_width;
 	}
 	else
 	{
-		$percentage_aspect = ($source_width-$overlay_width)/$source_width*100; 
-		$overlay_width = $source_width;
-		$overlay_height = $source_width * ($percentage_aspect / 100) + $overlay_height;
+        $percentage_aspect = ($source_width-$overlay_width)/$source_width*100; 
+        $overlay_width     = $source_width;
+        $overlay_height    = $source_width * ($percentage_aspect / 100) + $overlay_height;
 	}
 	
 	// Resize
@@ -101,6 +102,19 @@ function ptp_add_watermark( $source_file_path, $output_file_path, $watermark_fil
 		$width, 
 		$height
 	);
+    */
+    imagecopyresized (
+        $source_gd_image,
+        $overlay_gd_image,
+        0,
+        0,
+        0,
+        0,
+        $source_width,
+        $source_height,
+        $width, 
+        $height
+    );
 	//Edit End
 	
 	

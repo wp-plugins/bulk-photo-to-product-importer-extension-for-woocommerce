@@ -163,6 +163,9 @@ class PTPImporter_Variation_Group {
             $variations[$count]['id'] = $_variation->object_id;
             $variations[$count]['name'] = get_post_field( 'post_title', $_variation->object_id );
             $variations[$count]['price'] = get_post_meta( $_variation->object_id, $ptp_importer->variation_price_meta_key, true );
+            $variations[$count]['is-downloadable'] = get_post_meta( $_variation->object_id, $ptp_importer->variation_is_downloadable_meta_key, true );
+            $variations[$count]['downloadable-width'] = get_post_meta( $_variation->object_id, $ptp_importer->variation_downloadable_width_meta_key, true );
+            $variations[$count]['downloadable-height'] = get_post_meta( $_variation->object_id, $ptp_importer->variation_downloadable_height_meta_key, true );
 
             $count++;
         }
@@ -210,6 +213,9 @@ class PTPImporter_Variation_Group {
             $post_ids[] = $post_id;
 
             add_post_meta( $post_id, $ptp_importer->variation_price_meta_key, $variation['price'] );
+            add_post_meta( $post_id, $ptp_importer->variation_is_downloadable_meta_key, $variation['downloadable'] );
+            add_post_meta( $post_id, $ptp_importer->variation_downloadable_width_meta_key, $variation['downloadable-width'] );
+            add_post_meta( $post_id, $ptp_importer->variation_downloadable_height_meta_key, $variation['downloadable-height'] );
         }
 
         if ( !$post_ids )
@@ -267,6 +273,9 @@ class PTPImporter_Variation_Group {
                 $post_id = wp_insert_post( $args );
 
                 add_post_meta( $post_id, $ptp_importer->variation_price_meta_key, $variation['price'] );
+                add_post_meta( $post_id, $ptp_importer->variation_is_downloadable_meta_key, $variation['downloadable'] );
+                add_post_meta( $post_id, $ptp_importer->variation_downloadable_width_meta_key, $variation['downloadable-width'] );
+                add_post_meta( $post_id, $ptp_importer->variation_downloadable_height_meta_key, $variation['downloadable-height'] );
             }
 
             // Add these variations to old products.
@@ -302,6 +311,9 @@ class PTPImporter_Variation_Group {
 
             $post_id = wp_update_post( $args );
             update_post_meta( $variation['id'], $ptp_importer->variation_price_meta_key, $variation['price'] );
+            update_post_meta( $post_id, $ptp_importer->variation_is_downloadable_meta_key, $variation['downloadable'] );
+            update_post_meta( $post_id, $ptp_importer->variation_downloadable_width_meta_key, $variation['downloadable-width'] );
+            update_post_meta( $post_id, $ptp_importer->variation_downloadable_height_meta_key, $variation['downloadable-height'] );
         }
 
         // Update these variations of old products.
@@ -373,7 +385,11 @@ class PTPImporter_Variation_Group {
         // Filter old variations so we only update the edited ones
         foreach ( $intersect_variations as $intersect_variation ) {
             for ( $i = 0; $i < count($old); $i++ ) {
-                if ( $intersect_variation['id'] == $old[$i]['id'] && ( $intersect_variation['name'] != $old[$i]['name'] || $intersect_variation['price'] != $old[$i]['price'] ) ) {
+                if ( $intersect_variation['id'] == $old[$i]['id'] && ( $intersect_variation['name'] != $old[$i]['name'] 
+                    || $intersect_variation['price'] != $old[$i]['price']
+                    || $intersect_variation['downloadable'] != $old[$i]['downloadable']
+                    || $intersect_variation['downloadable-width'] != $old[$i]['downloadable-width'] 
+                    || $intersect_variation['downloadable-height'] != $old[$i]['downloadable-height'] ) ) {
                     $replaced_variations[] = $old[$i];
                     $updated_variations[] = $intersect_variation;
                 }

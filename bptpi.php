@@ -144,6 +144,10 @@ class PTP_Importer {
 
         add_action( 'wp', array( $this, 'activate_cron' ));
         add_action( 'ptp_cron', array( $this, 'verify' ));
+
+        add_filter( 'woocommerce_downloadable_product_name', array( $this, 'downloadName' ), 10, 4 );
+        add_filter( 'woocommerce_get_item_downloads', array( $this, 'downloadableName' ), 10, 3 );
+        add_filter( 'woocommerce_product_file_download_path', array( $this, 'fixBrokenLinks' ), 10, 3 );
     }
 
 
@@ -683,6 +687,67 @@ class PTP_Importer {
         }
     }
 
+    /**
+     * Change the download link text
+     */
+    public function downloadName( $name, $product, $download_id, $file_number ) {
+        $download      = $product->get_file( $download_id );
+        $parentName    = get_the_title( $product->get_parent() );
+        $variationName = $product->post->post_title;
+
+        return 'Download: ' . $parentName . ' / ' .$variationName . ' (' . basename( $download[ 'file'] ) . ')';
+    }
+
+    /**
+     * Change the download link text on the email
+     * @param  Array    $files  List of files
+     * @param  Array    $item   Item Details
+     * @param  WC_Order $order 
+     * @return Array            New list of files
+     */
+    public function downloadableName( $files, $item, $order ) {
+        foreach( $files as $hash => $file ) {
+            $product_id           = $item['variation_id'] > 0 ? $item['variation_id'] : $item['product_id'];
+            $product              = get_product( $product_id );
+            $name                 = $this->downloadName( $file, $product, $hash, 0 );
+            $files[$hash]['name'] = str_replace( 'Download: ', '', $name );
+        }
+
+        return $files;
+    }
+
+    /**
+     * Trying to fix the broken download lnk
+     * @param  String       $file_path      Full path to the file
+     * @param  WC_Product   $product        Product Object
+     * @param  Intger       $download_id    Download ID
+     * @return String                       Prompts the user if the file is not found
+     */
+    public function fixBrokenLinks( $file_path, $product, $download_id ) {
+        if( !file_exists( $file_path ) ) {
+            $parent_id   = $product->get_parent( );
+            $thumb       = wp_get_attachment_image_src( get_post_thumbnail_id( $parent_id ), 'thumbnail_size' );
+            $thumb_url   = isset( $thumb[ 0 ] ) ? $thumb[ 0 ] : '';
+            $filename    = 'downloadable_' . basename( $thumb_url );
+            
+            $uploads_dir = wp_upload_dir( );
+            $upload_url  = $uploads_dir['baseurl'] . '/woocommerce_uploads'  . $uploads_dir['subdir'] . '/';
+            $upload_path = $uploads_dir['basedir'] . '/woocommerce_uploads'  . $uploads_dir['subdir'] . '/';
+            
+            $file_url    = $upload_url  . $filename;
+            $file_path   = $upload_path . $filename;
+
+            if( !file_exists( $file_path ) ) {
+                die( "Sorry but the file doesn't exists anymore. Please contact the adminstrator for broken links." );
+            } else {
+                $meta = get_post_meta( $product->id, '_downloadable_files', true );
+                $meta[ $download_id ][ 'file' ] = $file_url;
+                $meta[ $download_id ][ 'name' ] = $filename;
+                update_post_meta( $product->id, '_downloadable_files', $meta );
+            }
+        }        
+        return $file_path;
+    }
 }
 
 $GLOBALS['ptp_importer'] = new PTP_Importer();

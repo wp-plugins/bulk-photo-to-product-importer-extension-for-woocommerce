@@ -551,13 +551,13 @@ input.loading-secondary {
   font-style: italic;
   margin-bottom: 30px;
 }
-.quick-add-category-con {
+.quick-add-category-con, .quick-add-con {
   width: 300px;
-  height: 124px;
+  /*height: 124px;*/
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
-  padding: 15px;
+  padding: 15px 15px 40px 15px;
   background: #888888;
   box-shadow: inset 0 1px 2px rgba(0,0,0,.2);
   -webkit-box-shadow: inset 0 1px 2px rgba(0,0,0,.2);
@@ -580,7 +580,7 @@ input.loading-secondary {
   padding: 0;
 }
 .quick-add-category-con input[type=button] {
-  width: 100px;
+  width: auto;
   float: right;
   margin-top: 4px;
 }
@@ -590,7 +590,7 @@ input.loading-secondary {
 .quick-add-category-con #parent_term_id_chzn .chzn-drop {
   width: 100% !important;
 }
-.quick-add-category-con:before {
+.quick-add-category-con:before, .quick-add-con:before {
   content: "";
   display: block;
   position: absolute;

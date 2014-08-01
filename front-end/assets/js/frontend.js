@@ -9,6 +9,8 @@
             $('#quick-order-cancel, .okay').on('click', this.QuickOrder.closeDialog);
 
             $('.ptp-widget-cart-wrap').on('mouseover', '.toggle', this.Cart.show);
+
+            $('select.quick-order-variation option').remove();
         },
         QuickOrder: {
             openDialog: function (e) {
@@ -28,15 +30,41 @@
                 $('.quick-order-dialog').dialog('close');
             },
             loadProduct: function (e) {
-                var that = $(this),
-                    form = $('.quick-order-form');
+                var that      = $(this),
+                    form       = $('.quick-order-form'),
+                    groupid    = that.data( 'groupid' ),
+                    variations = that.data( 'variations' ),
+                    inputgroup = $( '#ptp_group_id' );
+
+                if( !inputgroup.length ) {
+                    form.prepend('<input type="hidden" id="ptp_group_id">' );
+                    inputgroup = $( '#ptp_group_id' );
+                }
+
+                if( inputgroup.val( ) && inputgroup.val( ) != groupid ) {
+                    alert( "Sorry but this product belongs to another variation group. Please add the other products first or deselect them." );
+                    that.prop( 'checked', false );
+                    return;
+                }
 
                 if (form.find('input#' + that.data('id')).length) {
                     $('input#' + that.data('id')).remove();
                     that.removeClass('selected');
+                    if( !$( '.select-product:checked').length ) {
+                        inputgroup.val( '' );
+                        form.find('.quick-order-variation option').remove();
+                    }
                 } else {
                     form.prepend('<input id="'+ that.data('id') +'" type="hidden" name="ptp_grouped_products[]" value="'+ that.data('id') +'" />');
                     that.addClass('selected');
+                    inputgroup.val( groupid );
+
+                    $.each( variations, function( i, j ) {
+                        if( !form.find( '#variation_group_opt_' + j.id + '' ).length ) {
+                            form.find( '.quick-order-variation' ).append( '<option id="variation_group_opt_' + j.id + '" value="' + j.name + '">' + j.name + '</option>' );
+                        }
+                    } );
+
                 }
             },
             addToCart: function (e) {

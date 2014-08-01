@@ -250,9 +250,21 @@ function ptp_add_checkbox() {
     // Donnot add checkbox if not our product
     if ( !ptp_our_product( $post->ID ) || is_single() )
         return;
-
+    $variation_group_id = get_post_meta( $post->ID, '_ptp_variation_group_id', true );
+    if( is_array( $variation_group_id ) ) {
+        $variation_group_id = $variation_group_id[ 0 ];
+    }
+    
+    $group  = ptp_get_product_variations( );
+    $groups = array( );
+    foreach( $group as $g ) {
+        $groups[] = array(
+            'name' => $g[ 'name' ],
+            'id'   => $g[ 'id' ]
+        );
+    }
     ?>
-    <input type="checkbox" class="select-product" data-id="<?php echo $post->ID; ?>" /></psan>
+    <input type="checkbox" class="select-product" data-id="<?php echo $post->ID; ?>" data-groupid="<?php echo $variation_group_id; ?>" data-title="<?php the_title(); ?>" data-variations='<?php echo json_encode( $groups ); ?>' />
     <?php
 }
 

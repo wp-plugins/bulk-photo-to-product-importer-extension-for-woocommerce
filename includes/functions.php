@@ -74,47 +74,73 @@ function ptp_add_watermark( $source_file_path, $output_file_path, $watermark_fil
 	// Gaps in between watermark tiles pixels unit
 	$distance = 50;
 	
-	// Check if portrait or landscape
-    /*
-	if ($source_width > $source_height)
+	if($settings['tiled_watermark'] == 1)
 	{
-        $percentage_aspect = ($source_height-$overlay_height)/$source_height*100; 
-        $overlay_height    = $source_height;
-        $overlay_width     = $source_height * ($percentage_aspect / 100) + $overlay_width;
+		$h_count = $source_width / ($overlay_width + $distance);
+		$v_count = $source_height / ($overlay_height + $distance);
+		
+		for($i = 0;$i <= $v_count;$i++)
+		{
+			for($j = 0;$j <= $h_count;$j++)
+			{
+				imagecopy (
+					$source_gd_image,
+					$overlay_gd_image,
+					$j * ($overlay_width + $distance),
+					$i * ($overlay_height + $distance),
+					0,
+					0,
+					$overlay_width , 
+					$overlay_height
+				);
+			}
+		
+		}
 	}
 	else
 	{
-        $percentage_aspect = ($source_width-$overlay_width)/$source_width*100; 
-        $overlay_width     = $source_width;
-        $overlay_height    = $source_width * ($percentage_aspect / 100) + $overlay_height;
+        /*
+		// Check if portrait or landscape
+		if ($source_width > $source_height)
+		{
+			$percentage_aspect = ($source_height-$overlay_height)/$source_height*100; 
+			$overlay_height = $source_height;
+			$overlay_width = $source_height * ($percentage_aspect / 100) + $overlay_width;
+		}
+		else
+		{
+			$percentage_aspect = ($source_width-$overlay_width)/$source_width*100; 
+			$overlay_width = $source_width;
+			$overlay_height = $source_width * ($percentage_aspect / 100) + $overlay_height;
+		}
+		
+		// Resize
+		imagecopyresized (
+			$source_gd_image,
+			$overlay_gd_image,
+			($source_width/2) - ($overlay_width/2),
+			($source_height/2) - ($overlay_height/2),
+			0,
+			0,
+			$overlay_width,
+			$overlay_height,
+			$width, 
+			$height
+		);
+        */
+       imagecopyresized (
+            $source_gd_image,
+            $overlay_gd_image,
+            0,
+            0,
+            0,
+            0,
+            $source_width,
+            $source_height,
+            $width, 
+            $height
+        );
 	}
-	
-	// Resize
-	imagecopyresized (
-		$source_gd_image,
-		$overlay_gd_image,
-		($source_width/2) - ($overlay_width/2),
-		($source_height/2) - ($overlay_height/2),
-		0,
-		0,
-		$overlay_width,
-		$overlay_height,
-		$width, 
-		$height
-	);
-    */
-    imagecopyresized (
-        $source_gd_image,
-        $overlay_gd_image,
-        0,
-        0,
-        0,
-        0,
-        $source_width,
-        $source_height,
-        $width, 
-        $height
-    );
 	//Edit End
 	
 	
@@ -190,34 +216,34 @@ add_filter( 'wp_generate_attachment_metadata', 'ptp_generate_watermaked_images',
  */
 function ptp_product_metadata_defaults() {
     $metadata = array(
-                    '_virtual'               => 'no',
+                    '_virtual' => 'no',
                     '_sale_price_dates_from' => '',
-                    '_sale_price_dates_to'   => '',
-                    '_price'                 => '',
-                    '_stock'                 => '',
-                    '_stock_status'          => 'instock',
-                    '_backorders'            => 'no',
-                    '_manage_stock'          => 'no',
-                    '_downloadable_files'    => '',
-                    '_download_limit'        => '',
-                    '_download_expiry'       => '',
-                    '_product_attributes'    => array(),
-                    '_downloadable'          => 'no',
-                    '_sku'                   => '',
-                    '_height'                => '',
-                    '_width'                 => '',
-                    '_length'                => '',
-                    '_weight'                => '',
-                    '_featured'              => 'no',
-                    '_visibility'            => 'visible',
-                    '_tax_class'             => '',
-                    '_tax_status'            => '',
-                    '_sale_price'            => '',
-                    '_regular_price'         => '',
-                    'total_sales'            => 0,
+                    '_sale_price_dates_to' => '',
+                    '_price' => '',
+                    '_stock' => '',
+                    '_stock_status' => 'instock',
+                    '_backorders' => 'no',
+                    '_manage_stock' => 'no',
+                    '_downloadable_files' => '',
+                    '_download_limit' => '',
+                    '_download_expiry' => '',
+                    '_product_attributes' => array(),
+                    '_downloadable' => 'no',
+                    '_sku' => '',
+                    '_height' => '',
+                    '_width' => '',
+                    '_length' => '',
+                    '_weight' => '',
+                    '_featured' => 'no',
+                    '_visibility' => 'visible',
+                    '_tax_class' => '',
+                    '_tax_status' => '',
+                    '_sale_price' => '',
+                    '_regular_price' => '',
+                    'total_sales' => 0,
                     '_product_image_gallery' => '',
-                    '_purchase_note'         => '',
-                    '_sold_individually'     => ''
+                    '_purchase_note' => '',
+                    '_sold_individually' => ''
                 );
 
     return $metadata;
@@ -237,6 +263,33 @@ function ptp_variations() {
     if( !$variation_group_id ) {
         $term_id = $_GET['term_id'] ? $_GET['term_id'] : get_queried_object_id();
         $variation_group_id = ptp_get_term_meta( $term_id, $ptp_importer->term_variation_group_meta_key, true );
+    }
+
+    if( is_array( $variation_group_id ) ) {
+        $variation_group_id = $variation_group_id[ 0 ];
+    }
+
+    $variation_obj = PTPImporter_Variation_Group::getInstance();
+    $group = $variation_obj->group( $variation_group_id );
+
+    return $group->variations;
+}
+
+/**
+ *  Returns variations of the product
+ *
+ * @return array $variations.
+ */
+function ptp_get_product_variations( $post_id = null ) {
+    global $ptp_importer;
+
+    if( !$post_id ) {
+        $post_id = get_the_ID();
+    }
+
+    $variation_group_id = get_post_meta( $post_id, '_ptp_variation_group_id', true );
+    if( is_array( $variation_group_id ) ) {
+        $variation_group_id = $variation_group_id[ 0 ];
     }
 
     $variation_obj = PTPImporter_Variation_Group::getInstance();

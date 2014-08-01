@@ -5,7 +5,7 @@ Plugin URI: http://www.theportlandcompany.com/shop/custom-web-applications/bulk-
 Description: This Plugin is an extension to WooCommerce and enables users to bulk import photos, which are automatically converted into Products.
 Author: The Portland Company, Designed by Spencer Hill, Coded by Redeye Adaya
 Author URI: http://www.theportlandcompany.com
-Version: 2.2.8
+Version: 2.3.0
 Copyright: 2013 The Portland Company 
 License: GPL v3
 */
@@ -217,8 +217,15 @@ class PTP_Importer {
         $watermarkpath = get_option($this->settings_meta_key);
         if(!$watermarkpath || !isset($watermarkpath['watermark_path']) || !trim( $watermarkpath['watermark_path'])) {
             $this->watermark_path = plugins_url( 'assets/images/watermark.png', __FILE__ );     
-        } else
-        {
+        } else {
+            $watermark_path = $watermarkpath['watermark_path'];
+            $upload_dir     = wp_upload_dir();
+            if( preg_match( '/uploads(\/|\\\\)/i', $watermark_path ) ) {
+                $relative_path = substr( $watermark_path, strpos($watermark_path, 'uploads') + 7 );
+                $watermarkpath['watermark_path'] = $upload_dir[ 'basedir' ] . $relative_path;
+            } else {
+                $watermarkpath['watermark_path'] = $upload_dir[ 'basedir' ] . $watermarkpath['watermark_path'];
+            }
             $this->watermark_path = $watermarkpath['watermark_path'];
         }
         $this->plugin_name                    = 'Bulk Photo to Product Importer Extension for WooCommerce';
@@ -499,7 +506,13 @@ class PTP_Importer {
 		    update_user_meta( get_current_user_id(), 'dismiss_coupon_reminder', true );
 		    return;
 		}
-		
+
+        if( !file_exists( $this->watermark_path ) ) {
+            echo '<div class="error"><p>Invalid watermark path. <a href="';
+            echo admin_url( 'admin.php?page=ptp_settings' );
+            echo '">Click here to update the watermark path.</a></p></div>';
+        }
+
 		$dismiss_coupon_reminder = get_user_option( 'dismiss_coupon_reminder' );
 		$dismiss_downloadable_variations_reminder = get_user_option( 'dismiss_downloadable_variations_reminder' );
 		$dismiss_first_time_tutorial = get_user_option( 'dismiss_first_time_tutorial' );

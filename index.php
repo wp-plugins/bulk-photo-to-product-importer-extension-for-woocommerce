@@ -8,7 +8,12 @@
 global $ptp_importer;
 $settings_obj = PTPImporter_Settings::getInstance();
 $settings = $settings_obj->get();
-$bptpi_category_naming_scheme = $settings['bptpi_category_naming_scheme'];
+$bptpi_category_naming_scheme_value = $settings['bptpi_category_naming_scheme'];
+if ( isset($bptpi_category_naming_scheme_value) ) {
+	$bptpi_category_naming_scheme = $settings['bptpi_category_naming_scheme'];
+} else {
+	$bptpi_category_naming_scheme = 'Category';
+}
 
 $plugin_name = rawurlencode( 'Photo to Product Importer Extension for WooCommerce' );
 $plugin_url = rawurlencode( 'http://goo.gl/sCkeS' );

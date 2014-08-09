@@ -5,7 +5,7 @@ Plugin URI: http://www.theportlandcompany.com/shop/custom-web-applications/bulk-
 Description: This Plugin is an extension to WooCommerce and enables users to bulk import photos, which are automatically converted into Products.
 Author: The Portland Company, Designed by Spencer Hill, Coded by Redeye Adaya
 Author URI: http://www.theportlandcompany.com
-Version: 2.3.0
+Version: 2.3.1
 Copyright: 2013 The Portland Company 
 License: GPL v3
 */
@@ -19,7 +19,7 @@ class PTP_Importer {
     /**
      * @var string
      */
-    public $version = '2.2.8';
+    public $version = '2.3.1';
 
     /**
      * @var string
@@ -215,7 +215,8 @@ class PTP_Importer {
         $this->settings_meta_key = '_ptp_settings';
         
         $watermarkpath = get_option($this->settings_meta_key);
-        if(!$watermarkpath || !isset($watermarkpath['watermark_path']) || !trim( $watermarkpath['watermark_path'])) {
+        
+        if ( !$watermarkpath || !isset( $watermarkpath['watermark_path'] ) || !trim( $watermarkpath['watermark_path'])) {
             $this->watermark_path = plugins_url( 'assets/images/watermark.png', __FILE__ );     
         } else {
             $watermark_path = $watermarkpath['watermark_path'];
@@ -502,19 +503,18 @@ class PTP_Importer {
 		    update_user_meta( get_current_user_id(), 'dismiss_upgrade_reminder', true );
 		    return;
 		}
-		if ( $_GET['dismiss_coupon_reminder'] == true ) {
-		    update_user_meta( get_current_user_id(), 'dismiss_coupon_reminder', true );
-		    return;
-		}
-
-        if( !file_exists( $this->watermark_path ) ) {
+		
+		$correct_watermark_path = plugin_dir_path( __FILE__ ) . 'assets/images/watermark.png';
+        
+        if( !file_exists( $correct_watermark_path ) ) {
             echo '<div class="error"><p>Invalid watermark path. <a href="';
             echo admin_url( 'admin.php?page=ptp_settings' );
-            echo '">Click here to update the watermark path.</a></p></div>';
+            echo '">';
+            echo $blahblah;
+            file_exists( $blahblah );
+            echo 'Click here to update the watermark path.</a></p></div>';
         }
 
-		$dismiss_coupon_reminder = get_user_option( 'dismiss_coupon_reminder' );
-		$dismiss_downloadable_variations_reminder = get_user_option( 'dismiss_downloadable_variations_reminder' );
 		$dismiss_first_time_tutorial = get_user_option( 'dismiss_first_time_tutorial' );
 		$dismiss_upgrade_reminder = get_user_option( 'dismiss_upgrade_reminder' );
     
@@ -584,25 +584,6 @@ class PTP_Importer {
 		</div>
 		
 		
-		
-		<?php if ( $dismiss_downloadable_variations_reminder != 1 ) { ?>
-		
-			<div class="updated">
-			
-	            <?php 
-	            printf( 
-	                '<p> %1$s <a class="ptp-nag-close" href="%2$s"> %3$s </a> </p>', 
-	                __( 'Downloadable Variations Introduced!</b> Simply create a BPTPI Variation named "Downloadable" and viola! Any users who purchase that Variation will be able to download the photo upon purchasing!', 'ptp' ), 
-	                esc_url( add_query_arg( 'dismiss_downloadable_variations_reminder', true ) ), 
-	                __( 'Dismiss', 'ptp' ) 
-	            ); 
-	            ?>
-	            
-			</div>
-			
-		<?php } ?>
-		
-		
 
 		<?php if ( ! class_exists( 'BPTPI_Premium' ) ) { ?>
 		
@@ -612,34 +593,14 @@ class PTP_Importer {
 			
 				<div class="updated purchase-premium-notification">
 					
-					<p><a href="http://www.theportlandcompany.com/shop/custom-web-applications/photo-to-product-importer-wordpress-plugin-for-woocommerce" target="_blank">Unlock new features by purchasing the Premium version &#187;</a>
+					<p><a href="http://www.theportlandcompany.com/product/premium-bulk-photo-to-product-importer-extension-for-woocommerce/" target="_blank">Unlock new features by purchasing the Premium version &#187;</a>
 				
 						<a class="ptp-nag-close" href="<?php echo $_SERVER['REQUEST_URI']; ?>&dismiss_upgrade_reminder=true"><?php _e( 'Dismiss', 'ptp' ); ?></a>
 					</p>
 					
 				</div>
 				
-			<?php } ?>
-			
-			
-			
-			<?php if ( $dismiss_coupon_reminder != 1 ) { ?>
-			
-				<div class="updated">
-				
-		            <?php 
-		            printf(
-		                '<p>Get a Coupon to Upgrade for $30! &nbsp;&nbsp;&nbsp; 1. <a href="https://plus.google.com/109726560580019725502/about?hl=en&gl=us" target="_blank">Leave a Review on Google &#187;</a> &nbsp;&nbsp;&nbsp; 2. <a href="http://www.theportlandcompany.com/contact-and-support/" target="_blank">Send Us a Message for a Coupon &#187;</a> &nbsp;&nbsp;&nbsp; 3. <a href="http://www.theportlandcompany.com/shop/custom-web-applications/photo-to-product-importer-wordpress-plugin-for-woocommerce" target="_blank">Use Your Coupon to Purchase for $30 &#187;</a> <a class="ptp-nag-close" href="%2$s"> %3$s </a> </p>', 
-		                __( 'Downloadable Variations Introduced!</b> Simply create a BPTPI Variation named "Downloadable" and viola! Any users who purchase that Variation will be able to download the photo upon purchasing!', 'ptp' ), 
-		                esc_url( add_query_arg( 'dismiss_coupon_reminder', true ) ), 
-		                __( 'Dismiss', 'ptp' ) 
-		            ); 
-		            ?>
-		            
-				</div>
-				
-			<?php
-			}
+			<?php }
 			}
 		
 		}

@@ -428,8 +428,8 @@ function ptp_add_custom_elements( $q ) {
     global $ptp_importer;
 
     // Disable quick order if not in child-most category
-    if ( get_term_children( $term_id, $ptp_importer->woocommerce_cat_tax ) )
-        return;
+    //if ( get_term_children( $term_id, $ptp_importer->woocommerce_cat_tax ) )
+    //    return;
 
     add_action( 'woocommerce_before_shop_loop_item', 'ptp_add_checkbox' );
     add_action( 'woocommerce_after_shop_loop', 'ptp_quick_order_trigger' );

@@ -80,12 +80,12 @@ class PTPImporter_Product {
               $this->create_variations( $id, $post_id, $file_data );
             }
 
-      if(isset($posted['assoc'][$file_id]))
-      {
-        unset($posted['users']);
-        $posted['users'] = $posted['assoc'][$file_id];
-        unset($posted['assoc']);
-      }
+			if(isset($posted['assoc'][$file_id]))
+			{
+				unset($posted['users']);
+				$posted['users'] = $posted['assoc'][$file_id];
+				unset($posted['assoc']);
+			}
       
             do_action( 'ptp_create_products_complete', $post_id, $posted['term_id'], $posted['users']);
 

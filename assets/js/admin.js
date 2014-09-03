@@ -95,111 +95,41 @@
                 });
             },
             addNew: function() {
-                var _this         = this;
-                var form          = $( '.photos-import-form' );
-                var b             = b || null;
-                var data          = form.serializeArray( );
-                var attach        = {};
-                var submitBtn     = $( '#import_photos' );
-                var maxRecursions = 5;
-
-                attach.medias = $.grep( data, function( i ) { return i.name == "attachments[]"; });
-                attach.titles = $.grep( data, function( i ) { return /^titles\[\d+\]$/.test(i.name); });
-
-                submitBtn
+				var _this         = this;
+				var form          = $( '.photos-import-form' );
+				var data          = form.serializeArray( );
+				var submitBtn     = $( '#import_photos' );
+				var picker		  = $( '.import' );
+				var fileList	  = $( '.upload-filelist' );
+				
+				submitBtn
                     .css('width', $('#import_photos')
                         .css('width').replace(/[^-\d\.]/g, ''))
                     .val( 'Saving...' )
-                    .prop( 'disabled', 'disabled' );
-
-                for( var i = 0; i < maxRecursions && i < attach.medias.length; i++ ) {
-                    _this.recursiveAdd( data, attach, form, _this.afterSave );
-                }
-
-                return false;
-            },
-            afterSave: function( ) {
-                var _this     = this;
-                var counter   = 1;
-                var els       = $( '.upload-filelist' ).find( '*' );
-                var submitBtn = $( '#import_photos' );
-
-                submitBtn.css('width', 'auto')
-                    .val( 'Save and Continue');
-
-                els.animate({ opacity: 0 }, 300, function(){
-                    if ( ++counter == els.length ) {
-                        $( '.upload-filelist' ).after( '<p class="import" style="display:none;"><a class="browser button button-hero" id="upload-pickfiles" href="#">Select Photos</a></p>' );
-                        $( '.import' ).fadeIn(function(){
-                            submitBtn.val( 'Save and Continue' ).prop( 'disabled', false );
-                            $('.uploaded-item').remove();
-                            $('.upload-filelist').css({ 'display': 'block'});
-                            new PTPImporter_Uploader('upload-pickfiles', 'upload-container');
-                        });
-                        $('.uploaded-item').remove();
-                    }
+                    .prop( 'disabled', true );
+				
+				submitBtn.after('<div class="saving"><img src="' + PTPImporter_Vars.pluginurl + '/assets/images/wpspin.gif" width="18" height="18" /></div>');
+				picker.fadeOut();
+				
+				$.post(PTPImporter_Vars.ajaxurl, data, function(res) 
+				{
+                        res = $.parseJSON(res);                    
+						if( res.success )
+							_this.showSuccessMessage( "Images successfully uploaded and associated products were created", " " );
+						else
+							_this.showErrorMessage( "Unable to import photos", " " );
+						
+						$(".saving").remove();
+						submitBtn
+							.css('width', $('#import_photos')
+								.css('width').replace(/[^-\d\.]/g, ''))
+							.val( 'Save and Continue' )
+							.prop( 'disabled', false );
+						submitBtn.fadeOut();
+						picker.fadeIn();
+						fileList.html("");		
                 });
-
-                $(this).trigger('reset');
-                $('.photos-import-form input[type=text]').val('');
-                $('.photos-import-form select').val('').trigger('liszt:updated');
-
-                // Add hook
-                $('.photos-import-form').trigger( 'ptp_reset_import_form' );
-
-                if ($('.updated').is(':visible')) {
-                    $('.updated p').text( 'Your photo\'s were successfully imported and converted into WooCommerce Products. You may continue editing them from the Products menu item.' );
-                } else {
-                    $('.updated').slideToggle(function(){
-                        $('.updated p').text( 'Your photo\'s were successfully imported and converted into WooCommerce Products. You may continue editing them from the Products menu item.' );
-                    });
-                }
-            },
-            recursiveAdd: function( data, attach, form, cb ) {
-                var _this   = this;
-                var media   = attach.medias.shift( );
-                var chunk   = $.grep( data, function( i ) { return /^(attachments\[\]|titles\[\d+\])$/.test(i.name) === false; });
-
-                if( !media ) {
-                    cb( );
-                    return true;
-                }
-
-                var mediaid = media.value;
-                var elem    = form.find( '.uploaded-item' ).has( '[name="titles[' + mediaid + ']"]' );
-                var regx    = new RegExp( '\\\[' + mediaid + '\\\]' );
-                var title   = $.grep( attach.titles, function( i ) { return regx.test(i.name); } );
-                var title   = title.length ? title.shift( ) : {};
-
-                chunk.push( media );
-                chunk.push( title );
-
-                _this.save( elem, chunk )
-                    .done( function( ) {
-                        _this.recursiveAdd( data, attach, form, cb );
-                    } )
-                    .fail( function( ) {
-                        _this.showErrorMessage( "Unable to save Media #", mediaid );
-                    } );
-            },
-            save: function(elem, data) {
-                var _this  = this;
-                this.success = false;
-                elem.html( '<div class="saving"><img src="' + PTPImporter_Vars.pluginurl + '/assets/images/wpspin.gif" width="18" height="18" /> Saving..' );
-
-                return $.post(
-                    PTPImporter_Vars.ajaxurl, 
-                    data, 
-                    function( res ) {
-                        this.success = true;
-                        res          = $.parseJSON(res);
-                        elem.html( '<div class="saving" stle="color: #7ad03a;"><i class="dashicons dashicons-yes">Success!</div>' );
-                        elem.delay( 2000 ).fadeOut( 'fast', function( ) {
-                            elem.remove( );
-                        } );
-                        _this.showSuccessMessage( "Success! Added the following products: ", res.postID );
-                    }
-                );
+						
             },
             showErrorMessage: function( message, add ) {
                 var add = add || null;
@@ -223,112 +153,9 @@
                     });
                 }
             },
-            oldaddNew: function (e,b) {
-            	if(e == null){
-                    var that = $(this),
-                    e = that.serializeArray();
-				}
-				var submitNumber = 0;
-				var nullObject = null;
-				var submitArray = [];
-				for (var i = 0; i < e.length;i++) {
-					if(typeof e[i] != 'undefined'){
-    				if (e[i].hasOwnProperty("name")) {
-        				if(e[i].name.match('(attachment)') && submitNumber < 2){
-        					//remove property and add to array to be ajaxed
-        					submitArray.push(encodeURIComponent(e[i].name) + "=" + encodeURIComponent(e[i].value));
-        					delete e[i];
-        					submitNumber++;
-        					}else{
-							//add other properties to the new array 
-							if(e[i].name.match('(attachment)') == nullObject)
-							submitArray.push(encodeURIComponent(e[i].name) + "=" + encodeURIComponent(e[i].value));
-	    					}
-    					}
-    				}
-				}
-				submitArray = submitArray.join("&");  
-
-				if(submitNumber > 0){
-                    $('#import_photos').after('<div class="ptp-loading">Saving...</div>');
-                    $('#import_photos').css('width', $('#import_photos').css('width').replace(/[^-\d\.]/g, '')).val( 'Saving...' ).prop( 'disabled', 'disabled' );
-                    $('#import_photos').toggleClass('loading-primary');
-                    $.post(PTPImporter_Vars.ajaxurl, submitArray, function(res) {
-                    		try{
-                        res = $.parseJSON(res);
-
-                        if( res.success ) {
-    							PTPImporter.BulkImport.addNew.call(nullObject,e);
-                          
-                        } else {
-                            console.log(res.error);
-
-                            if ($('.error').is(':visible')) {
-                               $('.error p').html( 'Unable to import photos. Please check the documentation and see if you configured you server properly.<br\> <b>Try increasing the Time Interval</b> in the settings section<br/>Still having problems? We can help! <br />Our payed support forum is the best way to get the assistance you need' );
-                            } else {
-                                $('.error').slideToggle(function(){
-                                   $('.error p').html( 'Unable to import photos. Please check the documentation and see if you configured you server properly.<br\> <b>Try increasing the Time Interval</b> in the settings section<br/>Still having problems? We can help! <br />Our payed support forum is the best way to get the assistance you need' );
-                                });
-                            }
-                        }
-
-                        $('.chzn-error').removeClass('chzn-error');
-                        $('#import_photos').removeClass('loading-primary');
-                        $('.ptp-loading').remove();
-                      }catch(err){
-                       console.log(err);
-
-                            if ($('.error').is(':visible')) {
-                               $('.error p').html( 'Unable to import photos. Please check the documentation and see if you configured you server properly.<br\> <b>Try increasing the Time Interval</b> in the settings section<br/>Still having problems? We can help! <br />Our payed support forum is the best way to get the assistance you need' );
-                            } else {
-                                $('.error').slideToggle(function(){
-                                   $('.error p').html( 'Unable to import photos. Please check the documentation and see if you configured you server properly.<br\> <b>Try increasing the Time Interval</b> in the settings section<br/>Still having problems? We can help! <br />Our payed support forum is the best way to get the assistance you need' );
-                                });
-                            }
-                        $('.chzn-error').removeClass('chzn-error');
-                        $('#import_photos').removeClass('loading-primary');
-                        $('.ptp-loading').remove();
-                        }
-                    
-                    });
-				} else {
-				  var counter = 1,
-                        els = $( '.upload-filelist' ).find( '*' );
-
-                    els.animate({ opacity: 0 }, 300, function(){
-                        if ( ++counter == els.length ) {
-                            $( '.upload-filelist' ).after( '<p class="import" style="display:none;"><a class="browser button button-hero" id="upload-pickfiles" href="#">Select Photos</a></p>' );
-                            $( '.import' ).fadeIn(function(){
-                                $( '#import_photos' ).val( 'Save and Continue' ).prop( 'disabled', false );
-                                $('.uploaded-item').remove();
-                                $('.upload-filelist').css({ 'display': 'block'});
-                                new PTPImporter_Uploader('upload-pickfiles', 'upload-container');
-                            });
-                            $('.uploaded-item').remove();
-                        }
-                    });
-
-                    $(this).trigger('reset');
-                    $('.photos-import-form input[type=text]').val('');
-                    $('.photos-import-form select').val('').trigger('liszt:updated');
-
-                    // Add hook
-                    $('.photos-import-form').trigger( 'ptp_reset_import_form' );
-
-                    if ($('.updated').is(':visible')) {
-                        $('.updated p').text( 'Your photo\'s were successfully imported and converted into WooCommerce Products. You may continue editing them from the Products menu item.' );
-                    } else {
-                        $('.updated').slideToggle(function(){
-                            $('.updated p').text( 'Your photo\'s were successfully imported and converted into WooCommerce Products. You may continue editing them from the Products menu item.' );
-                        });
-                    }					
-				}
-                return false;
-            },
             remove: function (e) {
                 e.preventDefault();
-
-                var that = $(this),
+				var that = $(this),
                     data = {
                         file_id: that.data('id'),
                         action: 'ptp_product_delete',
@@ -343,6 +170,8 @@
                         that.closest('.uploaded-item').fadeOut(function(){
                             $(this).remove();
                         });
+						if($( '.upload-filelist' ).children().length == 1)
+								$('#import_photos').fadeOut();
                     } else {
                         console.log(res.error);
                     }

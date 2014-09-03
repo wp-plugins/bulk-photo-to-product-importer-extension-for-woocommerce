@@ -97,14 +97,13 @@ $action = 'ptp_product_import';
 				   	<div id="upload-container">
 						<div class="upload-filelist">
 						</div>
-
-						<p class="import"><a class="browser button button-hero" id="upload-pickfiles" href="#">Select Photos</a></p>
 					</div>
 				</div>
 				
 				<div class="form-field">
-				    <input type="hidden" name="action" value="<?php echo $action; ?>" />
-				    <input type="submit" id="import_photos" class="ptp-button-primary" value="<?php echo esc_attr( $submit ); ?>">
+				    <p class="import"><a class="ptp-button-primary" id="upload-pickfiles" href="#">Select Photos</a></p>
+					<input type="hidden" name="action" value="<?php echo $action; ?>" />
+					<input type="submit" id="import_photos" class="ptp-button-primary" value="<?php echo esc_attr( $submit ); ?>">
 				</div>	
 			</div>
 

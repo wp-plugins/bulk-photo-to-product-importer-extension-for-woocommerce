@@ -39,6 +39,7 @@
         this.uploader.bind('UploadProgress', $.proxy(this, 'progress'));
         this.uploader.bind('Error', $.proxy(this, 'error'));
         this.uploader.bind('FileUploaded', $.proxy(this, 'uploaded'));
+		this.uploader.bind('UploadComplete', $.proxy(this, 'allowsave'));
 
         this.uploader.init();
     };
@@ -46,11 +47,10 @@
     PTPImporter_Uploader.prototype = {
 
         init: function (up, params) {
-        },
+			$("#import_photos").hide();
+		},
 
         added: function (up, files) {
-            $('.import').remove();
-
             var $container = $('#' + this.container).find('.upload-filelist');
 
             $.each(files, function(i, file) {
@@ -61,11 +61,13 @@
             up.refresh(); // Reposition Flash/Silverlight
             // up.start();
         },
+		allowsave: function () {
+            $("#import_photos").fadeIn();
+        },
 
         upload: function (uploader) {
             this.uploader.start();
         },
-
         progress: function (up, file) {
             var item = $('#' + file.id);
 

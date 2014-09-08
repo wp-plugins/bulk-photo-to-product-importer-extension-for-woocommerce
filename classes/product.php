@@ -75,10 +75,11 @@ class PTPImporter_Product {
             set_post_thumbnail( $post_id, $file_id );
 
             // Create variations(child products) for this grouped product
-            $variation_groups = (array) $posted['variation_group'];
-            foreach( $variation_groups as $id ) {
-              $this->create_variations( $id, $post_id, $file_data );
-            }
+            $variation_groups = $posted['variation_group'];
+            if(is_array($variation_groups))
+				foreach( $variation_groups as $id ) {
+				  $this->create_variations( $id, $post_id, $file_data );
+				}
 
 			if(isset($posted['assoc'][$file_id]))
 			{
@@ -394,7 +395,6 @@ class PTPImporter_Product {
 
         return array( 'success' => false, 'error' => $_FILES['ptp_attachment']['name'] );
     }
-
     /**
      * Get an attachment file
      *

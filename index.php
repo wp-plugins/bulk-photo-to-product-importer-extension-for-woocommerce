@@ -89,7 +89,6 @@ $action = 'ptp_product_import';
 			</div>
 
 		</div>
-
 		<div id="ptp-col-right">	
 
 			<div class="wp-box">

@@ -97,7 +97,7 @@ class PTPImporter_Variation_Group {
             $groups = $child;
         }
 
-
+		if(is_array($groups))
         foreach( $groups as $group ) : 
             ++$count;
             $alternate = $count % 2 == 0 ? '' : 'class="alternate"';

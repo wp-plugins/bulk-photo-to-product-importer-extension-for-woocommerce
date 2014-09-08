@@ -155,33 +155,12 @@
             },
             remove: function (e) {
                 e.preventDefault();
-				var that = $(this),
-                    data = {
-                        file_id: that.data('id'),
-                        action: 'ptp_product_delete',
-                        '_wpnonce': PTPImporter_Vars.nonce
-                    };
-
-                $.post(PTPImporter_Vars.ajaxurl, data, function(res) {
-                	try{
-                    res = $.parseJSON(res);
-
-                    if (res.success) {
-                        that.closest('.uploaded-item').fadeOut(function(){
-                            $(this).remove();
-                        });
-						if($( '.upload-filelist' ).children().length == 1)
-								$('#import_photos').fadeOut();
-                    } else {
-                        console.log(res.error);
-                    }
-                }catch(err){
-                 console.log(res.error);
-                 $('.error').slideToggle(function(){
-                               $('.error p').html( 'Unable to import photos. Please check the documentation and see if you configured you server properly.<br\> <b>Try increasing the Time Interval</b> in the settings section<br/>Still having problems? We can help! <br />Our payed support forum is the best way to get the assistance you need' );
-                            });
-                }
+				var that = $(this);
+				that.closest('.uploaded-item').fadeOut(function(){
+                    $(this).remove();
                 });
+				if($( '.upload-filelist' ).children().length == 1)
+					$('#import_photos').fadeOut();
             },
             quickAddCategory: function(e) {
                 e.preventDefault();

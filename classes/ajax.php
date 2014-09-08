@@ -8,6 +8,7 @@ class PTPImporter_Ajax {
     public function __construct() {
 
         add_action( 'wp_ajax_ptp_product_upload', array($this, 'product_upload') );
+		add_action( 'wp_ajax_ptp_product_select', array($this, 'product_select') );
         add_action( 'wp_ajax_ptp_product_import', array($this, 'product_import') );
         add_action( 'wp_ajax_ptp_product_delete', array($this, 'product_delete') );
 
@@ -133,6 +134,28 @@ class PTPImporter_Ajax {
 
         exit;
     }
+	public function product_select() {
+        check_ajax_referer( 'ptp_product_select', 'ptp_nonce' );
+		global $ptp_importer;
+		$watermarker = get_post_meta($_POST['id'],$ptp_importer->attachment_meta_key);
+		if(empty($watermarker))
+		{
+			$file_loc = get_attached_file($_POST['id']);
+			update_post_meta( $_POST['id'], $ptp_importer->attachment_meta_key, 'yes' );
+			$attach_data = wp_generate_attachment_metadata( $_POST['id'], $file_loc );
+			wp_update_attachment_metadata( $_POST['id'], $attach_data );	
+		}
+		$photos_obj = PTPImporter_Product::getInstance();
+        $file = $photos_obj->get_file( $_POST['id'] );
+        $html = ptp_uploaded_item_html( $file );
+
+        echo json_encode( array(
+            'success' => true,
+            'content' => $html
+        ) );
+
+        exit;
+    }
 
     public function product_delete() {
         check_ajax_referer( 'ptp_nonce' );
@@ -140,8 +163,9 @@ class PTPImporter_Ajax {
         $file_id = (isset( $_POST['file_id'] )) ? intval( $_POST['file_id'] ) : 0;
 
         $photos_obj = PTPImporter_Product::getInstance();
-        $res = $photos_obj->delete_file( $file_id, true );
-
+        /*
+		$res = $photos_obj->delete_file( $file_id, true );
+		
         if ( !$res ) {
             echo json_encode( array(
                 'success' => false,
@@ -150,7 +174,7 @@ class PTPImporter_Ajax {
 
             exit;
         }
-
+		*/
         echo json_encode( array(
             'success' => true
         ) );

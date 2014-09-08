@@ -21,8 +21,6 @@ $settings = $settings_obj->get();
 
 <div id="ptp-cols" style="display:none;">
 
-	<?php include( plugin_dir_path( __FILE__ ) . '/remote-files/settings-sidebar.php'); ?>
-
 	<div id="ptp-col-left">
 	
 		<?php if ( current_user_can( 'manage_options' ) ) : ?>
@@ -116,7 +114,31 @@ $settings = $settings_obj->get();
 				</table>
 			</form>
 		</div>
-		
+		<div class="wp-box">
+			<?php
+				$uploadersys = get_option($this->settings_meta_key."_uploader");
+				if(isset($_GET["switchuploader"]) && $_GET["switchuploader"] == true){
+					if($uploadersys == "basic")
+						update_option($this->settings_meta_key."_uploader","image");
+					else
+						update_option($this->settings_meta_key."_uploader","basic");
+				}				
+			?>
+            <div class="title"><h3><?php _e( 'Uploader Settings', 'ptp' ); ?></h3></div>
+                <table class="ptp-input widefat">
+                    <tbody>
+                        <tr>
+							<td class="label">
+								<label>Uploader Setup</label>
+                            </td>
+                            <td>
+								You are using the "<?php echo get_option($this->settings_meta_key."_uploader"); ?>" uploader. To switch uploaders click <a href="admin.php?page=ptp_settings&switchuploader=true">here</a>
+								<p class="ptp-subtext">There are two types of uploaders for BPTPI, the basic uploader and the image library, the basic uploader requires lesser resources than the image uploader, however the image uploader has more features.</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table> 
+        </div>
 		<?php if ( ptp_is_active() && class_exists( 'BPTPI_Premium' ) ) : ?>
 		<div class="wp-box">
             <?php 

@@ -158,7 +158,7 @@ function ptp_generate_watermaked_images( $metadata = array(), $attachment_id ) {
     global $ptp_importer;
 
     // Donnot embed watermark if not our image
-    if ( !get_post_meta( $attachment_id, $ptp_importer->attachment_meta_key, true ) )
+    if ( !get_post_meta( $attachment_id, $ptp_importer->attachment_meta_key, true ))
         return;
 
     // Get uploads dir
@@ -171,7 +171,7 @@ function ptp_generate_watermaked_images( $metadata = array(), $attachment_id ) {
     $source_file_path = "{$uploads_path}/" . $file_name;
     $woocommerce_uploads_path = $uploads_dir['basedir'] . '/woocommerce_uploads'  . $uploads_dir['subdir'];
     $outpout_file_path = ptp_watermarked_image_path( $source_file_path, $file_name, $file_type['ext'] );
-    ptp_add_watermark( $source_file_path, $outpout_file_path, $ptp_importer->watermark_path, 100 );
+	ptp_add_watermark( $source_file_path, $outpout_file_path, $ptp_importer->watermark_path, 100 );
 
     // Make sure the file is accessible
     chmod( $outpout_file_path , 0775 );
@@ -248,6 +248,15 @@ function ptp_product_metadata_defaults() {
 
     return $metadata;
 }
+function upload_filemu( $post_id = 0 ) {
+	global $ptp_importer;
+	$file_loc = get_attached_file($post_id);
+	update_post_meta( $post_id, $ptp_importer->attachment_meta_key, 'yes' );
+	$attach_data = wp_generate_attachment_metadata( $post_id, $file_loc );
+	wp_update_attachment_metadata( $post_id, $attach_data );	
+}
+//add_action('add_attachment', 'upload_filemu');
+
 
 /**
  *  Returns variations of the current term

@@ -5,7 +5,7 @@ Plugin URI: http://www.theportlandcompany.com/shop/custom-web-applications/bulk-
 Description: This Plugin is an extension to WooCommerce and enables users to bulk import photos, which are automatically converted into Products.
 Author: The Portland Company, Designed by Spencer Hill, Coded by Redeye Adaya
 Author URI: http://www.theportlandcompany.com
-Version: 2.3.2
+Version: 2.3.4
 Copyright: 2013 The Portland Company 
 License: GPL v3
 */
@@ -19,7 +19,7 @@ class PTP_Importer {
     /**
      * @var string
      */
-    public $version = '2.3.2';
+    public $version = '2.3.4';
 
     /**
      * @var string
@@ -116,6 +116,10 @@ class PTP_Importer {
      */   
     private static $upload_path = '';
 
+	 /**
+     * @var string
+     */   
+    private static $uploader_sys = '';
 
     function __construct() {
         $this->_init( );
@@ -148,6 +152,7 @@ class PTP_Importer {
         add_filter( 'woocommerce_downloadable_product_name', array( $this, 'downloadName' ), 10, 4 );
         add_filter( 'woocommerce_get_item_downloads', array( $this, 'downloadableName' ), 10, 3 );
         add_filter( 'woocommerce_product_file_download_path', array( $this, 'fixBrokenLinks' ), 10, 3 );
+
     }
 
 
@@ -213,10 +218,18 @@ class PTP_Importer {
         $this->plugin_uri = plugins_url( '', __FILE__ );
         
         $this->settings_meta_key = '_ptp_settings';
-        
-        $watermarkpath = get_option($this->settings_meta_key);
-        
-        if ( !$watermarkpath || !isset( $watermarkpath['watermark_path'] ) || !trim( $watermarkpath['watermark_path'])) {
+        		
+		$watermarkpath = get_option($this->settings_meta_key);
+		
+		$uploadersys = get_option($this->settings_meta_key."_uploader");
+	   	if($uploadersys === false) {
+			add_option($this->settings_meta_key."_uploader","basic");
+			$this->uploader_sys = "basic";
+		}else{
+			$this->uploader_sys = $uploadersys;
+		}
+		
+        if ( !$watermarkpath || !isset( $watermarkpath['watermark_path'] ) || !trim( $watermarkpath['watermark_path']) ) {
             $this->watermark_path = plugins_url( 'assets/images/watermark.png', __FILE__ );     
         } else {
             $watermark_path = $watermarkpath['watermark_path'];
@@ -228,7 +241,10 @@ class PTP_Importer {
                 $watermarkpath['watermark_path'] = $upload_dir[ 'basedir' ] . $watermarkpath['watermark_path'];
             }
             $this->watermark_path = $watermarkpath['watermark_path'];
-        }
+			if(!file_exists($this->watermark_path))
+				$this->watermark_path = plugins_url( 'assets/images/watermark.png', __FILE__ );
+		}
+		
         $this->plugin_name                    = 'Bulk Photo to Product Importer Extension for WooCommerce';
         
         $this->watermarked_suffix             = '_watermarked';
@@ -300,11 +316,12 @@ class PTP_Importer {
         wp_enqueue_script( 'ptp_admin', plugins_url( 'assets/js/admin.js', __FILE__ ) );
         wp_enqueue_script( 'ptp_misc', plugins_url( 'assets/js/misc.js', __FILE__ ) );
 		wp_enqueue_script( 'ptp_pagination', plugins_url( 'assets/js/jquery.simplePagination.js', __FILE__ ) );
-        wp_enqueue_script( 'ptp_uploader', plugins_url( 'assets/js/image.upload.js', __FILE__ ), array('jquery', 'plupload-handlers') );
+        wp_enqueue_script( 'ptp_uploader', plugins_url( 'assets/js/'.$this->uploader_sys.'.upload.js', __FILE__ ), array('jquery', 'plupload-handlers'), null );
 
         wp_localize_script( 'ptp_admin', 'PTPImporter_Vars', array(
             'ajaxurl'   => admin_url( 'admin-ajax.php' ),
             'nonce'     => wp_create_nonce( 'ptp_nonce' ),
+			'muajax'	=> admin_url( 'admin-ajax.php' ) . '?action=ptp_product_select&ptp_nonce=' . wp_create_nonce( 'ptp_product_select' ),
             'is_active' => 'yes',
             'pluginurl' => plugins_url( '', __FILE__ ),
             'adminurl'  => admin_url( '' ),
@@ -518,7 +535,7 @@ class PTP_Importer {
 		$dismiss_first_time_tutorial = get_user_option( 'dismiss_first_time_tutorial' );
 		$dismiss_upgrade_reminder = get_user_option( 'dismiss_upgrade_reminder' );
     
-    	if ( get_current_screen()->parent_base == 'ptp_bulk_import' ) {
+    	if ( get_current_screen()->parent_base == 'ptp_bulk_import' ) {
     	
     		if ( !class_exists('WooCommerce') ) {
     	?>

@@ -140,13 +140,14 @@ class PTPImporter_Product {
                 // Set as downloadable
                 $metadata['_downloadable'] = 'yes';
                 // Set download path
-                $metadata['_downloadable_files'] = array( $file_path );
+                $metadata['_downloadable_files'] = array( md5($file_path) => array( "name" => basename( $file_data['url'] ), "file" => $file_path ));
                 // Set download limit
                 $metadata['_download_limit'] = '';
                 // Set download expiry
                 $metadata['_download_expiry'] = '';
             }
 						
+			// Update metadata
             foreach ( $metadata as $key => $value ) {
               update_post_meta( $post_id, $key, $value );
             }
@@ -217,8 +218,7 @@ class PTPImporter_Product {
                     // Set as downloadable
                     $metadata['_downloadable'] = 'yes';
                     // Set download path
-          $path_parts = pathinfo($file_path);
-                    $metadata['_downloadable_files'] = array( $metadata['_sku'] => array('file' => $file_path, 'name' => $path_parts['filename'] ));
+					$metadata['_downloadable_files'] = array( $file_path );
                     // Set download limit
                     $metadata['_download_limit'] = '';
                     // Set download expiry
@@ -374,6 +374,8 @@ class PTPImporter_Product {
 
             $attach_id = wp_insert_attachment( $attachment, $file_loc );
             update_post_meta( $attach_id, $ptp_importer->attachment_meta_key, 'yes' );
+			$attach_data = wp_generate_attachment_metadata( $attach_id, $file_loc );
+            wp_update_attachment_metadata( $attach_id, $attach_data );
             return array( 'success' => true, 'variations' => $variations, 'file_id' => $attach_id );
         }
 

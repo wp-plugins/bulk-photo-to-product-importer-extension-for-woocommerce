@@ -142,8 +142,6 @@ class PTPImporter_Ajax {
 		{
 			$file_loc = get_attached_file($_POST['id']);
 			update_post_meta( $_POST['id'], $ptp_importer->attachment_meta_key, 'yes' );
-			$attach_data = wp_generate_attachment_metadata( $_POST['id'], $file_loc );
-			wp_update_attachment_metadata( $_POST['id'], $attach_data );	
 		}
 		$photos_obj = PTPImporter_Product::getInstance();
         $file = $photos_obj->get_file( $_POST['id'] );

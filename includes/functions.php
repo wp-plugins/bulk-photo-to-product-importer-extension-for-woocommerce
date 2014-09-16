@@ -156,10 +156,10 @@ function ptp_add_watermark( $source_file_path, $output_file_path, $watermark_fil
  */
 function ptp_generate_watermaked_images( $metadata = array(), $attachment_id ) {
     global $ptp_importer;
-
+	
     // Donnot embed watermark if not our image
     if ( !get_post_meta( $attachment_id, $ptp_importer->attachment_meta_key, true ))
-        return;
+        return $metadata;
 
     // Get uploads dir
     $uploads_dir = wp_upload_dir();
@@ -248,15 +248,6 @@ function ptp_product_metadata_defaults() {
 
     return $metadata;
 }
-function upload_filemu( $post_id = 0 ) {
-	global $ptp_importer;
-	$file_loc = get_attached_file($post_id);
-	update_post_meta( $post_id, $ptp_importer->attachment_meta_key, 'yes' );
-	$attach_data = wp_generate_attachment_metadata( $post_id, $file_loc );
-	wp_update_attachment_metadata( $post_id, $attach_data );	
-}
-//add_action('add_attachment', 'upload_filemu');
-
 
 /**
  *  Returns variations of the current term

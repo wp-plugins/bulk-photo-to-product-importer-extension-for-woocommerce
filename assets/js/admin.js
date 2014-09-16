@@ -101,7 +101,11 @@
 				var submitBtn     = $( '#import_photos' );
 				var picker		  = $( '.import' );
 				var fileList	  = $( '.upload-filelist' );
+				var attach        = {};
 				
+				attach.medias = $.grep( data, function( i ) { return i.name == "attachments[]"; });
+                attach.titles = $.grep( data, function( i ) { return /^titles\[\d+\]$/.test(i.name); });
+				 
 				submitBtn
                     .css('width', $('#import_photos')
                         .css('width').replace(/[^-\d\.]/g, ''))
@@ -110,28 +114,46 @@
 				
 				submitBtn.after('<div class="saving"><img src="' + PTPImporter_Vars.pluginurl + '/assets/images/wpspin.gif" width="18" height="18" /></div>');
 				picker.fadeOut();
-				
-				$.post(PTPImporter_Vars.ajaxurl, data, function(res) 
-				{
-                        res = $.parseJSON(res);                    
-						if( res.success )
-							_this.showSuccessMessage( "Images successfully uploaded and associated products were created", " " );
-						else
-							_this.showErrorMessage( "Unable to import photos", " " );
-						
-						$(".saving").remove();
-						submitBtn
-							.css('width', $('#import_photos')
-								.css('width').replace(/[^-\d\.]/g, ''))
-							.val( 'Save and Continue' )
-							.prop( 'disabled', false );
-						submitBtn.fadeOut();
-						picker.fadeIn();
-						fileList.html("");		
-                });
-						
+				_this.recursiveAdd(attach, data);
             },
-            showErrorMessage: function( message, add ) {
+			recursiveAdd: function( filelist, data ) {
+				var _this         = this;
+				var form          = $( '.photos-import-form' );
+				var picker		  = $( '.import' );
+				var submitBtn     = $( '#import_photos' );
+				var chunk   = $.grep( data, function( i ) { return /^(attachments\[\]|titles\[\d+\])$/.test(i.name) === false; });
+				if(filelist.medias.length > 0){
+					var currentfile = filelist.medias.shift();
+					var mediaid = currentfile.value;
+					var elem    = form.find( '.uploaded-item' ).has( '[name="titles[' + mediaid + ']"]' );
+					var regx    = new RegExp( '\\\[' + mediaid + '\\\]' );
+					var title   = $.grep( filelist.titles, function( i ) { return regx.test(i.name); } );
+					var title   = title.length ? title.shift( ) : {};
+					
+					chunk.push( currentfile );
+					chunk.push( title );
+					
+					$.ajax({type: "POST",url: PTPImporter_Vars.ajaxurl, data: chunk, success: function(){
+						elem.delay( 2000 ).fadeOut( 'fast', function( ) {
+								elem.remove( );
+							} );
+						_this.recursiveAdd(filelist, data);
+					}});					
+				}
+				else
+				{
+					_this.showSuccessMessage( "Images successfully uploaded and associated products were created", " " );
+					$(".saving").remove();
+					submitBtn
+						.css('width', $('#import_photos')
+							.css('width').replace(/[^-\d\.]/g, ''))
+						.val( 'Save and Continue' )
+						.prop( 'disabled', false );
+					submitBtn.fadeOut();	
+					picker.fadeIn();
+				}
+			},
+			showErrorMessage: function( message, add ) {
                 var add = add || null;
                 var div = $( '.error' );
                 if ( div.is(':visible') ) {

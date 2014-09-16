@@ -49,7 +49,6 @@
 					$( '.import' ).fadeIn();
 				});
 			});
-			
 		});
 
 		//Open the uploader dialog

@@ -1,8 +1,4 @@
 <?php
-/*
-*
- * *
-*/
 $urlparts = explode("/",$_SERVER['QUERY_STRING']);
 $photoName = $urlparts[count($urlparts)-1]; // get the last part. This should be the photo filename
 
@@ -26,7 +22,7 @@ $var2 = preg_match("/".$titleBase."/", $filename);
 
 
 //prevent the echo of any other type of file
-if(preg_match("/(.jpg|.png|.gif|.JPG|.PNG|.GIF)/",$photoName)==1){
+if (preg_match("/(.jpg|.png|.gif|.JPG|.PNG|.GIF)/",$photoName)==1) {
     ob_start();
 	$filename = basename($file);
 	$file_extension = strtolower(substr(strrchr($filename,"."),1));
@@ -43,9 +39,6 @@ if(preg_match("/(.jpg|.png|.gif|.JPG|.PNG|.GIF)/",$photoName)==1){
     $contents = file_get_contents($file);
     echo $contents;
     ob_end_flush();
-}else{
-//echo a blank image
-    
+} else {
+	//echo a blank image    
 }
-
-

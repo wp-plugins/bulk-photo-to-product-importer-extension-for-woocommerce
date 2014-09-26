@@ -8,7 +8,7 @@ Tags: Batch image import woocommerce, batch photo import woocommerce, batch phot
 
 Requires at least: 3.0.1
 
-Tested up to: 3.8.1
+Tested up to: 4.2
 
 Stable tag: 2.3.2
 

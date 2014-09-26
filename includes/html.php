@@ -257,12 +257,13 @@ function ptp_add_checkbox() {
     
     $group  = ptp_get_product_variations( );
     $groups = array( );
-    foreach( $group as $g ) {
-        $groups[] = array(
-            'name' => $g[ 'name' ],
-            'id'   => $g[ 'id' ]
-        );
-    }
+	if(is_array( $group) )
+		foreach( $group as $g ) {
+			$groups[] = array(
+				'name' => $g[ 'name' ],
+				'id'   => $g[ 'id' ]
+			);
+		}
     ?>
     <input type="checkbox" class="select-product" data-id="<?php echo $post->ID; ?>" data-groupid="<?php echo $variation_group_id; ?>" data-title="<?php the_title(); ?>" data-variations='<?php echo json_encode( $groups ); ?>' />
     <?php

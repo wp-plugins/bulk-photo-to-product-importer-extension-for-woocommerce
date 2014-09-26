@@ -19,7 +19,7 @@ class PTP_SM_Share {
 
     public function init() {
 
-    	$defaults = array(
+    	 $defaults = array(
     		'product_name' => '',
     		'product_uri' => '',
     		'product_description' => '',
@@ -35,9 +35,9 @@ class PTP_SM_Share {
 		$this->product_image = rawurlencode( $args['product_image'] );
 		$this->plugin_uri = $args['plugin_uri'] . '/extensions/sm-share-buttons';
 
-		wp_enqueue_script( 'sm-scripts', $this->plugin_uri . '/js/sm.scripts.js' );
+		if(is_admin())
+			wp_enqueue_script( 'sm-scripts', $this->plugin_uri . '/js/sm.scripts.js' );
     }
-
 	function display( $args = '' ) {
 
 		$defaults = array(

@@ -5,7 +5,7 @@ Plugin URI: http://www.theportlandcompany.com/shop/custom-web-applications/bulk-
 Description: This Plugin is an extension to WooCommerce and enables users to bulk import photos, which are automatically converted into Products.
 Author: The Portland Company, Designed by Spencer Hill, Coded by Redeye Adaya
 Author URI: http://www.theportlandcompany.com
-Version: 2.3.6
+Version: 2.3.8
 Copyright: 2013 The Portland Company 
 License: GPL v3
 */
@@ -19,7 +19,7 @@ class PTP_Importer {
     /**
      * @var string
      */
-    public $version = '2.3.6';
+    public $version = '2.3.8';
 
     /**
      * @var string
@@ -521,17 +521,6 @@ class PTP_Importer {
 		    return;
 		}
 		
-		$correct_watermark_path = plugin_dir_path( __FILE__ ) . 'assets/images/watermark.png';
-        
-        if( !file_exists( $correct_watermark_path ) ) {
-            echo '<div class="error"><p>Invalid watermark path. <a href="';
-            echo admin_url( 'admin.php?page=ptp_settings' );
-            echo '">';
-            echo $blahblah;
-            file_exists( $blahblah );
-            echo 'Click here to update the watermark path.</a></p></div>';
-        }
-
 		$dismiss_first_time_tutorial = get_user_option( 'dismiss_first_time_tutorial' );
 		$dismiss_upgrade_reminder = get_user_option( 'dismiss_upgrade_reminder' );
     

@@ -306,7 +306,7 @@ class PTP_Importer {
      * Load all the plugin scripts and styles only for importer area
      */
     public function admin_scripts() {
-        wp_enqueue_script( 'media-upload' );
+        wp_enqueue_media();
         wp_enqueue_script( 'jquery-ui-core' );
         wp_enqueue_script( 'jquery-ui-dialog' );
         wp_enqueue_script( 'jquery-ui-datepicker' );

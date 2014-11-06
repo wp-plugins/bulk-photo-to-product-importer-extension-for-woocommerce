@@ -380,7 +380,7 @@ class PTPImporter_Ajax {
             exit;
         }
         
-        $parents = get_term_parents( $posted['term_id'] );
+        $parents = tpc_get_term_parents( $posted['term_id'] );
         $dashes  = '';
 
         for( $i = 0; $i < count( $parents ); $i ++ ) $dashes .= '&mdash;';

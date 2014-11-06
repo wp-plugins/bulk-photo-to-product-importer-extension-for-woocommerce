@@ -723,7 +723,7 @@ function get_term_parent( $term_id ) {
  * @param  integer $term_id Term ID
  * @return array            List of term parents
  */
-function get_term_parents( $term_id ) {
+function tpc_get_term_parents( $term_id ) {
     $parent  = $term_id;
     $parents = array( );
 

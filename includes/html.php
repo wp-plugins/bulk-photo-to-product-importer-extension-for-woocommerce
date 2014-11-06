@@ -47,7 +47,7 @@ function ptp_variations_list_item( $group ) {
         </th>
         <td class="name column-name">
             <a href="#"><strong>
-                <?php for( $i = 0; $i < count(get_term_parents( $group->term_id )); $i++ ) echo '&mdash;'; ?>
+                <?php for( $i = 0; $i < count(tpc_get_term_parents( $group->term_id )); $i++ ) echo '&mdash;'; ?>
                 <?php echo $group->name; ?>
             </strong></a>
 

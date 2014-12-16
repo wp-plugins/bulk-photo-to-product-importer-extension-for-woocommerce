@@ -5,7 +5,7 @@ Plugin URI: http://www.theportlandcompany.com/shop/custom-web-applications/bulk-
 Description: This Plugin is an extension to WooCommerce and enables users to bulk import photos, which are automatically converted into Products.
 Author: The Portland Company, Designed by Spencer Hill, Coded by Redeye Adaya
 Author URI: http://www.theportlandcompany.com
-Version: 2.3.10
+Version: 2.3.9
 Copyright: 2013 The Portland Company 
 License: GPL v3
 */
@@ -19,7 +19,7 @@ class PTP_Importer {
     /**
      * @var string
      */
-    public $version = '2.3.10';
+    public $version = '2.3.9';
 
     /**
      * @var string
@@ -704,7 +704,7 @@ class PTP_Importer {
      * @return String                       Prompts the user if the file is not found
      */
     public function fixBrokenLinks( $file_path, $product, $download_id ) {
-        if( !file_exists( $file_path ) ) {
+        if( !file_exists( $file_path ) ) {/*
             $parent_id   = $product->get_parent( );
             $thumb       = wp_get_attachment_image_src( get_post_thumbnail_id( $parent_id ), 'thumbnail_size' );
             $thumb_url   = isset( $thumb[ 0 ] ) ? $thumb[ 0 ] : '';
@@ -724,7 +724,7 @@ class PTP_Importer {
                 $meta[ $download_id ][ 'file' ] = $file_url;
                 $meta[ $download_id ][ 'name' ] = $filename;
                 update_post_meta( $product->id, '_downloadable_files', $meta );
-            }
+            }*/
         }        
         return $file_path;
     }

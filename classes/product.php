@@ -139,6 +139,9 @@ class PTPImporter_Product {
 
                 // Set as downloadable
                 $metadata['_downloadable'] = 'yes';
+				// Set as virtual'
+                $metadata['_virtual'] = 'yes';
+				
                 // Set download path
                 $metadata['_downloadable_files'] = array( md5($file_path) => array( "name" => basename( $file_data['url'] ), "file" => $file_path ));
                 // Set download limit

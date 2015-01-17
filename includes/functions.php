@@ -195,7 +195,7 @@ function ptp_generate_watermaked_images( $metadata = array(), $attachment_id ) {
         $source_file_path = "{$uploads_path}/" . $atts['file'];
         $outpout_file_path = ptp_watermarked_image_path( $source_file_path, $file_name, $atts['mime-type'] );
         ptp_add_watermark( $source_file_path, $outpout_file_path, $ptp_importer->watermark_path, 100 );
-
+		unlink($source_file_path);
         // Make sure the file is accessible
         chmod( $outpout_file_path , 0775 );
 

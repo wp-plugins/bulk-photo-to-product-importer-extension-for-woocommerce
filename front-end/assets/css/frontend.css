@@ -8,6 +8,7 @@
 }
 .ptp-ui-dialog {
 	overflow: visible !important;
+	z-index: 99999;
 }
 .quick-order-dialog {
 	display: none;

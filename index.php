@@ -35,7 +35,7 @@ $action = 'ptp_product_import';
 	<p></p>
 </div>
 
-<?php if ( $_GET['ptp_sm_hide'] != 1 && !get_user_meta( get_current_user_id(), 'ptp_hide_sm_box', true ) ) : ?>
+<?php if ( isset( $_GET['ptp_sm_hide'] ) && $_GET['ptp_sm_hide'] != 1 && !get_user_meta( get_current_user_id(), 'ptp_hide_sm_box', true ) ) : ?>
 <?php echo $ptp_importer->sm_share_buttons->display( array( 'mini' => true ) ); ?>
 <?php else: ?>
 <?php add_user_meta( get_current_user_id(), 'ptp_hide_sm_box', 1 ); ?>

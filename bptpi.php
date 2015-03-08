@@ -5,7 +5,7 @@ Plugin URI: http://www.theportlandcompany.com/shop/custom-web-applications/bulk-
 Description: This Plugin is an extension to WooCommerce and enables users to bulk import photos, which are automatically converted into Products.
 Author: The Portland Company, Designed by Spencer Hill, Coded by Redeye Adaya
 Author URI: http://www.theportlandcompany.com
-Version: 2.3.13
+Version: 2.3.14
 Copyright: 2013 The Portland Company 
 License: GPL v3
 */
@@ -19,7 +19,7 @@ class PTP_Importer {
     /**
      * @var string
      */
-    public $version = '2.3.13';
+    public $version = '2.3.14';
 
     /**
      * @var string
@@ -527,15 +527,15 @@ class PTP_Importer {
      */
     public function admin_notices() {
     
-		if ( $_GET['dismiss_first_time_tutorial'] == true ) {
+		if ( isset( $_GET['dismiss_first_time_tutorial'] ) && $_GET['dismiss_first_time_tutorial'] == true ) {
 		    update_user_meta( get_current_user_id(), 'dismiss_first_time_tutorial', true );
 		    return;
 		}
-		if ( $_GET['dismiss_downloadable_variations_reminder'] == true ) {
+		if ( isset( $_GET['dismiss_downloadable_variations_reminder'] ) && $_GET['dismiss_downloadable_variations_reminder'] == true ) {
 		    update_user_meta( get_current_user_id(), 'dismiss_downloadable_variations_reminder', true );
 		    return;
 		}
-		if ( $_GET['dismiss_upgrade_reminder'] == true ) {
+		if ( isset( $_GET['dismiss_upgrade_reminder'] ) && $_GET['dismiss_upgrade_reminder'] == true ) {
 		    update_user_meta( get_current_user_id(), 'dismiss_upgrade_reminder', true );
 		    return;
 		}
@@ -588,7 +588,7 @@ class PTP_Importer {
 		
 			<ul>
 				
-				<?php if ( $args['mini'] ): ?>	
+				<?php if ( isset( $args['mini'] ) && $args['mini'] ): ?>	
 				<li><img src="<?php echo $this->plugin_uri . '/extensions/sm-share-buttons/images/share_icon.png'; ?>" alt="Share"/></li>
 				<?php endif; ?>
 				

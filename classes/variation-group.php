@@ -132,12 +132,12 @@ class PTPImporter_Variation_Group {
     }
 
     /**
-     * Get variation group
-     *
-     * @param int $term_id
-     * @return object $group
-     */
-    public function group( $term_id ) {
+	* Get variation group
+	*
+	* @param int $term_id
+	* @return object $group
+	*/
+	public function group( $term_id ) {
         global $ptp_importer;
 
         $sql = "SELECT {$this->_db->term_relationships}.object_id";
@@ -162,6 +162,10 @@ class PTPImporter_Variation_Group {
         foreach ( $_variations as $_variation ) {
             $variations[$count]['id'] = $_variation->object_id;
             $variations[$count]['name'] = get_post_field( 'post_title', $_variation->object_id );
+            $variations[$count]['price'] = get_post_meta( $_variation->object_id, $ptp_importer->variation_price_meta_key, true );
+            $variations[$count]['is-downloadable'] = get_post_meta( $_variation->object_id, $ptp_importer->variation_is_downloadable_meta_key, true );
+            $variations[$count]['downloadable-width'] = get_post_meta( $_variation->object_id, $ptp_importer->variation_downloadable_width_meta_key, true );
+            $variations[$count]['downloadable-height'] = get_post_meta( $_variation->object_id, $ptp_importer->variation_downloadable_height_meta_key, true );
 
             $count++;
         }
@@ -169,7 +173,7 @@ class PTPImporter_Variation_Group {
         $group->variations = $variations;
 
         return $group;
-    }
+	}
 
     /**
      * Add variation group

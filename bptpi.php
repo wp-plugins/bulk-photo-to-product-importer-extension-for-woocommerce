@@ -19,7 +19,7 @@ class PTP_Importer {
     /**
      * @var string
      */
-    public $version = '2.3.15';
+    public $version = '2.3.16';
 
     /**
      * @var string

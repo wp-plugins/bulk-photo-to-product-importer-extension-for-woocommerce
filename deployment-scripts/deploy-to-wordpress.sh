@@ -85,7 +85,8 @@ svn delete $temporary_path_of_svn_repository/trunk/.gitmodules
 svn delete $temporary_path_of_svn_repository/trunk/.gitcommitlog
 
 #what the fuck do these arguments mean?! Fucking SVN docs are shit and don't explain a fucking damn thing. Fucking idiots.
-svn add --force * --auto-props --parents --depth infinity -q
+#svn add --force * --auto-props --parents --depth infinity -q
+svn add
 echo
 
 

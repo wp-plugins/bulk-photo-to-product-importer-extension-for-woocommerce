@@ -81,6 +81,8 @@ svn rm $temporary_path_of_svn_repository/trunk/.gitignore
 svn rm $temporary_path_of_svn_repository/trunk/.gitmodules
 svn rm $temporary_path_of_svn_repository/trunk/.gitcommitlog
 
+svn commit .
+
 echo "- Moving into $temporary_path_of_svn_repository."
 cd $temporary_path_of_svn_repository/
 svn add --force * --auto-props --parents --depth infinity -q

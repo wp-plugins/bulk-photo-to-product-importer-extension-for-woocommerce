@@ -55,8 +55,7 @@ echo
 
 
 echo "- Added files to be ignored to the SVN ignore list."
-#svn propset svn:ignore "$svn_ignored_files" $temporary_path_of_svn_repository/trunk/
-svn propset svn:ignore ".gitcommitlog" $temporary_path_of_svn_repository/trunk/
+svn propset svn:ignore "$svn_ignored_files" $temporary_path_of_svn_repository/trunk/
 echo
 
 

@@ -71,22 +71,15 @@ mv readme.txt $temporary_path_of_svn_repository/trunk/readme.txt
 echo
 
 echo "rm-ing files from ignore list because, upon initial commits, sometimes these files don't get removed if they're not ignored first."
-svn delete $temporary_path_of_svn_repository/trunk/deployment-scripts --message "Deleting"
-#rm -Rf $temporary_path_of_svn_repository/trunk/deployment-scripts
-svn delete $temporary_path_of_svn_repository/trunk/assets/images/plugin-directory-assets --message "Deleting"
-rm -Rf $temporary_path_of_svn_repository/trunk/assets/images/plugin-directory-assets
+svn delete $temporary_path_of_svn_repository/trunk/deployment-scripts
+svn delete $temporary_path_of_svn_repository/trunk/assets/images/plugin-directory-assets
+svn delete $temporary_path_of_svn_repository/trunk/submodule
 svn delete $temporary_path_of_svn_repository/trunk/README.md
-rm $temporary_path_of_svn_repository/trunk/README.md
 svn delete $temporary_path_of_svn_repository/trunk/readme.md
-rm $temporary_path_of_svn_repository/trunk/readme.md
 svn delete $temporary_path_of_svn_repository/trunk/.git
-rm $temporary_path_of_svn_repository/trunk/.git
 svn delete $temporary_path_of_svn_repository/trunk/.gitignore
-rm $temporary_path_of_svn_repository/trunk/.gitignore
 svn delete $temporary_path_of_svn_repository/trunk/.gitmodules
-rm $temporary_path_of_svn_repository/trunk/.gitmodules
 svn delete $temporary_path_of_svn_repository/trunk/.gitcommitlog
-rm $temporary_path_of_svn_repository/trunk/.gitcommitlog
 
 echo "- Moving into $temporary_path_of_svn_repository."
 cd $temporary_path_of_svn_repository/

@@ -16,6 +16,8 @@ svn_ignored_files="deploy-to-wordpress.sh
 	.git
 	.gitignore
 	.gitmodules
+	.gitcommitlog
+	submodule
 	assets/images/plugin-directory-assets
 	deployment-scripts"
 temporary_path_of_svn_repository="/tmp/$plugin_directory"
@@ -53,7 +55,7 @@ echo
 
 
 echo "- Added files to be ignored to the SVN ignore list."
-svn propset svn:ignore "$svn_ignored_files" "$temporary_path_of_svn_repository/trunk/"
+svn propset svn:ignore "$svn_ignored_files" $temporary_path_of_svn_repository/trunk/
 echo
 
 

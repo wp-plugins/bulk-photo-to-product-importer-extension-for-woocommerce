@@ -74,15 +74,17 @@ echo "- Moving into $temporary_path_of_svn_repository."
 cd $temporary_path_of_svn_repository/
 
 echo "rm-ing files from ignore list because, upon initial commits, sometimes these files don't get removed if they're not ignored first."
-svn rm $temporary_path_of_svn_repository/trunk/deployment-scripts
-svn rm $temporary_path_of_svn_repository/trunk/assets/images/plugin-directory-assets
-svn rm $temporary_path_of_svn_repository/trunk/submodule
-svn rm $temporary_path_of_svn_repository/trunk/README.md
-svn rm $temporary_path_of_svn_repository/trunk/readme.md
-svn rm $temporary_path_of_svn_repository/trunk/.git
-svn rm $temporary_path_of_svn_repository/trunk/.gitignore
-svn rm $temporary_path_of_svn_repository/trunk/.gitmodules
-svn rm $temporary_path_of_svn_repository/trunk/.gitcommitlog
+svn delete $temporary_path_of_svn_repository/trunk/deployment-scripts
+svn delete $temporary_path_of_svn_repository/trunk/assets/images/plugin-directory-assets
+svn delete $temporary_path_of_svn_repository/trunk/submodule
+svn delete $temporary_path_of_svn_repository/trunk/README.md
+svn delete $temporary_path_of_svn_repository/trunk/readme.md
+svn delete $temporary_path_of_svn_repository/trunk/.git
+svn delete $temporary_path_of_svn_repository/trunk/.gitignore
+svn delete $temporary_path_of_svn_repository/trunk/.gitmodules
+svn delete $temporary_path_of_svn_repository/trunk/.gitcommitlog
+
+svn commit .
 
 svn add --force * --auto-props --parents --depth infinity -q
 echo

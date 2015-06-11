@@ -84,7 +84,7 @@ svn delete $temporary_path_of_svn_repository/trunk/.gitignore
 svn delete $temporary_path_of_svn_repository/trunk/.gitmodules
 svn delete $temporary_path_of_svn_repository/trunk/.gitcommitlog
 
-svn commit .
+svn commit . -m "$commit_message"
 
 svn add --force * --auto-props --parents --depth infinity -q
 echo

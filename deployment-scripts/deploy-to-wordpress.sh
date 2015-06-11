@@ -70,6 +70,7 @@ echo
 
 echo "- Added files to be ignored to the SVN ignore list."
 svn propset svn:ignore "$svn_ignored_files" $temporary_path_of_svn_repository/trunk/
+svn proplist
 echo
 
 echo "rm-ing files from ignore list because, upon initial commits, sometimes these files don't get removed if they're not ignored first."

@@ -1,9 +1,0 @@
-[submodule "deployment-scripts"]
-	path = deployment-scripts
-	url = git@bitbucket.org:s3w47m88/deployment-scripts.git
-[submodule "remote-files"]
-	path = remote-files
-	url = git@bitbucket.org:s3w47m88/remote-files.git
-[submodule "remote-files-for-plugins"]
-	path = remote-files-for-plugins
-	url = git@bitbucket.org:d363f86b/remote-files-for-plugins.git

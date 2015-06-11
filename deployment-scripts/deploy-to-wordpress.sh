@@ -98,5 +98,6 @@ echo "- Removing the SVN repository from $temporary_path_of_svn_repository"
 rm -fr $temporary_path_of_svn_repository/
 
 echo
-echo "Your Plugin has been successfully committed to the WordPress Plugins repository."
-echo "Though it may take a few minutes to propagate."
+echo "The script is done."
+#echo "Your Plugin has been successfully committed to the WordPress Plugins repository."
+#echo "Though it may take a few minutes to propagate."

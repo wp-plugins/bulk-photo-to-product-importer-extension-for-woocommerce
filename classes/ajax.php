@@ -218,9 +218,11 @@ class PTPImporter_Ajax {
     public function products_add_to_cart() {
         check_ajax_referer( 'ptp_products_add_to_cart', 'ptp_nonce' );
         
+ $product_id = array();
         global $woocommerce;
         $found = false;
         $posted = $_POST;
+
 
         if ( !isset( $posted['ptp_grouped_products'] ) ) {
 
@@ -233,28 +235,30 @@ class PTPImporter_Ajax {
         }
 
         foreach ( $posted['ptp_grouped_products'] as $grouped_product_id ) {
-            $variations = get_option( '_transient_wc_product_children_ids_' . $grouped_product_id );
 
-            if ( sizeof( $variations ) == 0 ) continue;
+     $version_value = get_option( '_transient_product-transient-version');
+
+   $variations = get_option( '_transient_wc_product_children_ids_' . $grouped_product_id.$version_value  ); 
+
+            if ( sizeof( $variations ) == 0 ) { continue; }
 
             foreach ( $variations as $variation ) {
-                if ( trim( get_post_field( 'post_title', $variation ) ) == trim( $posted['variation'] ) ) {
+             
                     $product_id = $variation;
-
-                    break;
-                }
+                  //  break;
+           
             }
 
             // If no items in cart, add product directly
             if ( sizeof( $woocommerce->cart->get_cart() ) == 0 ) {
-                $woocommerce->cart->add_to_cart( $product_id );
-
-                continue;
+           foreach($product_id as $product_id) {
+             $woocommerce->cart->add_to_cart( $product_id ); }
+           //   continue;
             }
 
             // If there are items in cart, check if the product is added already
             foreach ( $woocommerce->cart->get_cart() as $cart_item_key => $values ) {
-                $_product = $values['data'];
+           
                 if ( $_product->id == $product_id ) {
                     $found = true;
                 }

@@ -422,8 +422,8 @@ function ptp_add_custom_elements( $q ) {
     $term_id = isset( $_GET['term_id'] ) ? $_GET['term_id'] : get_queried_object_id();
 
     // If not in category view bail out. Quick order works in category view only.
-    if ( !$term_id ) 
-        return;
+    //if ( !$term_id ) 
+      //  return;
 
     global $ptp_importer;
 

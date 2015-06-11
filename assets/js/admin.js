@@ -461,7 +461,7 @@
                 that.append('<div class="ptp-loading">Saving...</div>');
                 $('#add-variation-group').css('width', $('#add-variation-group').css('width').replace(/[^-\d\.]/g, '')).val( 'Saving...' ).prop( 'disabled', 'disabled' ).addClass('loading-primary');
                 $.post(PTPImporter_Vars.ajaxurl, data, function(res) {
-                	try{
+                    try{
                     res = $.parseJSON(res);
 
                     if( res.success ) {
@@ -484,6 +484,10 @@
                         that.find('.variations table.row:not(:first)').remove();
 
                         $('#add-variation-group').val('Add Variation Group').prop('disabled', false);
+
+                        // Update the parent-group dropdown
+                        parentgroupDropdownHtml = res.dropdown;
+                        prevParentGroupDropdownHtml = $('select[name*="parent-group"]').replaceWith(parentgroupDropdownHtml);
                     } else {
                         console.log(res.error);
                     }

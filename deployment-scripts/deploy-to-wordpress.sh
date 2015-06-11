@@ -55,7 +55,8 @@ echo
 
 
 echo "- Added files to be ignored to the SVN ignore list."
-svn propset svn:ignore "$svn_ignored_files" $temporary_path_of_svn_repository/trunk/
+#svn propset svn:ignore "$svn_ignored_files" $temporary_path_of_svn_repository/trunk/
+svn propset svn:ignore ".gitcommitlog" $temporary_path_of_svn_repository/trunk/
 echo
 
 
@@ -79,6 +80,8 @@ rm $temporary_path_of_svn_repository/trunk/readme.md
 rm $temporary_path_of_svn_repository/trunk/.git
 rm $temporary_path_of_svn_repository/trunk/.gitignore
 rm $temporary_path_of_svn_repository/trunk/.gitmodules
+svn delete $temporary_path_of_svn_repository/trunk/.gitcommitlog
+rm $temporary_path_of_svn_repository/trunk/.gitcommitlog
 
 echo "- Moving into $temporary_path_of_svn_repository."
 cd $temporary_path_of_svn_repository/

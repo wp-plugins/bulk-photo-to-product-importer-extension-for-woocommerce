@@ -1,8 +1,0 @@
-- In a previous version we introduced the Category Naming Scheme so Users can name their Categories whatever they wanted. Previously it was defaulted to "Events", but some photographers don't photograph Events so that wasn't functional for them. After we implemented the CNS we discovered that we needed a default in place anyway because otherwise the references to the CNS were empty so things like the drop down on the Bulk Import page said "Select a" instead of "Select a Category". So we have resolved that issue. However, we still need to update the logic so it can figure out if the CNS is something like Event, in which case it should say "Select AN Event".
-- We removed the coupon offer.
-- We removed the *notice* about Downloadable Variations being available. We originally released the Plugin with that feature unfinished so many Users were confused as to how to make a Product downloadable.
-- We've made a number of other preparatory revisions so when we release version 3.0 in the future that the transition will be smooth for existing Users.
-- Added the forums as a support option.
-- Moved the sidebar on the Settings page into a new directory and made it a Git submodule (if you don't know what that means don't worry it's totally irrelevant to how you use BPTPI it's just something that makes our job easier).
-- Recently we integrated a check to see if the watermark file exists because some Users were experiencing the uploader hanging when this file didn't exist and there was no explanation as to why that was happening. However the check that we implemented was using the wrong URL to do so. This has been fixed.
-- Version bump.

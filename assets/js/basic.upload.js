@@ -81,8 +81,9 @@
         },
 
         uploaded: function (up, file, response) {
-        		try{
-                var res = $.parseJSON(response.response);
+            var res = $.parseJSON(response.response);
+                try{
+                
             //$('#' + file.id).remove();
             if(res.success) {
                 $('#' + file.id).append(res.content);

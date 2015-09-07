@@ -219,11 +219,12 @@ class PTPImporter_Ajax {
         check_ajax_referer( 'ptp_products_add_to_cart', 'ptp_nonce' );
         
  $product_id = array();
+
         global $woocommerce;
         $found = false;
         $posted = $_POST;
 
-
+//print_r($posted); die("die here");
         if ( !isset( $posted['ptp_grouped_products'] ) ) {
 
             echo json_encode( array(
@@ -233,36 +234,50 @@ class PTPImporter_Ajax {
 
             exit;
         }
-
+//print_r($posted['ptp_grouped_products']); 
+$variation_name = $posted['variation'];
         foreach ( $posted['ptp_grouped_products'] as $grouped_product_id ) {
 
-     $version_value = get_option( '_transient_product-transient-version');
+     $version_value = get_option('_transient_product-transient-version');
 
    $variations = get_option( '_transient_wc_product_children_ids_' . $grouped_product_id.$version_value  ); 
-
             if ( sizeof( $variations ) == 0 ) { continue; }
 
-            foreach ( $variations as $variation ) {
-             
-                    $product_id = $variation;
-                  //  break;
-           
-            }
+foreach($variations as $variationval) {
+$varvalue = get_post_meta($variationval, '_downloadable', true);
+
+if($varvalue == 'yes' && ($variation_name == 'Downloadable' OR $variation_name == 'downloadable') ){
+$product_id = $variationval;
+
+} else if($varvalue == 'no' && ($variation_name != 'Downloadable') ) {
+$product_id = $variationval;
+}
+
+}
+
+       //     foreach ( $variations as $variation ) {
+          //       $product_id[] = $variation;
+                 //   break;
+//}
+
 
             // If no items in cart, add product directly
-            if ( sizeof( $woocommerce->cart->get_cart() ) == 0 ) {
-           foreach($product_id as $product_id) {
-             $woocommerce->cart->add_to_cart( $product_id ); }
-           //   continue;
+            if ( sizeof( $woocommerce->cart->get_cart() ) == 0 ) { 
+	foreach($product_id as $product_id) {
+             $woocommerce->cart->add_to_cart( $product_id ); 
+}           
+            //  continue;
             }
 
             // If there are items in cart, check if the product is added already
             foreach ( $woocommerce->cart->get_cart() as $cart_item_key => $values ) {
-           
+         
                 if ( $_product->id == $product_id ) {
+
                     $found = true;
                 }
             }
+
                 
             // if product not found, add it
             if ( !$found ) {
@@ -440,7 +455,7 @@ class PTPImporter_Ajax {
 
         $variations_migrate_obj = PTPImporter_Variation_Migrate::getInstance();
         $result = $variations_migrate_obj->migrate();
-
+//print_r($result); die("Die for variation group migrate");
         if ( !$result ) {
             echo json_encode( array(
                 'success' => false
@@ -474,6 +489,7 @@ class PTPImporter_Ajax {
 		$settings_obj = PTPImporter_Settings::getInstance();
 		$settings = $settings_obj->get();
 		$bptpi_category_naming_scheme_value = $settings['bptpi_category_naming_scheme'];
+//die("Die Here for naming scheme");
 		if ( isset($bptpi_category_naming_scheme_value) ) {
 			$bptpi_category_naming_scheme = $settings['bptpi_category_naming_scheme'];
 		} else {
@@ -492,6 +508,7 @@ class PTPImporter_Ajax {
         check_ajax_referer( 'ptp_nonce' ); // generic nonce
 
         global $ptp_importer;
+//print_r($_POST['parent']); die("Die in category");
 		if(isset($_POST['parent']))	
 			$termx = get_term_by( 'id', $_POST['parent'], "product_cat" );
 	
@@ -536,25 +553,33 @@ class PTPImporter_Ajax {
 
         // Get mini cart
         ob_start();
-        woocommerce_mini_cart();
+      // print_r( woocommerce_mini_cart() ); die("Atleast die any where");
         $mini_cart = ob_get_clean();
+       // print_r($mini_cart); die("Die before Cart");
 
         if ( !$mini_cart ) {
             $mini_cart = '<p class="empty-cart">You have not added any products to your cart yet.</p>';
         }
 
         // Fragments and mini cart are returned
-        $data = array(
+      //  $data = array(
+       //     'fragments' => apply_filters( 'add_to_cart_fragments', array(
+       //             'div.ptp-widget-cart-content' => '<div class="ptp-widget-cart-content">' . $mini_cart . '</div>'
+       //         )
+      //      ),
+      //      'cart_hash' => md5( json_encode( $woocommerce->cart->get_cart() ) )
+      //  );
+		$data = array(
             'fragments' => apply_filters( 'add_to_cart_fragments', array(
-                    'div.ptp-widget-cart-content' => '<div class="ptp-widget-cart-content">' . $mini_cart . '</div>'
+                    'div.ptp-widget-cart-content' => '<div class="ptp-widget-cart-content"></div>'
                 )
             ),
             'cart_hash' => md5( json_encode( $woocommerce->cart->get_cart() ) )
         );
-
+//print_r($data); die("Die Before Cart-2"); 
         echo json_encode( $data );
 
-        exit;
+       exit;
     }
 
         /**

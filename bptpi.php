@@ -5,8 +5,8 @@ Plugin URI: http://www.theportlandcompany.com/shop/custom-web-applications/bulk-
 Description: This Plugin is an extension to WooCommerce and enables users to bulk import photos, which are automatically converted into Products.
 Author: The Portland Company, Designed by Spencer Hill, Coded by Redeye Adaya
 Author URI: http://www.theportlandcompany.com
-Version: 2.3.16
-Copyright: 2013 The Portland Company 
+Version: 2.3.18
+Copyright: 2015 The Portland Company 
 License: GPL v3
 */
 
@@ -19,7 +19,7 @@ class PTP_Importer {
     /**
      * @var string
      */
-    public $version = '2.3.16';
+    public $version = '2.3.18';
 
     /**
      * @var string
@@ -168,8 +168,18 @@ class PTP_Importer {
 			update_option( 'medium_size_w', 300 );
 			update_option( 'large_size_h', 1024 );
 			update_option( 'large_size_w', 1024 );
-		} 
+		}
 
+        // Version update notice hook
+        add_action( 'update_option_bptpi_free_version', array($this, 'add_intro_notice') );
+
+    }
+
+    /**
+     * Add the introductory notice to the 
+     */
+    public function add_intro_notice() {
+        update_user_meta( get_current_user_id(), 'dismiss_first_version_activation_notice', false );
     }
 
 
@@ -286,7 +296,10 @@ class PTP_Importer {
      * Runs the setup when the plugin is installed
      */
     public function install() {
-        update_option( 'ptp_importer_version', $this->version );
+        update_option( 'bptpi_free_version', $this->version );
+
+        // Add the intro notice
+        $this->add_intro_notice();
 
         // Create custom table
         require_once dirname( __FILE__ ) . '/includes/db.php';
@@ -581,6 +594,21 @@ class PTP_Importer {
 	        </div>
         
         <?php } ?>
+
+        <?php
+        $dismiss_first_version_activation_notice = get_user_option( 'dismiss_first_version_activation_notice' );
+
+        if ( $dismiss_first_version_activation_notice != 1 ) { ?>
+            <div class="updated">
+                <p>
+                    Thank you for using Bulk Photo and Product Importer. For support please post in our <a href="http://www.theportlandcompany.com/forums/">forums</a>. You may also be interested in our other <a href="http://www.theportlandcompany.com/">Plugins</a> or services including <a href="http://www.theportlandcompany.com/">Website Development</a>, <a href="http://www.theportlandcompany.com/">Custom Wordpress Plugin Development</a>, <a href="http://www.theportlandcompany.com/">Search Marketing and Brand Management</a>.
+                </p>
+            </div>
+
+            <?php update_user_meta( get_current_user_id(), 'dismiss_first_version_activation_notice', true ); ?>
+        <?php
+        }
+        ?>
 		
 		
 		

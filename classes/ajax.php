@@ -498,7 +498,7 @@ $product_id = $variationval;
 
         echo json_encode( array(
             'success' => true,
-            'html' => ptp_dropdown_categories( array( 'name' => 'term_id', 'show_option_none' => 'Select a ' . $bptpi_category_naming_scheme, 'walker' => new Walker_Without_Children() ) )
+            'html' => ptp_dropdown_categories( array( 'name' => 'term_id', 'show_option_none' => 'Select a category' . $bptpi_category_naming_scheme, 'walker' => new Walker_Without_Children() ) )
         ) );
 
         exit;

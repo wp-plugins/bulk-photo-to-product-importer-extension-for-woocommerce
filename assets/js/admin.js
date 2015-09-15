@@ -1059,11 +1059,6 @@
                 } else {
                     data = 'hide_variations=0&' + data;
                 }
-				if ( $('#tiled-watermark').is(':checked') ) {				
-                    data = data.replace('tiled_watermark=0', 'tiled_watermark=1');
-                } else {
-                    data = 'tiled_watermark=0&' + data;
-                }
 				
 				that.find('input[type=submit]').after('<div class="ptp-loading">Saving...</div>');
                 $.post(PTPImporter_Vars.ajaxurl, data, function(res) {

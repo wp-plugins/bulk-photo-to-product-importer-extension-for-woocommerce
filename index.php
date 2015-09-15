@@ -49,7 +49,7 @@ $action = 'ptp_product_import';
 			<div class="wp-box">
 				
 				<div class="form-field category">
-					<span><?php echo ptp_dropdown_categories( array( 'name' => 'term_id', 'show_option_none' => 'Select a ' . $bptpi_category_naming_scheme, 'walker' => new Walker_Without_Children() ) ); ?></span>
+					<span><?php echo ptp_dropdown_categories( array( 'name' => 'term_id', 'show_option_none' => 'Select a category' . $bptpi_category_naming_scheme, 'walker' => new Walker_Without_Children() ) ); ?></span>
 					<span class="add-category  dashicons dashicons-plus-alt"></span>
 					<div class="quick-add-category-con"></div>
 				</div>

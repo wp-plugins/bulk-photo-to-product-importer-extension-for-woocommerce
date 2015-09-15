@@ -64,17 +64,40 @@ function ptp_add_watermark( $source_file_path, $output_file_path, $watermark_fil
     }
 	//Edited: 6/13/2014 Adjusted overlay image to stretch regardless of the watermark size
 	//Edit Start
-	
-	$overlay_gd_image = imagecreatefrompng( $watermark_file_path );	
-	$width = imagesx( $overlay_gd_image );
-	$height  = imagesy( $overlay_gd_image );
-	$overlay_width = imagesx( $overlay_gd_image );
+
+    $overlay_gd_image = imagecreatefrompng( $watermark_file_path );
+
+    $width = imagesx( $overlay_gd_image );
+    $height  = imagesy( $overlay_gd_image );
+    $overlay_width = imagesx( $overlay_gd_image );
     $overlay_height = imagesy( $overlay_gd_image );
+
+    $overlay_downsampling_ratio = 0.1;
+
+    if ($overlay_width > $source_width * $overlay_downsampling_ratio) {
+        $overlay_width_resampled = $source_width * $overlay_downsampling_ratio; // Overlay image will have 20$ width of the image
+        $overlay_width_delta = $overlay_width_resampled * 100 / $overlay_width; // Detecting ratio
+        $overlay_height_resampled = $overlay_height * ($overlay_width_delta / 100); // Maintaining aspect ratio
+
+        $overlay_resampled = imagecreatetruecolor($overlay_width_resampled, $overlay_height_resampled);
+        imagealphablending($overlay_resampled, false);
+        imagesavealpha($overlay_resampled, true);
+        imagecopyresampled($overlay_resampled, $overlay_gd_image, 0, 0, 0, 0, $overlay_width_resampled, $overlay_height_resampled, $overlay_width, $overlay_height);
+        
+        $overlay_gd_image = $overlay_resampled;
+
+        $width = imagesx( $overlay_gd_image );
+        $height  = imagesy( $overlay_gd_image );
+        $overlay_width = imagesx( $overlay_gd_image );
+        $overlay_height = imagesy( $overlay_gd_image );
+    }
+
+
 	
 	// Gaps in between watermark tiles pixels unit
-	$distance = 50;
+	$distance = 100;
 	
-	if($settings['tiled_watermark'] == 1)
+	if($settings['watermark_style'] == 'tiled')
 	{
 		$h_count = $source_width / ($overlay_width + $distance);
 		$v_count = $source_height / ($overlay_height + $distance);
@@ -97,7 +120,7 @@ function ptp_add_watermark( $source_file_path, $output_file_path, $watermark_fil
 		
 		}
 	}
-	else
+	else if ($settings['watermark_style'] == 'centered')
 	{
         /*
 		// Check if portrait or landscape
@@ -128,15 +151,19 @@ function ptp_add_watermark( $source_file_path, $output_file_path, $watermark_fil
 			$height
 		);
         */
+
+        $overlay_mid_x = ($source_width / 2.0) - ($width / 2.0);
+        $overlay_mid_y = ($source_height / 2.0) - ($height / 2.0);
+
        imagecopyresized (
             $source_gd_image,
             $overlay_gd_image,
+            $overlay_mid_x,
+            $overlay_mid_y,
             0,
             0,
-            0,
-            0,
-            $source_width,
-            $source_height,
+            $width,
+            $height,
             $width, 
             $height
         );

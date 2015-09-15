@@ -1,5 +1,5 @@
 === Bulk Photo to Product Importer Extension for WooCommerce (Free) ===
-Contributors: d363f86b, s3w47m88, adredz
+Contributors: d363f86b, s3w47m88, adredz, tafhim
 Repository: http://plugins.svn.wordpress.org/bulk-photo-to-product-importer-extension-for-woocommerce/
 
 Donate link: http://www.theportlandcompany.com/shop/custom-web-applications/bulk-photo-to-product-importer-extension-for-woocommerce/

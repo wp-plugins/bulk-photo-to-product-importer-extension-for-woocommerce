@@ -72,7 +72,9 @@ function ptp_add_watermark( $source_file_path, $output_file_path, $watermark_fil
     $overlay_width = imagesx( $overlay_gd_image );
     $overlay_height = imagesy( $overlay_gd_image );
 
-    $overlay_downsampling_ratio = 0.1;
+    $overlay_downsampling_ratio = 0.1; // Water mark size max ratio
+
+    $watermark_style = isset($settings['watermark_style']) ? $settings['watermark_style'] : 'tiled'; // Defaulting to tiled
 
     if ($overlay_width > $source_width * $overlay_downsampling_ratio) {
         $overlay_width_resampled = $source_width * $overlay_downsampling_ratio; // Overlay image will have 20$ width of the image
@@ -97,7 +99,7 @@ function ptp_add_watermark( $source_file_path, $output_file_path, $watermark_fil
 	// Gaps in between watermark tiles pixels unit
 	$distance = 100;
 	
-	if($settings['watermark_style'] == 'tiled')
+	if($watermark_style == 'tiled')
 	{
 		$h_count = $source_width / ($overlay_width + $distance);
 		$v_count = $source_height / ($overlay_height + $distance);
@@ -120,7 +122,7 @@ function ptp_add_watermark( $source_file_path, $output_file_path, $watermark_fil
 		
 		}
 	}
-	else if ($settings['watermark_style'] == 'centered')
+	else if ($watermark_style == 'centered')
 	{
         /*
 		// Check if portrait or landscape
